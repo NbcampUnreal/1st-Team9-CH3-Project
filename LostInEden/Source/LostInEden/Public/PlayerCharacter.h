@@ -6,9 +6,11 @@
 #include "Entity.h"
 #include "PlayerCharacter.generated.h"
 
-/**
- * 
- */
+enum class EPlayerStatus
+{
+	
+};
+
 UCLASS()
 class LOSTINEDEN_API APlayerCharacter : public AEntity
 {
@@ -17,8 +19,9 @@ class LOSTINEDEN_API APlayerCharacter : public AEntity
 public:
 	APlayerCharacter();
 
-	void Heal();
-	void ChangeState();
+	void Heal(int32);
+	void ChangeState(EPlayerStatus);
 	
 	void TakeDamaged(int32);
+	virtual void UseItem(class AItem*) override;
 };

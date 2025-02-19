@@ -6,18 +6,29 @@
 
 APlayerCharacter::APlayerCharacter()
 {
-	Health = 200;
+	MaxHealth = 200;
+	Health = MaxHealth;
 }
 
-void APlayerCharacter::Heal()
+void APlayerCharacter::Heal(int32 HealAmount)
 {
+	Health += HealAmount;
+	if (Health > MaxHealth)
+	{
+		Health = MaxHealth;
+	}
 }
 
-void APlayerCharacter::ChangeState()
+void APlayerCharacter::ChangeState(EPlayerStatus State)
 {
 }
 
 void APlayerCharacter::TakeDamaged(int32 Damage)
 {
 	Super::TakeDamaged(Damage);
+}
+
+void APlayerCharacter::UseItem(AItem* CurrItem)
+{
+
 }

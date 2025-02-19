@@ -22,5 +22,5 @@ protected:
 
 public:
 	void TakeDamaged(int32);
-	virtual void UseItem() PURE_VIRTUAL(AEntity::UseItem, ;);
+	virtual void UseItem(class AItem*) PURE_VIRTUAL(AEntity::UseItem, ;);
 };
