@@ -16,6 +16,7 @@ public:
 
 	virtual void Fire() override;
 	virtual void Reload() override;
+	virtual void BeginPlay() override;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Weapon")
 	float Damage;

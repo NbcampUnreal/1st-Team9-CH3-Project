@@ -33,8 +33,10 @@ public:
     UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Weapon")
     AGun* EquippedGun;
 
+    /** 📌 무기 관리 */
     UPROPERTY(EditDefaultsOnly, Category = "Weapon")
-    TSubclassOf<ARifle> RifleClass;
+    TSubclassOf<AGun> GunClass;  // 🔹 AGun을 기반으로 모든 무기 표시 가능
+
 
     /** 📌 이동 및 조준 관련 함수 */
     void Move(const FInputActionValue& InputValue);

@@ -2,6 +2,7 @@
 #include "Engine/World.h"
 #include "Kismet/GameplayStatics.h"
 #include "Bullet.h"
+#include "TestCharacter.h"
 #include "GameFramework/ProjectileMovementComponent.h"
 
 AGun::AGun() // ✅ 기본 생성자 정의 추가
@@ -68,3 +69,23 @@ void AGun::Reload()
 	UE_LOG(LogTemp, Warning, TEXT("재장전!"));
 	CurrentAmmo = MaxAmmo;
 }
+
+void AGun::BeginPlay()
+{
+	Super::BeginPlay();
+
+	// 🔹 플레이어 캐릭터 가져오기
+	ATestCharacter* PlayerCharacter = Cast<ATestCharacter>(UGameplayStatics::GetPlayerCharacter(GetWorld(), 0));
+	if (!PlayerCharacter)
+	{
+		UE_LOG(LogTemp, Error, TEXT("Gun: 플레이어 캐릭터를 찾을 수 없습니다!"));
+		return;
+	}
+
+	// 🔹 플레이어 손에 장착
+	FName WeaponSocket = "GunSocket_R";  // 🔹 블루프린트에서 설정한 손 소켓 이름
+	AttachToComponent(PlayerCharacter->GetMesh(), FAttachmentTransformRules::SnapToTargetIncludingScale, WeaponSocket);
+
+	UE_LOG(LogTemp, Warning, TEXT("%s가 플레이어 손에 장착됨!"), *GetName());
+}
+

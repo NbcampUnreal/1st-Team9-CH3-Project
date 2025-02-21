@@ -2,7 +2,6 @@
 #include "Engine/World.h"
 #include "Kismet/GameplayStatics.h"
 #include "Bullet.h"
-#include "DrawDebugHelpers.h"  // 🔹 라인 트레이스 시각화 추가
 
 AShotgun::AShotgun()
 {
@@ -45,42 +44,18 @@ void AShotgun::Fire()
     }
 
     CurrentAmmo--;
-
     FVector MuzzlePos = MuzzleLocation->GetComponentLocation();
     FRotator MuzzleRot = MuzzleLocation->GetComponentRotation();
 
     int32 SpawnedPellets = 0;
-
     for (int32 i = 0; i < PelletCount; i++)
     {
-        // 🔹 탄환 퍼짐 적용
+        // 탄환 퍼짐 적용
         float SpreadYaw = FMath::RandRange(-PelletSpread, PelletSpread);
         float SpreadPitch = FMath::RandRange(-PelletSpread, PelletSpread);
         FRotator AdjustedRot = MuzzleRot + FRotator(SpreadPitch, SpreadYaw, 0);
-        FVector ShotDirection = AdjustedRot.Vector();
 
-        // 🔹 레이케스트 시작점과 끝점 설정
-        FVector TraceStart = MuzzlePos;
-        FVector TraceEnd = TraceStart + (ShotDirection * Range);
-
-        // 🔹 라인 트레이스 실행
-        FHitResult HitResult;
-        FCollisionQueryParams QueryParams;
-        QueryParams.AddIgnoredActor(this);
-
-        bool bHit = World->LineTraceSingleByChannel(HitResult, TraceStart, TraceEnd, ECC_Visibility, QueryParams);
-
-        // 🔹 라인 트레이스 시각화 (빨간 선)
-        DrawDebugLine(World, TraceStart, TraceEnd, FColor::Red, false, 2.0f, 0, 1.0f);
-
-        // 🔹 맞았다면 탄환 방향 조정
-        if (bHit)
-        {
-            ShotDirection = (HitResult.ImpactPoint - MuzzlePos).GetSafeNormal();
-        }
-
-        // 🔹 총알 스폰
-        ABullet* SpawnedBullet = World->SpawnActor<ABullet>(BulletFactory, MuzzlePos, ShotDirection.Rotation());
+        ABullet* SpawnedBullet = World->SpawnActor<ABullet>(BulletFactory, MuzzlePos, AdjustedRot);
         if (SpawnedBullet)
         {
             SpawnedPellets++;

@@ -111,9 +111,9 @@ void ATestCharacter::EquipGun()
         EquippedGun = nullptr;
     }
 
-    if (RifleClass)
+    if (GunClass)  // 🔹 모든 무기 선택 가능 (Rifle, Shotgun, Pistol 등)
     {
-        EquippedGun = GetWorld()->SpawnActor<ARifle>(RifleClass.Get());
+        EquippedGun = GetWorld()->SpawnActor<AGun>(GunClass);
     }
 
     if (EquippedGun)
@@ -128,6 +128,7 @@ void ATestCharacter::EquipGun()
         EquippedGun->SetOwner(this);
     }
 }
+
 void ATestCharacter::StopFiring()
 {
     if (EquippedGun)
