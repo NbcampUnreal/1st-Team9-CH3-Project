@@ -1,4 +1,4 @@
-#pragma once
+#pragma once  // ✅ 추가
 
 #include "CoreMinimal.h"
 #include "Gun.h"
@@ -7,30 +7,32 @@
 UCLASS()
 class LOSTINEDEN_API ARifle : public AGun
 {
-	GENERATED_BODY() // ✅ 반드시 포함해야 함
+    GENERATED_BODY()
 
 public:
-	ARifle();
+    ARifle();
 
-	virtual void Fire() override;
-	virtual void Reload() override;
+    virtual void Fire() override;
+    virtual void Reload() override;
+private:
+    AActor* EquippedGun;
 
 protected:
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Weapon")
-	bool bIsAutomatic;
+    UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Weapon")
+    bool bIsAutomatic;
 
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Weapon")
-	float BulletSpread;
+    UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Weapon")
+    float BulletSpread;
 
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Weapon")
-	int32 BurstCount;
+    UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Weapon")
+    int32 BurstCount;
 
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Weapon")
-	float BurstFireRate;
+    UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Weapon")
+    float BurstFireRate;
+
 public:
-
-	FTimerHandle AutoFireHandle;
-	void StartAutoFire();
-	void StopAutoFire();
-	void BurstFire();
+    FTimerHandle AutoFireHandle;
+    void StartAutoFire();
+    void StopAutoFire();
+    void BurstFire();
 };
