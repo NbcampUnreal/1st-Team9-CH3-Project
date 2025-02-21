@@ -14,11 +14,9 @@ AEntity::AEntity()
 	Health = MaxHealth;
 }
 
-void AEntity::TakeDamaged(int32 Damage)
+float AEntity::TakeDamage(float Damage, FDamageEvent const& DamageEvent, AController* EventInstigator, AActor* DamageCauser)
 {
-	Health -= Damage;
-	if (Health < 0)
-	{
-		Health = 0;
-	}
+	Health = FMath::Clamp<int32>(Health - Damage, 0, MaxHealth);
+
+	return 0.0f;
 }

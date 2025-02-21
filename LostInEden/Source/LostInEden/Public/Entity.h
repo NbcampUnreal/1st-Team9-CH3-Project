@@ -21,6 +21,6 @@ protected:
 	//Gun* Weapon;
 
 public:
-	void TakeDamaged(int32);
+	virtual float TakeDamage(float Damage, struct FDamageEvent const& DamageEvent, AController* EventInstigator, AActor* DamageCauser) override;
 	virtual void UseItem(class AItem*) PURE_VIRTUAL(AEntity::UseItem, ;);
 };
