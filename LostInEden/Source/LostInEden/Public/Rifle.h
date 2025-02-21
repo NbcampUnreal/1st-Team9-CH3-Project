@@ -1,4 +1,4 @@
-#pragma once  // ✅ 추가
+#pragma once  // ✅ 중복 포함 방지
 
 #include "CoreMinimal.h"
 #include "Gun.h"
@@ -14,7 +14,9 @@ public:
 
     virtual void Fire() override;
     virtual void Reload() override;
+
 private:
+    // ✅ EquippedGun 변수가 nullptr일 가능성이 있으므로 사용하기 전에 반드시 확인 필요!
     AActor* EquippedGun;
 
 protected:

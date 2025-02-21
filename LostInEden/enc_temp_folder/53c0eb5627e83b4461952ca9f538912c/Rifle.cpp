@@ -36,45 +36,55 @@ void ARifle::Fire()
     }
 
     UWorld* World = GetWorld();
-    if (!World)
+    if (!World || !MuzzleLocation)
     {
-        UE_LOG(LogTemp, Error, TEXT("World가 없음!"));
+        UE_LOG(LogTemp, Error, TEXT("World 또는 MuzzleLocation이 없음!"));
         return;
     }
 
-    // 🔹 총기 메쉬에서 Muzzle 소켓 위치 가져오기
-    USkeletalMeshComponent* MeshComponent = FindComponentByClass<USkeletalMeshComponent>();
-    if (!MeshComponent)
+    // 🔹 **소유 캐릭터 가져오기 (ACharacter)**
+    ACharacter* OwnerCharacter = Cast<ACharacter>(GetOwner());
+    if (!OwnerCharacter)
     {
-        UE_LOG(LogTemp, Error, TEXT("MeshComponent가 없습니다! 블루프린트에서 확인하세요."));
+        UE_LOG(LogTemp, Error, TEXT("총기의 소유자가 캐릭터가 아닙니다!"));
         return;
     }
 
-    FVector MuzzlePos = MeshComponent->GetSocketLocation("Muzzle");
-    FRotator MuzzleRot = MeshComponent->GetSocketRotation("Muzzle");
-    FVector ShotDirection = MuzzleRot.Vector();  // 🔹 총구 방향을 그대로 사용
+    // 🔹 **캐릭터의 카메라 가져오기**
+    UCameraComponent* CameraComponent = OwnerCharacter->FindComponentByClass<UCameraComponent>();
+    if (!CameraComponent)
+    {
+        UE_LOG(LogTemp, Error, TEXT("카메라 컴포넌트를 찾을 수 없습니다!"));
+        return;
+    }
 
-    // 🔹 총구에서 라인트레이스 시작 (조준선)
-    FVector TraceStart = MuzzlePos;
-    FVector TraceEnd = TraceStart + (ShotDirection * 10000.0f);
+    // 🔹 **카메라에서 라인트레이스 시작 (조준선)**
+    FVector TraceStart = CameraComponent->GetComponentLocation();
+    FVector TraceEnd = TraceStart + (CameraComponent->GetForwardVector() * 10000.0f);
 
     FHitResult HitResult;
     FCollisionQueryParams QueryParams;
     QueryParams.AddIgnoredActor(this);
 
     bool bHit = World->LineTraceSingleByChannel(HitResult, TraceStart, TraceEnd, ECC_Visibility, QueryParams);
+
     DrawDebugLine(World, TraceStart, TraceEnd, FColor::Red, false, 2.0f, 0, 1.0f);
+
+    // 🔹 **총구 위치를 Muzzle 소켓에서 가져오기**
+    FVector MuzzlePos = MuzzleLocation->GetComponentLocation();
+    FRotator MuzzleRot = MuzzleLocation->GetComponentRotation();
+    FVector ShotDirection;
 
     if (bHit)
     {
         ShotDirection = (HitResult.ImpactPoint - MuzzlePos).GetSafeNormal();
     }
+    else
+    {
+        ShotDirection = CameraComponent->GetForwardVector();
+    }
 
-    // 🔹 디버그 로그 확인
-    UE_LOG(LogTemp, Warning, TEXT("MuzzlePos: %s"), *MuzzlePos.ToString());
-    UE_LOG(LogTemp, Warning, TEXT("ShotDirection: %s"), *ShotDirection.ToString());
-
-    // 🔹 총알을 총구에서 발사
+    // 🔹 **총알을 총구(Muzzle)에서 발사**
     ABullet* SpawnedBullet = World->SpawnActor<ABullet>(BulletFactory, MuzzlePos, ShotDirection.Rotation());
     if (SpawnedBullet)
     {
