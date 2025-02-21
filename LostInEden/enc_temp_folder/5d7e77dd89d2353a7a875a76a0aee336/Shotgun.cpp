@@ -4,7 +4,7 @@
 #include "Bullet.h"
 #include "DrawDebugHelpers.h"
 #include "Camera/CameraComponent.h"
-#include "GameFramework/Character.h"
+#include "TestCharacter.h"
 
 AShotgun::AShotgun()
 {
@@ -46,7 +46,7 @@ void AShotgun::Fire()
         return;
     }
 
-    // 🔹 플레이어의 카메라 방향 가져오기
+    // 🔹 플레이어의 카메라 방향 가져오기 (보다 직관적인 조준)
     ACharacter* OwnerCharacter = Cast<ACharacter>(GetOwner());
     if (!OwnerCharacter)
     {
@@ -54,15 +54,26 @@ void AShotgun::Fire()
         return;
     }
 
-    UCameraComponent* CameraComponent = OwnerCharacter->FindComponentByClass<UCameraComponent>();
+    // 🔹 플레이어 캐릭터인지 확인 후 캐스팅 (만약 AMyCharacter라면)
+    ATestCharacter* PlayerCharacter = Cast<ATestCharacter>(OwnerCharacter);
+    if (!PlayerCharacter)
+    {
+        UE_LOG(LogTemp, Error, TEXT("PlayerCharacter로 캐스팅할 수 없음!"));
+        return;
+    }
+
+    // 🔹 카메라 컴포넌트 찾기
+    UCameraComponent* CameraComponent = PlayerCharacter->FindComponentByClass<UCameraComponent>();
     if (!CameraComponent)
     {
         UE_LOG(LogTemp, Error, TEXT("카메라 컴포넌트를 찾을 수 없음!"));
         return;
     }
 
+
     // 🔹 Muzzle(총구) 위치 및 기본 방향
     FVector MuzzlePos = MuzzleLocation->GetComponentLocation();
+    FRotator MuzzleRot = MuzzleLocation->GetComponentRotation();
     FVector CameraDirection = CameraComponent->GetForwardVector();
 
     CurrentAmmo--;
@@ -70,12 +81,12 @@ void AShotgun::Fire()
     int32 SpawnedPellets = 0;
     for (int32 i = 0; i < PelletCount; i++)
     {
-        // 🔹 Spread를 카메라 방향 기준으로 적용
+        // 🔹 Spread를 월드 회전이 아닌 MuzzleRot 기준으로 적용
         float SpreadYaw = FMath::RandRange(-PelletSpread, PelletSpread);
         float SpreadPitch = FMath::RandRange(-PelletSpread, PelletSpread);
 
-        // 🔹 카메라 방향을 기준으로 퍼짐 적용
-        FRotator AdjustedRot = CameraDirection.Rotation();
+        // 🔹 회전을 적용하여 방향 설정
+        FRotator AdjustedRot = (CameraDirection * Range).Rotation();
         AdjustedRot.Yaw += SpreadYaw;
         AdjustedRot.Pitch += SpreadPitch;
 
