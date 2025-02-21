@@ -1,48 +1,51 @@
-// Fill out your copyright notice in the Description page of Project Settings.
-
 #pragma once
 
 #include "CoreMinimal.h"
 #include "Item.h"
+#include "Bullet.h"
 #include "IFireable.h"
 #include "Gun.generated.h"
 
-/**
- * 
- */
 UCLASS()
 class LOSTINEDEN_API AGun : public AItem, public IIFireable
 {
-	GENERATED_BODY()
-	
+	GENERATED_BODY() // ✅ 반드시 포함해야 함
 
 public:
-    AGun();
+	AGun();  // ✅ 기본 생성자 선언
 
-    UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Gun Stats")
-    float Damage;
+	virtual void Fire() override;
+	virtual void Reload() override;
 
-    UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Gun Stats")
-    float FireRate;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Weapon")
+	float Damage;
 
-    UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Gun Stats")
-    int32 MaxAmmo;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Weapon")
+	float FireRate;
 
-    UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Gun Stats")
-    int32 CurrentAmmo;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Weapon")
+	int32 MaxAmmo;
 
-    UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Gun Stats")
-    int32 MagazineSize;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Weapon")
+	int32 CurrentAmmo;
 
-    UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Gun Stats")
-    float Range;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Weapon")
+	float Range;
+public:
 
-    UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Effects")
-    class UParticleSystem* MuzzleEffect;
+	UPROPERTY(VisibleAnywhere, Category = "Components")
+	USkeletalMeshComponent* GunMesh;
 
-    UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Effects")
-    class UParticleSystem* ImpactEffect;
+	UPROPERTY(VisibleAnywhere, Category = "Components")
+	USceneComponent* MuzzleLocation;
 
-    virtual void Fire() override;
-    virtual void Reload() override;
+	UPROPERTY(EditDefaultsOnly,BlueprintReadWrite, Category = "Weapon")
+	TSubclassOf<class ABullet> BulletFactory;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Effects")
+	class UParticleSystem* MuzzleEffect;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Effects")
+	class UParticleSystem* ImpactEffect;
+
 };
