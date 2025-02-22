@@ -1,31 +1,42 @@
 #include "Shotgun.h"
 #include "Engine/World.h"
 #include "Kismet/GameplayStatics.h"
-#include "Bullet.h"
 #include "DrawDebugHelpers.h"
-#include "Camera/CameraComponent.h"
 #include "GameFramework/Character.h"
+#include "Camera/CameraComponent.h"
 
 AShotgun::AShotgun()
 {
-    Damage = 10.0f;
-    FireRate = 1.0f;
-    MaxAmmo = 8;
+    Damage = 30.0f; // ✅ 샷건 탄환 개별 데미지 설정
+    FireRate = 2.0f; // ✅ 발사 후 딜레이 증가
+    MaxAmmo = 20;
     CurrentAmmo = MaxAmmo;
-    Range = 1500.0f;
+    Range = 500.0f; // ✅ 발사 범위를 줄여 근거리 공격에 최적화
+    ReloadTime = 3.0f; // ✅ 재장전 시간이 길도록 설정
+    PelletCount = 8; // ✅ 탄환 개수 증가
+    PelletSpread = 8.0f; // ✅ 탄환 퍼짐 정도를 줄여 더 좁은 범위에서 발사
 
-    PelletCount = 6; // 한 번에 발사될 탄환 수
-    PelletSpread = 5.0f; // 탄환 퍼짐 정도
-    ReloadTime = 2.5f;
+    bCanFire = true; // ✅ 연속 발사 방지용 변수 초기화
 }
 
 void AShotgun::Fire()
 {
-    if (CurrentAmmo <= 0)
+    if (!bCanFire)
+    {
+        UE_LOG(LogTemp, Warning, TEXT("샷건 재사용 대기 중..."));
+        return;
+    }
+
+    if (CurrentAmmo <= 0) // ✅ 탄약이 없으면 발사 불가
     {
         UE_LOG(LogTemp, Warning, TEXT("샷건 탄약 없음! 현재 탄약: %d"), CurrentAmmo);
         return;
     }
+
+    bCanFire = false; // ✅ 발사 후 딜레이 적용
+
+    int32 NumShots = FMath::Min(CurrentAmmo, PelletCount); // ✅ 남은 탄약 개수까지만 발사
+    CurrentAmmo -= NumShots; // ✅ 발사한 개수만큼 탄약 차감
 
     if (!BulletFactory)
     {
@@ -40,91 +51,65 @@ void AShotgun::Fire()
         return;
     }
 
-    if (!MuzzleLocation)
+    ACharacter* Player = Cast<ACharacter>(GetOwner());
+    if (!Player)
     {
-        UE_LOG(LogTemp, Error, TEXT("MuzzleLocation이 설정되지 않음! 블루프린트에서 확인하세요."));
+        UE_LOG(LogTemp, Error, TEXT("소유자가 캐릭터가 아닙니다!"));
         return;
     }
 
-    // 🔹 플레이어의 카메라 방향 가져오기
-    ACharacter* OwnerCharacter = Cast<ACharacter>(GetOwner());
-    if (!OwnerCharacter)
+    USkeletalMeshComponent* MeshComponent = FindComponentByClass<USkeletalMeshComponent>();
+    if (!MeshComponent)
     {
-        UE_LOG(LogTemp, Error, TEXT("소유 캐릭터를 찾을 수 없음!"));
+        UE_LOG(LogTemp, Error, TEXT("MeshComponent가 없습니다! 블루프린트에서 확인하세요."));
         return;
     }
 
-    UCameraComponent* CameraComponent = OwnerCharacter->FindComponentByClass<UCameraComponent>();
-    if (!CameraComponent)
+    FVector MuzzlePos = MeshComponent->GetSocketLocation("Muzzle");
+    FRotator MuzzleRot = MeshComponent->GetSocketRotation("Muzzle");
+
+    // ✅ 좁은 범위에서 여러 탄환이 퍼지는 방식으로 조정
+    for (int32 i = 0; i < NumShots; i++) // ✅ PelletCount 개수만큼 발사
     {
-        UE_LOG(LogTemp, Error, TEXT("카메라 컴포넌트를 찾을 수 없음!"));
-        return;
-    }
+        float SpreadYaw = FMath::RandRange(-PelletSpread * 0.5f, PelletSpread * 0.5f); // ✅ 퍼짐 범위를 더 좁게 조정
+        float SpreadPitch = FMath::RandRange(-PelletSpread * 0.5f, PelletSpread * 0.5f);
 
-    // 🔹 Muzzle(총구) 위치 및 기본 방향
-    FVector MuzzlePos = MuzzleLocation->GetComponentLocation();
-    FVector CameraDirection = CameraComponent->GetForwardVector();
-
-    CurrentAmmo--;
-
-    int32 SpawnedPellets = 0;
-    for (int32 i = 0; i < PelletCount; i++)
-    {
-        // 🔹 Spread를 카메라 방향 기준으로 적용
-        float SpreadYaw = FMath::RandRange(-PelletSpread, PelletSpread);
-        float SpreadPitch = FMath::RandRange(-PelletSpread, PelletSpread);
-
-        // 🔹 카메라 방향을 기준으로 퍼짐 적용
-        FRotator AdjustedRot = CameraDirection.Rotation();
+        FRotator AdjustedRot = MuzzleRot;
         AdjustedRot.Yaw += SpreadYaw;
         AdjustedRot.Pitch += SpreadPitch;
 
         FVector ShotDirection = AdjustedRot.Vector();
-
-        // 🔹 라인 트레이스 시작점과 끝점 설정
         FVector TraceStart = MuzzlePos;
         FVector TraceEnd = TraceStart + (ShotDirection * Range);
 
-        // 🔹 라인 트레이스 실행
         FHitResult HitResult;
         FCollisionQueryParams QueryParams;
         QueryParams.AddIgnoredActor(this);
 
         bool bHit = World->LineTraceSingleByChannel(HitResult, TraceStart, TraceEnd, ECC_Visibility, QueryParams);
-
-        // 🔹 라인 트레이스 시각화 (빨간 선)
         DrawDebugLine(World, TraceStart, TraceEnd, FColor::Red, false, 2.0f, 0, 1.0f);
 
-        // 🔹 맞았다면 탄환 방향 조정
         if (bHit)
         {
             ShotDirection = (HitResult.ImpactPoint - MuzzlePos).GetSafeNormal();
         }
 
-        // 🔹 디버그 로그 출력
-        UE_LOG(LogTemp, Warning, TEXT("Shot %d - AdjustedRot: %s | ShotDirection: %s"),
-            i, *AdjustedRot.ToString(), *ShotDirection.ToString());
-
-        // 🔹 총알 스폰
         ABullet* SpawnedBullet = World->SpawnActor<ABullet>(BulletFactory, MuzzlePos, ShotDirection.Rotation());
         if (SpawnedBullet)
         {
-            SpawnedPellets++;
-        }
-        else
-        {
-            UE_LOG(LogTemp, Error, TEXT("샷건 탄환 스폰 실패! BulletFactory 또는 MuzzlePos 확인 필요"));
+            UE_LOG(LogTemp, Warning, TEXT("샷건 탄환 스폰 성공!"));
         }
     }
 
-    if (SpawnedPellets > 0)
-    {
-        UE_LOG(LogTemp, Warning, TEXT("샷건 탄환 %d개 스폰 성공! 남은 탄약: %d"), SpawnedPellets, CurrentAmmo);
-    }
-    else
-    {
-        UE_LOG(LogTemp, Error, TEXT("샷건 탄환이 하나도 생성되지 않음! 블루프린트 설정 확인 필요"));
-    }
+    UE_LOG(LogTemp, Warning, TEXT("샷건 발사 완료! 남은 탄약: %d"), CurrentAmmo);
+    GetWorld()->GetTimerManager().SetTimer(FireDelayTimer, this, &AShotgun::ResetFire, FireRate, false);
+}
+
+
+void AShotgun::ResetFire()
+{
+    bCanFire = true;
+    UE_LOG(LogTemp, Warning, TEXT("샷건 재사용 가능!"));
 }
 
 void AShotgun::Reload()
@@ -135,15 +120,21 @@ void AShotgun::Reload()
         return;
     }
 
-    UE_LOG(LogTemp, Warning, TEXT("샷건 재장전! 탄약: %d -> %d"), CurrentAmmo, MaxAmmo);
+    UE_LOG(LogTemp, Warning, TEXT("샷건 재장전 중..."));
+    GetWorld()->GetTimerManager().ClearTimer(ReloadTimer);
+    GetWorld()->GetTimerManager().SetTimer(ReloadTimer, this, &AShotgun::FinishReload, ReloadTime, false);
+}
+
+void AShotgun::FinishReload()
+{
     CurrentAmmo = MaxAmmo;
+    bCanFire = true; // ✅ 재장전 완료 후 발사 가능하도록 설정
+    UE_LOG(LogTemp, Warning, TEXT("샷건 재장전 완료! 탄약: %d"), CurrentAmmo);
 }
 
 void AShotgun::BeginPlay()
 {
     Super::BeginPlay();
-
-    Reload(); // ✅ 게임 시작 시 탄창 채우기
-
+    Reload();
     UE_LOG(LogTemp, Warning, TEXT("샷건 시작! 현재 탄약: %d"), CurrentAmmo);
 }

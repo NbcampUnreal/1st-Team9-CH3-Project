@@ -49,34 +49,12 @@ void APistol::Fire()
     FVector MuzzlePos = MeshComponent->GetSocketLocation("Muzzle");
     FRotator MuzzleRot = MeshComponent->GetSocketRotation("Muzzle");
 
-    // ✅ Muzzle 방향 보정 (Pitch, Roll을 0으로 강제 설정)
-    MuzzleRot.Pitch = 0.0f;
-    MuzzleRot.Roll = 0.0f;
-
+    // ✅ 총구의 방향을 그대로 사용
     FVector ShotDirection = MuzzleRot.Vector();
 
-    // 🔹 캐릭터 카메라 방향 가져오기
-    ACharacter* OwnerCharacter = Cast<ACharacter>(GetOwner());
-    if (!OwnerCharacter)
-    {
-        UE_LOG(LogTemp, Error, TEXT("소유 캐릭터를 찾을 수 없음!"));
-        return;
-    }
-
-    UCameraComponent* CameraComponent = OwnerCharacter->FindComponentByClass<UCameraComponent>();
-    if (!CameraComponent)
-    {
-        UE_LOG(LogTemp, Error, TEXT("카메라 컴포넌트를 찾을 수 없음!"));
-        return;
-    }
-
-    // ✅ 카메라 방향 기반으로 ShotDirection 보정
-    FVector CameraForward = CameraComponent->GetForwardVector();
-    FVector AdjustedShotDirection = (CameraForward + ShotDirection).GetSafeNormal();
-
-    // 🔹 라인트레이스 시작점 및 종료점 설정
+    // 🔹 라인트레이스 시작점 및 종료점 설정 (Muzzle 방향 그대로 사용)
     FVector TraceStart = MuzzlePos;
-    FVector TraceEnd = TraceStart + (AdjustedShotDirection * Range);
+    FVector TraceEnd = TraceStart + (ShotDirection * Range);
 
     FHitResult HitResult;
     FCollisionQueryParams QueryParams;
@@ -87,21 +65,25 @@ void APistol::Fire()
 
     if (bHit)
     {
-        AdjustedShotDirection = (HitResult.ImpactPoint - MuzzlePos).GetSafeNormal();
+        ShotDirection = (HitResult.ImpactPoint - MuzzlePos).GetSafeNormal();
     }
 
     // 🔹 디버그 로그 확인
     UE_LOG(LogTemp, Warning, TEXT("MuzzlePos: %s"), *MuzzlePos.ToString());
-    UE_LOG(LogTemp, Warning, TEXT("ShotDirection: %s"), *AdjustedShotDirection.ToString());
+    UE_LOG(LogTemp, Warning, TEXT("ShotDirection: %s"), *ShotDirection.ToString());
 
     // 🔹 총알을 총구에서 발사
-    ABullet* SpawnedBullet = World->SpawnActor<ABullet>(BulletFactory, MuzzlePos, AdjustedShotDirection.Rotation());
+    ABullet* SpawnedBullet = World->SpawnActor<ABullet>(BulletFactory, MuzzlePos, ShotDirection.Rotation());
     if (SpawnedBullet)
     {
         CurrentAmmo--;
         UE_LOG(LogTemp, Warning, TEXT("총알 발사 성공! 남은 탄약: %d"), CurrentAmmo);
     }
 }
+
+
+
+
 
 
 void APistol::Reload()
