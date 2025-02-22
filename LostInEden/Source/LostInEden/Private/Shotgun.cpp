@@ -27,7 +27,7 @@ void AShotgun::Fire()
         return;
     }
 
-    if (CurrentAmmo <= 0) // ✅ 탄약이 없으면 발사 불가
+    if (CurrentAmmo <= PelletCount) // ✅ 탄약이 없으면 발사 불가
     {
         UE_LOG(LogTemp, Warning, TEXT("샷건 탄약 없음! 현재 탄약: %d"), CurrentAmmo);
         return;

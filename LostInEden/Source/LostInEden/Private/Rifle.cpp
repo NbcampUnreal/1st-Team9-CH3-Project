@@ -7,7 +7,7 @@
 
 ARifle::ARifle()
 {
-    Damage = 15.0f;
+    Damage = 35.0f;
     FireRate = 0.1f;
     MaxAmmo = 30;
     CurrentAmmo = MaxAmmo;

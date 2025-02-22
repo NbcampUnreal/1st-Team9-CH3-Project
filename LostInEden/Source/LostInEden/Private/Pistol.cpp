@@ -8,9 +8,9 @@
 
 APistol::APistol()
 {
-    Damage = 25.0f; // 🔹 라이플보다 강하지만 샷건보단 약함
+    Damage = 15.0f; // 🔹 데미지를 더 약하게 조정
     FireRate = 0.3f; // 🔹 연사 속도 조절 (느리게)
-    MaxAmmo = 12;
+    MaxAmmo = 12; // 🔹 무한 탄창이므로 의미 없음
     CurrentAmmo = MaxAmmo;
     Range = 2000.0f; // 🔹 샷건보다는 길고 라이플보다는 짧음
     bIsAutomatic = false; // 🔹 단발 모드 (자동 연사 없음)
@@ -19,12 +19,6 @@ APistol::APistol()
 
 void APistol::Fire()
 {
-    if (CurrentAmmo <= 0)
-    {
-        UE_LOG(LogTemp, Warning, TEXT("탄약 없음!"));
-        return;
-    }
-
     if (!BulletFactory)
     {
         UE_LOG(LogTemp, Error, TEXT("Bullet Factory가 설정되지 않음! 블루프린트에서 확인하세요."));
@@ -76,24 +70,11 @@ void APistol::Fire()
     ABullet* SpawnedBullet = World->SpawnActor<ABullet>(BulletFactory, MuzzlePos, ShotDirection.Rotation());
     if (SpawnedBullet)
     {
-        CurrentAmmo--;
-        UE_LOG(LogTemp, Warning, TEXT("총알 발사 성공! 남은 탄약: %d"), CurrentAmmo);
+        UE_LOG(LogTemp, Warning, TEXT("총알 발사 성공! (무한 탄약)"));
     }
 }
 
-
-
-
-
-
 void APistol::Reload()
 {
-    if (CurrentAmmo >= MaxAmmo)
-    {
-        UE_LOG(LogTemp, Warning, TEXT("이미 탄창이 가득 찼음!"));
-        return;
-    }
-
-    UE_LOG(LogTemp, Warning, TEXT("권총 재장전!"));
-    CurrentAmmo = MaxAmmo;
+    UE_LOG(LogTemp, Warning, TEXT("권총은 무한 탄창이므로 재장전이 필요 없음!"));
 }
