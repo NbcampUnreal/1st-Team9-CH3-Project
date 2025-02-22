@@ -2,8 +2,9 @@
 #include "Components/BoxComponent.h"
 #include "Components/SkeletalMeshComponent.h"
 #include "Kismet/GameplayStatics.h"
-#include "MyCharacter.h"
-#include "Blueprint/UserWidget.h"
+#include "TimerManager.h"
+#include "Sound/SoundBase.h"
+#include "GameFramework/Character.h"  // ✅ 플레이어 확인을 위해 추가
 
 AChest::AChest()
 {
@@ -25,65 +26,78 @@ void AChest::BeginPlay()
     Super::BeginPlay();
 }
 
-// ✅ 플레이어가 근처에 가면 "E 키를 눌러 상자를 여세요" 표시
 void AChest::OnOverlapBegin(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor,
     UPrimitiveComponent* OtherComp, int32 OtherBodyIndex,
     bool bFromSweep, const FHitResult& SweepResult)
 {
-    AMyCharacter* Player = Cast<AMyCharacter>(OtherActor);
-    if (Player)
+    // ✅ 플레이어인지 확인
+    if (OtherActor && OtherActor->IsA(ACharacter::StaticClass()))
     {
-        bCanInteract = true;
-        Player->ShowInteractMessage(true); // ✅ E 키를 누르라고 메시지 표시
+        bPlayerInTrigger = true;  // ✅ 플레이어가 트리거 박스 안에 있음
+        if (!bIsOpened && !bIsClosing)
+        {
+            OpenChest();
+            GetWorldTimerManager().ClearTimer(CloseTimerHandle); // ✅ 닫기 타이머 취소
+        }
     }
 }
 
-// ✅ 플레이어가 떠나면 메시지 숨김
 void AChest::OnOverlapEnd(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor,
     UPrimitiveComponent* OtherComp, int32 OtherBodyIndex)
 {
-    AMyCharacter* Player = Cast<AMyCharacter>(OtherActor);
-    if (Player)
+    // ✅ 플레이어인지 확인
+    if (OtherActor && OtherActor->IsA(ACharacter::StaticClass()))
     {
-        bCanInteract = false;
-        Player->ShowInteractMessage(false);
+        bPlayerInTrigger = false;  // ✅ 플레이어가 트리거 박스에서 나감
+        if (bIsOpened)
+        {
+            bIsClosing = true;  // ✅ 닫히는 중 상태
+            GetWorldTimerManager().SetTimer(CloseTimerHandle, this, &AChest::CloseChest, CloseDelay, false);
+        }
     }
 }
 
-// ✅ E 키를 눌렀을 때 실행 (상자 열기)
 void AChest::OpenChest()
 {
-    if (bCanInteract)
+    bIsOpened = true;
+    bIsClosing = false;  // ✅ 닫히는 중 상태 해제
+
+    if (OpenAnim)
     {
-        UE_LOG(LogTemp, Log, TEXT("Chest Opened!"));
-
-        // ✅ UI 열기 (블루프린트에서 구현 가능)
-        OnChestOpened.Broadcast();
-
-        // ✅ 애니메이션 실행
-        if (OpenAnim)
-        {
-            ChestMesh->PlayAnimation(OpenAnim, false);
-        }
-
-        // ✅ 소리 실행
-        if (OpenSound)
-        {
-            UGameplayStatics::PlaySoundAtLocation(this, OpenSound, GetActorLocation());
-        }
+        ChestMesh->PlayAnimation(OpenAnim, false);
     }
+
+    if (OpenSound)
+    {
+        UGameplayStatics::PlaySoundAtLocation(this, OpenSound, GetActorLocation());
+    }
+
+    UE_LOG(LogTemp, Log, TEXT("Chest Opened!"));
 }
 
-// ✅ UI 닫기 (상자 닫기)
 void AChest::CloseChest()
 {
-    UE_LOG(LogTemp, Log, TEXT("Chest Closed!"));
-
-    // ✅ UI 닫기 (블루프린트에서 구현 가능)
-
-    // ✅ 애니메이션 실행
-    if (CloseAnim)
+    // ✅ 플레이어가 아직 트리거 박스 안에 있으면 닫지 않음
+    if (bPlayerInTrigger)
     {
-        ChestMesh->PlayAnimation(CloseAnim, false);
+        bIsClosing = false; // 닫기 취소
+        return;
     }
+
+    bIsOpened = false;
+    bIsClosing = false;  // ✅ 닫히는 중 상태 해제
+
+    if (OpenAnim)
+    {
+        ChestMesh->PlayAnimation(OpenAnim, false);
+        ChestMesh->SetPlayRate(-1.0f); // ✅ 역방향 재생
+        ChestMesh->SetPosition(OpenAnim->GetMaxCurrentTime(), false); // ✅ 마지막 프레임에서 시작
+    }
+
+    if (CloseSound)
+    {
+        UGameplayStatics::PlaySoundAtLocation(this, CloseSound, GetActorLocation());
+    }
+
+    UE_LOG(LogTemp, Log, TEXT("Chest Closed!"));
 }
