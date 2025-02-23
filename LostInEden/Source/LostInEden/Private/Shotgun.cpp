@@ -11,7 +11,7 @@ AShotgun::AShotgun()
     FireRate = 2.0f;
     MaxAmmo = 20;
     CurrentAmmo = MaxAmmo;
-    Range = 500.0f;
+    Range = 1000.f;
     ReloadTime = 3.0f;
     PelletCount = 8;
     PelletSpread = 8.0f;
@@ -78,17 +78,26 @@ void AShotgun::Fire()
             AActor* HitActor = HitResult.GetActor();
             if (HitActor)
             {
+                // 거리를 계산
+                float Distance = (HitResult.Location - MuzzlePos).Size();
+
+                // 거리 비율에 따른 피해량 조정 (최소 피해량 10 보장)
+                float ScaledDamage = Damage * (1.0f - (Distance / Range));
+                ScaledDamage = FMath::Clamp(ScaledDamage, 10.0f, Damage);
+
                 UGameplayStatics::ApplyDamage(
                     HitActor,
-                    Damage,
+                    ScaledDamage,
                     GetOwner()->GetInstigatorController(),
                     this,
                     nullptr
                 );
 
-                UE_LOG(LogTemp, Warning, TEXT("샷건이 %s에 명중! 피해량: %f"), *HitActor->GetName(), Damage);
+                UE_LOG(LogTemp, Warning, TEXT("샷건이 %s에 명중! 거리: %.2f, 피해량: %.2f"),
+                    *HitActor->GetName(), Distance, ScaledDamage);
             }
         }
+
 
         ABullet* SpawnedBullet = World->SpawnActor<ABullet>(BulletFactory, MuzzlePos, ShotDirection.Rotation());
         if (SpawnedBullet)
