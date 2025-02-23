@@ -4,23 +4,23 @@
 
 #include "CoreMinimal.h"
 #include "GameFramework/Actor.h"
+#include "IUsable.h"
 #include "Item.generated.h"
 
 UCLASS()
-class LOSTINEDEN_API AItem : public AActor
+class LOSTINEDEN_API AItem : public AActor, public IIUsable
 {
 	GENERATED_BODY()
 	
-public:	
-	// Sets default values for this actor's properties
-	AItem();
+public:
+    AItem();
 
-protected:
-	// Called when the game starts or when spawned
-	virtual void BeginPlay() override;
+    UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Item")
+    FString ItemName;
 
-public:	
-	// Called every frame
-	virtual void Tick(float DeltaTime) override;
+    UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Item")
+    FString ItemDescription;
+
+    virtual void Use() override;
 
 };
