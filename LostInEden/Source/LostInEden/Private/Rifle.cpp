@@ -42,12 +42,10 @@ void ARifle::Fire()
         return;
     }
 
-    // 🔹 MuzzleLocation을 사용하여 위치 및 방향 가져오기
     FVector MuzzlePos = MuzzleLocation->GetComponentLocation();
     FRotator MuzzleRot = MuzzleLocation->GetComponentRotation();
     FVector ShotDirection = MuzzleRot.Vector();
 
-    // 🔹 총구에서 라인트레이스 시작
     FVector TraceStart = MuzzlePos;
     FVector TraceEnd = TraceStart + (ShotDirection * 10000.0f);
 
@@ -60,20 +58,29 @@ void ARifle::Fire()
 
     if (bHit)
     {
-        ShotDirection = (HitResult.ImpactPoint - MuzzlePos).GetSafeNormal();
+        AActor* HitActor = HitResult.GetActor();
+        if (HitActor)
+        {
+            UGameplayStatics::ApplyDamage(
+                HitActor,
+                Damage,
+                GetOwner()->GetInstigatorController(),
+                this,
+                nullptr
+            );
+
+            UE_LOG(LogTemp, Warning, TEXT("소총이 %s에 명중! 피해량: %f"), *HitActor->GetName(), Damage);
+        }
     }
 
-    // 🔹 디버그 로그 확인
-    UE_LOG(LogTemp, Warning, TEXT("MuzzlePos: %s"), *MuzzlePos.ToString());
-    UE_LOG(LogTemp, Warning, TEXT("ShotDirection: %s"), *ShotDirection.ToString());
-
-    // 🔹 총알을 총구에서 발사
+    // 🔹 총알 스폰
     ABullet* SpawnedBullet = World->SpawnActor<ABullet>(BulletFactory, MuzzlePos, ShotDirection.Rotation());
     if (SpawnedBullet)
     {
         UE_LOG(LogTemp, Warning, TEXT("총알 스폰 성공!"));
     }
 }
+
 
 void ARifle::StartAutoFire()
 {
