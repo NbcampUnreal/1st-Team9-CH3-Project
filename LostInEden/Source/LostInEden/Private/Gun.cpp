@@ -47,6 +47,22 @@ void AGun::Fire()
                 if (bHit)
                 {
                     ShotDirection = (HitResult.ImpactPoint - MuzzlePos).GetSafeNormal();
+
+                    // 🔹 Apply Damage 추가
+                    float DamageAmount = 10.0f; // 피해량 설정
+                    AActor* HitActor = HitResult.GetActor();
+                    if (HitActor)
+                    {
+                        UGameplayStatics::ApplyDamage(
+                            HitActor,
+                            DamageAmount,
+                            GetOwner()->GetInstigatorController(), // 피해를 준 주체 (플레이어)
+                            this,
+                            nullptr
+                        );
+
+                        UE_LOG(LogTemp, Warning, TEXT("총알이 %s에 명중! 피해량: %f"), *HitActor->GetName(), DamageAmount);
+                    }
                 }
 
                 // 🔹 총알 생성
@@ -77,6 +93,7 @@ void AGun::Fire()
         UE_LOG(LogTemp, Warning, TEXT("탄약 없음!"));
     }
 }
+
 
 
 void AGun::Reload()

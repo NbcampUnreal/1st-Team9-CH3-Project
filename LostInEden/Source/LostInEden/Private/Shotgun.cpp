@@ -34,7 +34,6 @@ void AShotgun::Fire()
     }
 
     bCanFire = false;
-
     int32 NumShots = FMath::Min(CurrentAmmo, PelletCount);
     CurrentAmmo -= NumShots;
 
@@ -51,7 +50,6 @@ void AShotgun::Fire()
         return;
     }
 
-    // 🔹 MuzzleLocation을 사용하여 위치 및 방향 가져오기
     FVector MuzzlePos = MuzzleLocation->GetComponentLocation();
     FRotator MuzzleRot = MuzzleLocation->GetComponentRotation();
 
@@ -77,7 +75,19 @@ void AShotgun::Fire()
 
         if (bHit)
         {
-            ShotDirection = (HitResult.ImpactPoint - MuzzlePos).GetSafeNormal();
+            AActor* HitActor = HitResult.GetActor();
+            if (HitActor)
+            {
+                UGameplayStatics::ApplyDamage(
+                    HitActor,
+                    Damage,
+                    GetOwner()->GetInstigatorController(),
+                    this,
+                    nullptr
+                );
+
+                UE_LOG(LogTemp, Warning, TEXT("샷건이 %s에 명중! 피해량: %f"), *HitActor->GetName(), Damage);
+            }
         }
 
         ABullet* SpawnedBullet = World->SpawnActor<ABullet>(BulletFactory, MuzzlePos, ShotDirection.Rotation());
@@ -90,6 +100,7 @@ void AShotgun::Fire()
     UE_LOG(LogTemp, Warning, TEXT("샷건 발사 완료! 남은 탄약: %d"), CurrentAmmo);
     GetWorld()->GetTimerManager().SetTimer(FireDelayTimer, this, &AShotgun::ResetFire, FireRate, false);
 }
+
 
 void AShotgun::ResetFire()
 {
