@@ -6,7 +6,7 @@
 #include "GameFramework/Character.h"
 #include "Entity.generated.h"
 
-UCLASS(Abstract)
+UCLASS()
 class LOSTINEDEN_API AEntity : public ACharacter
 {
 	GENERATED_BODY()
@@ -18,9 +18,7 @@ public:
 protected:
 	int32 Health;
 	int32 MaxHealth;
-	//Gun* Weapon;
 
 public:
 	virtual float TakeDamage(float Damage, struct FDamageEvent const& DamageEvent, AController* EventInstigator, AActor* DamageCauser) override;
-	virtual void UseItem(class AItem*) PURE_VIRTUAL(AEntity::UseItem, ;);
 };

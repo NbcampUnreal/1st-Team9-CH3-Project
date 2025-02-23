@@ -32,27 +32,29 @@ APlayerCharacter::APlayerCharacter()
 
 void APlayerCharacter::Heal(int32 HealAmount)
 {
-	Health += HealAmount;
-	if (Health > MaxHealth)
-	{
-		Health = MaxHealth;
-	}
+	Health = FMath::Clamp<int32>(Health + HealAmount, 0, MaxHealth);
 }
 
 void APlayerCharacter::ChangeState(EPlayerStatus State)
 {
+	UE_LOG(LogTemp, Warning, TEXT("Change State!!"));
 }
 
-float APlayerCharacter::TakeDamage(float Damage, FDamageEvent const& DamageEvent, AController* EventInstigator, AActor* DamageCauser)
+float APlayerCharacter::TakeDamage(float DamageAmount, FDamageEvent const& DamageEvent, AController* EventInstigator, AActor* DamageCauser)
 {
-	Super::TakeDamage(Damage, DamageEvent, EventInstigator, DamageCauser);
+	float Damage = Super::TakeDamage(DamageAmount, DamageEvent, EventInstigator, DamageCauser);
 
-	return 0.0f;
+	return Damage;
+}
+
+void APlayerCharacter::Attack()
+{
+	UE_LOG(LogTemp, Warning, TEXT("Gun Fire!!"));
 }
 
 void APlayerCharacter::UseItem(AItem* CurrItem)
 {
-
+	UE_LOG(LogTemp, Warning, TEXT("Use Item!!"));
 }
 
 void APlayerCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent)

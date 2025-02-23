@@ -49,11 +49,12 @@ protected:
 	UFUNCTION()
 	void StopSprint(const FInputActionValue& Value);
 	
+	
 public:
 	void Heal(int32);
 	void ChangeState(EPlayerStatus);
 	
-	UFUNCTION(BlueprintCallable)
-	virtual float TakeDamage(float Damage, struct FDamageEvent const& DamageEvent, AController* EventInstigator, AActor* DamageCauser) override;
-	virtual void UseItem(class AItem*) override;
+	virtual float TakeDamage(float DamageAmount, struct FDamageEvent const& DamageEvent, AController* EventInstigator, AActor* DamageCauser) override;
+	void Attack();
+	void UseItem(class AItem*);
 };
