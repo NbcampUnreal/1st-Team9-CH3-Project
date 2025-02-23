@@ -36,25 +36,18 @@ void ARifle::Fire()
     }
 
     UWorld* World = GetWorld();
-    if (!World)
+    if (!World || !MuzzleLocation)
     {
-        UE_LOG(LogTemp, Error, TEXT("World가 없음!"));
+        UE_LOG(LogTemp, Error, TEXT("World 또는 MuzzleLocation이 없음!"));
         return;
     }
 
-    // 🔹 총기 메쉬에서 Muzzle 소켓 위치 가져오기
-    USkeletalMeshComponent* MeshComponent = FindComponentByClass<USkeletalMeshComponent>();
-    if (!MeshComponent)
-    {
-        UE_LOG(LogTemp, Error, TEXT("MeshComponent가 없습니다! 블루프린트에서 확인하세요."));
-        return;
-    }
+    // 🔹 MuzzleLocation을 사용하여 위치 및 방향 가져오기
+    FVector MuzzlePos = MuzzleLocation->GetComponentLocation();
+    FRotator MuzzleRot = MuzzleLocation->GetComponentRotation();
+    FVector ShotDirection = MuzzleRot.Vector();
 
-    FVector MuzzlePos = MeshComponent->GetSocketLocation("Muzzle");
-    FRotator MuzzleRot = MeshComponent->GetSocketRotation("Muzzle");
-    FVector ShotDirection = MuzzleRot.Vector();  // 🔹 총구 방향을 그대로 사용
-
-    // 🔹 총구에서 라인트레이스 시작 (조준선)
+    // 🔹 총구에서 라인트레이스 시작
     FVector TraceStart = MuzzlePos;
     FVector TraceEnd = TraceStart + (ShotDirection * 10000.0f);
 
@@ -81,9 +74,6 @@ void ARifle::Fire()
         UE_LOG(LogTemp, Warning, TEXT("총알 스폰 성공!"));
     }
 }
-
-
-
 
 void ARifle::StartAutoFire()
 {
@@ -150,4 +140,3 @@ void ARifle::Reload()
     UE_LOG(LogTemp, Warning, TEXT("소총 재장전!"));
     CurrentAmmo = MaxAmmo;
 }
-

@@ -8,14 +8,39 @@
 
 APistol::APistol()
 {
-    Damage = 15.0f; // 🔹 데미지를 더 약하게 조정
-    FireRate = 0.3f; // 🔹 연사 속도 조절 (느리게)
-    MaxAmmo = 12; // 🔹 무한 탄창이므로 의미 없음
+    Damage = 15.0f;
+    FireRate = 0.3f;
+    MaxAmmo = 12;
     CurrentAmmo = MaxAmmo;
-    Range = 2000.0f; // 🔹 샷건보다는 길고 라이플보다는 짧음
-    bIsAutomatic = false; // 🔹 단발 모드 (자동 연사 없음)
-    BulletSpread = 1.0f; // 🔹 정확도 높음 (퍼짐 거의 없음)
+    Range = 2000.0f;
+    bIsAutomatic = false;
+    BulletSpread = 1.0f;
+
 }
+void APistol::BeginPlay()
+{
+    Super::BeginPlay();
+
+    ACharacter* PlayerCharacter = Cast<ACharacter>(UGameplayStatics::GetPlayerCharacter(GetWorld(), 0));
+    if (!PlayerCharacter)
+    {
+        UE_LOG(LogTemp, Error, TEXT("Pistol: 플레이어 캐릭터를 찾을 수 없습니다!"));
+        return;
+    }
+
+    // 🔹 총을 캐릭터 손에 부착
+    FName WeaponSocket = "GunSocket_R";
+    AttachToComponent(PlayerCharacter->GetMesh(), FAttachmentTransformRules::SnapToTargetNotIncludingScale, WeaponSocket);
+
+    // 🔹 총 회전값을 보정 (Yaw 180도 회전)
+    FRotator NewRotation = GetActorRotation();
+    NewRotation.Yaw += 180.0f;
+    SetActorRotation(NewRotation);
+
+    UE_LOG(LogTemp, Warning, TEXT("%s가 플레이어 손에 올바르게 장착됨!"), *GetName());
+}
+
+
 
 void APistol::Fire()
 {
@@ -26,27 +51,18 @@ void APistol::Fire()
     }
 
     UWorld* World = GetWorld();
-    if (!World)
+    if (!World || !MuzzleLocation)
     {
-        UE_LOG(LogTemp, Error, TEXT("World가 없음!"));
+        UE_LOG(LogTemp, Error, TEXT("World 또는 MuzzleLocation이 없음!"));
         return;
     }
 
-    // 🔹 총기 메쉬에서 Muzzle 소켓 위치 가져오기
-    USkeletalMeshComponent* MeshComponent = FindComponentByClass<USkeletalMeshComponent>();
-    if (!MeshComponent)
-    {
-        UE_LOG(LogTemp, Error, TEXT("MeshComponent가 없습니다! 블루프린트에서 확인하세요."));
-        return;
-    }
-
-    FVector MuzzlePos = MeshComponent->GetSocketLocation("Muzzle");
-    FRotator MuzzleRot = MeshComponent->GetSocketRotation("Muzzle");
-
-    // ✅ 총구의 방향을 그대로 사용
+    // 🔹 MuzzleLocation을 사용하여 위치 및 방향 가져오기
+    FVector MuzzlePos = MuzzleLocation->GetComponentLocation();
+    FRotator MuzzleRot = MuzzleLocation->GetComponentRotation();
     FVector ShotDirection = MuzzleRot.Vector();
 
-    // 🔹 라인트레이스 시작점 및 종료점 설정 (Muzzle 방향 그대로 사용)
+    // 🔹 라인트레이스 시작점 및 종료점 설정
     FVector TraceStart = MuzzlePos;
     FVector TraceEnd = TraceStart + (ShotDirection * Range);
 

@@ -64,5 +64,9 @@ public:
     UPROPERTY(EditDefaultsOnly, Category = "Input")
     class UInputAction* ia_Fire;
 
+    UPROPERTY(EditDefaultsOnly, Category = "Input")
+    class UInputAction* ia_Reload; // 🔹 RELOAD 입력 추가
+
+
     void EquipGun(bool bIsLeftHand); // 🔹 왼손(true) 또는 오른손(false) 장착 가능
 };

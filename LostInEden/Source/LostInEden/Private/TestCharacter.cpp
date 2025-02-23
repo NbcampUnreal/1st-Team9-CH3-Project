@@ -43,6 +43,7 @@ void ATestCharacter::BeginPlay()
 
     // 무기 장착
     EquipGun();
+    Reload();
 }
 
 void ATestCharacter::Tick(float DeltaTime)
@@ -66,6 +67,7 @@ void ATestCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputCompo
 
         // 🔹 자동 사격 중지
         PlayerInput->BindAction(ia_Fire, ETriggerEvent::Completed, this, &ATestCharacter::StopFiring);
+        PlayerInput->BindAction(ia_Reload, ETriggerEvent::Started, this, &ATestCharacter::Reload);
     }
 }
 

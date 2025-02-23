@@ -19,7 +19,7 @@ protected:
     UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Weapon")
     float BulletSpread;
 
-
+    virtual void BeginPlay() override;
     virtual void Fire() override;
     virtual void Reload() override;
 };

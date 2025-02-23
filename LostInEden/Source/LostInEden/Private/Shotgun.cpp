@@ -7,16 +7,16 @@
 
 AShotgun::AShotgun()
 {
-    Damage = 30.0f; // ✅ 샷건 탄환 개별 데미지 설정
-    FireRate = 2.0f; // ✅ 발사 후 딜레이 증가
+    Damage = 30.0f;
+    FireRate = 2.0f;
     MaxAmmo = 20;
     CurrentAmmo = MaxAmmo;
-    Range = 500.0f; // ✅ 발사 범위를 줄여 근거리 공격에 최적화
-    ReloadTime = 3.0f; // ✅ 재장전 시간이 길도록 설정
-    PelletCount = 8; // ✅ 탄환 개수 증가
-    PelletSpread = 8.0f; // ✅ 탄환 퍼짐 정도를 줄여 더 좁은 범위에서 발사
+    Range = 500.0f;
+    ReloadTime = 3.0f;
+    PelletCount = 8;
+    PelletSpread = 8.0f;
 
-    bCanFire = true; // ✅ 연속 발사 방지용 변수 초기화
+    bCanFire = true;
 }
 
 void AShotgun::Fire()
@@ -27,16 +27,16 @@ void AShotgun::Fire()
         return;
     }
 
-    if (CurrentAmmo <= PelletCount) // ✅ 탄약이 없으면 발사 불가
+    if (CurrentAmmo <= PelletCount)
     {
         UE_LOG(LogTemp, Warning, TEXT("샷건 탄약 없음! 현재 탄약: %d"), CurrentAmmo);
         return;
     }
 
-    bCanFire = false; // ✅ 발사 후 딜레이 적용
+    bCanFire = false;
 
-    int32 NumShots = FMath::Min(CurrentAmmo, PelletCount); // ✅ 남은 탄약 개수까지만 발사
-    CurrentAmmo -= NumShots; // ✅ 발사한 개수만큼 탄약 차감
+    int32 NumShots = FMath::Min(CurrentAmmo, PelletCount);
+    CurrentAmmo -= NumShots;
 
     if (!BulletFactory)
     {
@@ -45,33 +45,19 @@ void AShotgun::Fire()
     }
 
     UWorld* World = GetWorld();
-    if (!World)
+    if (!World || !MuzzleLocation)
     {
-        UE_LOG(LogTemp, Error, TEXT("World가 없음!"));
+        UE_LOG(LogTemp, Error, TEXT("World 또는 MuzzleLocation이 없음!"));
         return;
     }
 
-    ACharacter* Player = Cast<ACharacter>(GetOwner());
-    if (!Player)
-    {
-        UE_LOG(LogTemp, Error, TEXT("소유자가 캐릭터가 아닙니다!"));
-        return;
-    }
+    // 🔹 MuzzleLocation을 사용하여 위치 및 방향 가져오기
+    FVector MuzzlePos = MuzzleLocation->GetComponentLocation();
+    FRotator MuzzleRot = MuzzleLocation->GetComponentRotation();
 
-    USkeletalMeshComponent* MeshComponent = FindComponentByClass<USkeletalMeshComponent>();
-    if (!MeshComponent)
+    for (int32 i = 0; i < NumShots; i++)
     {
-        UE_LOG(LogTemp, Error, TEXT("MeshComponent가 없습니다! 블루프린트에서 확인하세요."));
-        return;
-    }
-
-    FVector MuzzlePos = MeshComponent->GetSocketLocation("Muzzle");
-    FRotator MuzzleRot = MeshComponent->GetSocketRotation("Muzzle");
-
-    // ✅ 좁은 범위에서 여러 탄환이 퍼지는 방식으로 조정
-    for (int32 i = 0; i < NumShots; i++) // ✅ PelletCount 개수만큼 발사
-    {
-        float SpreadYaw = FMath::RandRange(-PelletSpread * 0.5f, PelletSpread * 0.5f); // ✅ 퍼짐 범위를 더 좁게 조정
+        float SpreadYaw = FMath::RandRange(-PelletSpread * 0.5f, PelletSpread * 0.5f);
         float SpreadPitch = FMath::RandRange(-PelletSpread * 0.5f, PelletSpread * 0.5f);
 
         FRotator AdjustedRot = MuzzleRot;
@@ -105,7 +91,6 @@ void AShotgun::Fire()
     GetWorld()->GetTimerManager().SetTimer(FireDelayTimer, this, &AShotgun::ResetFire, FireRate, false);
 }
 
-
 void AShotgun::ResetFire()
 {
     bCanFire = true;
@@ -128,7 +113,7 @@ void AShotgun::Reload()
 void AShotgun::FinishReload()
 {
     CurrentAmmo = MaxAmmo;
-    bCanFire = true; // ✅ 재장전 완료 후 발사 가능하도록 설정
+    bCanFire = true;
     UE_LOG(LogTemp, Warning, TEXT("샷건 재장전 완료! 탄약: %d"), CurrentAmmo);
 }
 
