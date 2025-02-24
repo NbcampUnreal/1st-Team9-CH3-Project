@@ -22,13 +22,13 @@ public:
 	APlayerCharacter();
 
 protected:
-	// Ä«¸Þ¶ó °ü·Ã ÄÄÆ÷³ÍÆ®
+	// Ä«ï¿½Þ¶ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Æ®
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Camera")
 	class USpringArmComponent* SpringArm;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Camera")
 	class UCameraComponent* Camera;
 
-	// ÀÌµ¿ ¼Óµµ °ü·Ã
+	// ï¿½Ìµï¿½ ï¿½Óµï¿½ ï¿½ï¿½ï¿½ï¿½
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Movement")
 	float NormalSpeed;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Movement")
@@ -36,11 +36,11 @@ protected:
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Movement")
 	float SprintSpeed;
 
-	// ÇÃ·¹ÀÌ¾î ÀÎº¥Åä¸®
+	// ï¿½Ã·ï¿½ï¿½Ì¾ï¿½ ï¿½Îºï¿½ï¿½ä¸®
 	TArray<class AGun*> EquipInventory;
 	TArray<class AItem*> ItemInventory;
 
-	// ÀÎº¥Åä¸® ±¸Çö Àü ÀÓ½Ã ¹«±â
+	// ï¿½Îºï¿½ï¿½ä¸® ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ ï¿½Ó½ï¿½ ï¿½ï¿½ï¿½ï¿½
 	//TUniquePtr<class AGun> EquippedWeapon;
 	AGun* EquippedWeapon;
 

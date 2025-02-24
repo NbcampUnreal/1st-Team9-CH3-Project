@@ -22,10 +22,7 @@ ABullet::ABullet()
 	movementComp->MaxSpeed = 5000;
 	movementComp->bShouldBounce = true;
 	movementComp->Bounciness = 0.3f;
-
-
 }
-
 
 void ABullet::BeginPlay()
 {
@@ -36,5 +33,3 @@ void ABullet::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
 }
-
-

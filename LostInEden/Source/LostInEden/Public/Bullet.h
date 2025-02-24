@@ -18,7 +18,7 @@ protected:
 public:
 	virtual void Tick(float DeltaTime) override;
 
-	UPROPERTY(VisibleAnywhere, Category="Movement")
+	UPROPERTY(VisibleAnywhere, Category = "Movement")
 	class UProjectileMovementComponent* movementComp;
 
 	UPROPERTY(VisibleAnywhere, Category = "Collision")
@@ -26,6 +26,4 @@ public:
 
 	UPROPERTY(VisibleAnywhere, Category = "BodyMesh")
 	class UStaticMeshComponent* bodyMeshComp;
-
-
 };
