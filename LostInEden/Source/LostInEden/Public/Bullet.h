@@ -26,4 +26,9 @@ public:
 
 	UPROPERTY(VisibleAnywhere, Category = "BodyMesh")
 	class UStaticMeshComponent* bodyMeshComp;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Damage")
+	float DamageAmount = 20.0f; 
+
+	void OnHit(UPrimitiveComponent* HitComp, AActor* OtherActor, UPrimitiveComponent* OtherComp, FVector NormalImpulse, const FHitResult& Hit);
 };
