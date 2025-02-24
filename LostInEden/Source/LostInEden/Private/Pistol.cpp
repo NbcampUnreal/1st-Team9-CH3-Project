@@ -3,7 +3,7 @@
 #include "Kismet/GameplayStatics.h"
 #include "Bullet.h"
 #include "DrawDebugHelpers.h"
-#include "GameFramework/Character.h"
+#include "PlayerCharacter.h"
 #include "Camera/CameraComponent.h"
 
 APistol::APistol()
@@ -21,16 +21,16 @@ void APistol::BeginPlay()
 {
     Super::BeginPlay();
 
-    ACharacter* PlayerCharacter = Cast<ACharacter>(UGameplayStatics::GetPlayerCharacter(GetWorld(), 0));
+    /*APlayerCharacter* PlayerCharacter = Cast<APlayerCharacter>(UGameplayStatics::GetPlayerCharacter(GetWorld(), 0));
     if (!PlayerCharacter)
     {
         UE_LOG(LogTemp, Error, TEXT("Pistol: 플레이어 캐릭터를 찾을 수 없습니다!"));
         return;
-    }
+    }*/
 
     // 🔹 총을 캐릭터 손에 부착
-    FName WeaponSocket = "GunSocket_R";
-    AttachToComponent(PlayerCharacter->GetMesh(), FAttachmentTransformRules::SnapToTargetNotIncludingScale, WeaponSocket);
+    /*FName WeaponSocket = "GunSocket_R";
+    AttachToComponent(PlayerCharacter->GetMesh(), FAttachmentTransformRules::SnapToTargetNotIncludingScale, WeaponSocket);*/
 
     // 🔹 총 회전값을 보정 (Yaw 180도 회전)
     FRotator NewRotation = GetActorRotation();

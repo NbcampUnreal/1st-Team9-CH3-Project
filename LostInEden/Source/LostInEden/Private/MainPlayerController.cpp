@@ -10,7 +10,9 @@ AMainPlayerController::AMainPlayerController():
 	JumpAction(nullptr),
 	LookAction(nullptr),
 	SprintAction(nullptr),
-	CrouchAction(nullptr)
+	CrouchAction(nullptr),
+	AttackAction(nullptr),
+	ReloadAction(nullptr)
 {
 }
 

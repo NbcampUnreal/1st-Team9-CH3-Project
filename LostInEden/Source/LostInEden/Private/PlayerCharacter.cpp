@@ -1,4 +1,4 @@
-// Copyright Epic Games, Inc. All Rights Reserved.
+﻿// Copyright Epic Games, Inc. All Rights Reserved.
 // Fill out your copyright notice in the Description page of Project Settings.
 
 
@@ -8,6 +8,8 @@
 #include "Camera/CameraComponent.h"
 #include "GameFramework/SpringArmComponent.h"
 #include "GameFramework/CharacterMovementComponent.h"
+#include "Gun.h"
+#include "Pistol.h"
 
 APlayerCharacter::APlayerCharacter()
 {
@@ -19,15 +21,28 @@ APlayerCharacter::APlayerCharacter()
 	Camera = CreateDefaultSubobject<UCameraComponent>(TEXT("Camera"));
 	Camera->SetupAttachment(SpringArm);
 	Camera->bUsePawnControlRotation = false;
-
+	 
 	NormalSpeed = 600.f;
 	SprintSpeedMultiplier = 1.5f;
 	SprintSpeed = NormalSpeed * SprintSpeedMultiplier;
 
 	GetCharacterMovement()->MaxWalkSpeed = NormalSpeed;
+	// 앉기 동작을 수행할 수 있게 해주는 bool값
+	GetCharacterMovement()->GetNavAgentPropertiesRef().bCanCrouch = true;
 
 	MaxHealth = 200;
 	Health = MaxHealth;
+
+	// 기본 무기 '피스톨' 세팅
+	/*TUniquePtr<APistol> Pistol = MakeUnique<APistol>();
+	EquipInventory.Emplace(Pistol);*/
+}
+
+void APlayerCharacter::BeginPlay()
+{
+	Super::BeginPlay();
+
+	EquipGun();
 }
 
 void APlayerCharacter::Heal(int32 HealAmount)
@@ -47,14 +62,67 @@ float APlayerCharacter::TakeDamage(float DamageAmount, FDamageEvent const& Damag
 	return Damage;
 }
 
-void APlayerCharacter::Attack()
+void APlayerCharacter::StartAttack()
 {
 	UE_LOG(LogTemp, Warning, TEXT("Gun Fire!!"));
+	if(EquippedWeapon)
+	{
+		EquippedWeapon->Fire();
+	}
+}
+
+void APlayerCharacter::StopAttack()
+{
+	UE_LOG(LogTemp, Warning, TEXT("Stop Fire!!"));
+}
+
+void APlayerCharacter::ReloadAmmo()
+{
+	if (!EquippedWeapon)
+	{
+		UE_LOG(LogTemp, Warning, TEXT("No Gun!!"));
+		return;
+	}
+
+	EquippedWeapon->Reload();
 }
 
 void APlayerCharacter::UseItem(AItem* CurrItem)
 {
 	UE_LOG(LogTemp, Warning, TEXT("Use Item!!"));
+}
+
+void APlayerCharacter::EquipGun()
+{
+	/*if (EquippedWeapon)
+	{
+		EquippedWeapon->Destroy();
+		EquippedWeapon = nullptr;
+	}*/
+
+	// 인벤에서 선택된 무기로 스폰하게 변경하기
+	/*if (GunClass)  // 🔹 모든 무기 선택 가능 (Rifle, Shotgun, Pistol 등)
+	{
+		EquippedWeapon = GetWorld()->SpawnActor<AGun>(GunClass);
+	}*/
+
+	//임시
+	if(GetWorld())
+	{
+		EquippedWeapon = GetWorld()->SpawnActor<AGun>(GunClass);
+	}
+
+	if (EquippedWeapon)
+	{
+		FName GunSocketName = "GunSocket_R";
+		if (GetMesh()->DoesSocketExist(GunSocketName))
+		{
+			EquippedWeapon->AttachToComponent(GetMesh(),
+				FAttachmentTransformRules::SnapToTargetNotIncludingScale,
+				GunSocketName);
+		}
+		EquippedWeapon->SetOwner(this);
+	}
 }
 
 void APlayerCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent)
@@ -116,6 +184,43 @@ void APlayerCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputCom
 					ETriggerEvent::Completed,
 					this,
 					&APlayerCharacter::StopSprint
+				);
+			}
+
+			if (PlayerController->CrouchAction)
+			{
+				EnhancedInput->BindAction(
+					PlayerController->CrouchAction,
+					ETriggerEvent::Triggered,
+					this,
+					&APlayerCharacter::DoCrouch
+				);
+			}
+
+			if (PlayerController->AttackAction)
+			{
+				EnhancedInput->BindAction(
+					PlayerController->AttackAction,
+					ETriggerEvent::Triggered,
+					this,
+					&APlayerCharacter::StartAttack
+				);
+
+				EnhancedInput->BindAction(
+					PlayerController->AttackAction,
+					ETriggerEvent::Completed,
+					this,
+					&APlayerCharacter::StopAttack
+				);
+			}
+
+			if (PlayerController->ReloadAction)
+			{
+				EnhancedInput->BindAction(
+					PlayerController->ReloadAction,
+					ETriggerEvent::Triggered,
+					this,
+					&APlayerCharacter::ReloadAmmo
 				);
 			}
 		}
@@ -188,3 +293,9 @@ void APlayerCharacter::StopSprint(const FInputActionValue& Value)
 		GetCharacterMovement()->MaxWalkSpeed = NormalSpeed;
 	}
 }
+
+void APlayerCharacter::DoCrouch(const FInputActionValue& Value)
+{
+	CanCrouch() ? Crouch() : UnCrouch();
+}
+

@@ -2,7 +2,7 @@
 #include "Engine/World.h"
 #include "Kismet/GameplayStatics.h"
 #include "Bullet.h"
-#include "TestCharacter.h"
+#include "PlayerCharacter.h"
 #include "GameFramework/ProjectileMovementComponent.h"
 
 AGun::AGun()
@@ -106,7 +106,7 @@ void AGun::BeginPlay()
 {
     Super::BeginPlay();
 
-    ATestCharacter* PlayerCharacter = Cast<ATestCharacter>(UGameplayStatics::GetPlayerCharacter(GetWorld(), 0));
+    APlayerCharacter* PlayerCharacter = Cast<APlayerCharacter>(UGameplayStatics::GetPlayerCharacter(GetWorld(), 0));
     if (!PlayerCharacter)
     {
         UE_LOG(LogTemp, Error, TEXT("Gun: 플레이어 캐릭터를 찾을 수 없습니다!"));

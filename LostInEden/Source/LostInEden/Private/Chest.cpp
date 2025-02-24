@@ -91,7 +91,7 @@ void AChest::CloseChest()
     {
         ChestMesh->PlayAnimation(OpenAnim, false);
         ChestMesh->SetPlayRate(-1.0f); // ✅ 역방향 재생
-        ChestMesh->SetPosition(OpenAnim->GetMaxCurrentTime(), false); // ✅ 마지막 프레임에서 시작
+        ChestMesh->SetPosition(OpenAnim->GetPlayLength(), false); // ✅ 마지막 프레임에서 시작
     }
 
     if (CloseSound)
