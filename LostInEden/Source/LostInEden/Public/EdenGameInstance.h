@@ -6,14 +6,10 @@
 #include "Engine/GameInstance.h"
 #include "EdenGameInstance.generated.h"
 
-/**
- * 
- */
-
 UENUM(BlueprintType)
 enum class EStageIndex : uint8
 {
-	Stage1 = 0,
+	Stage1,
 	Stage2,
 };
 
