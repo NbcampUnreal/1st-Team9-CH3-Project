@@ -30,5 +30,4 @@ public:
 	void DropItem();
 	UFUNCTION(BlueprintCallable)
 	void RequestAid();
-
 };
