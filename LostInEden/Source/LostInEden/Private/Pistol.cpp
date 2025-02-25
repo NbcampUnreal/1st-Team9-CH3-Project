@@ -69,9 +69,9 @@ void APistol::Fire()
     QueryParams.AddIgnoredActor(this);
 
     bool bHit = World->LineTraceSingleByChannel(
-        HitResult, TraceStart, TraceEnd, ECC_Pawn, QueryParams); // 🔹 ECC_Pawn 사용
+        HitResult, TraceStart, TraceEnd, ECC_Pawn, QueryParams);
 
-    DrawDebugLine(World, TraceStart, TraceEnd, FColor::Green, false, 5.0f, 0, 5.0f); // 🔹 트레이스 확인
+    DrawDebugLine(World, TraceStart, TraceEnd, FColor::Green, false, 5.0f, 0, 5.0f);
 
     if (bHit)
     {
@@ -80,7 +80,7 @@ void APistol::Fire()
         {
             UE_LOG(LogTemp, Warning, TEXT("트레이스 명중! 맞은 대상: %s"), *HitActor->GetName());
 
-            // 🔹 ApplyDamage 실행
+            // 🔹 ApplyDamage 실행 (한 번만 실행)
             float AppliedDamage = UGameplayStatics::ApplyDamage(
                 HitActor,
                 Damage,
@@ -89,7 +89,7 @@ void APistol::Fire()
                 nullptr
             );
 
-            UE_LOG(LogTemp, Warning, TEXT("샷건이 %s에 명중! 피해량: %f"), *HitActor->GetName(), AppliedDamage);
+            UE_LOG(LogTemp, Warning, TEXT("권총이 %s에 명중! 피해량: %f"), *HitActor->GetName(), AppliedDamage);
         }
     }
     else
@@ -97,29 +97,14 @@ void APistol::Fire()
         UE_LOG(LogTemp, Warning, TEXT("트레이스 미적중!"));
     }
 
-    if (bHit)
-    {
-        AActor* HitActor = HitResult.GetActor();
-        if (HitActor)
-        {
-            UGameplayStatics::ApplyDamage(
-                HitActor,
-                Damage,
-                GetOwner()->GetInstigatorController(),
-                this,
-                nullptr
-            );
-
-            UE_LOG(LogTemp, Warning, TEXT("권총이 %s에 명중! 피해량: %f"), *HitActor->GetName(), Damage);
-        }
-    }
-
+    // 🔹 총알 스폰
     ABullet* SpawnedBullet = World->SpawnActor<ABullet>(BulletFactory, MuzzlePos, ShotDirection.Rotation());
     if (SpawnedBullet)
     {
         UE_LOG(LogTemp, Warning, TEXT("총알 스폰 성공!"));
     }
 }
+
 
 
 void APistol::Reload()
