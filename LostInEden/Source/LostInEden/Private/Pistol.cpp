@@ -69,24 +69,32 @@ void APistol::Fire()
     QueryParams.AddIgnoredActor(this);
 
     bool bHit = World->LineTraceSingleByChannel(
-        HitResult, TraceStart, TraceEnd, ECC_Pawn, QueryParams);
+        HitResult, TraceStart, TraceEnd, ECC_Pawn, QueryParams); // 🔹 ECC_Pawn 사용
 
-    DrawDebugLine(World, TraceStart, TraceEnd, FColor::Red, false, 2.0f, 0, 1.0f);
+    DrawDebugLine(World, TraceStart, TraceEnd, FColor::Green, false, 5.0f, 0, 5.0f); // 🔹 트레이스 확인
+
     if (bHit)
     {
         AActor* HitActor = HitResult.GetActor();
         if (HitActor)
         {
             UE_LOG(LogTemp, Warning, TEXT("트레이스 명중! 맞은 대상: %s"), *HitActor->GetName());
-        }
-        else
-        {
-            UE_LOG(LogTemp, Error, TEXT("트레이스는 맞았지만 HitActor가 NULL입니다."));
+
+            // 🔹 ApplyDamage 실행
+            float AppliedDamage = UGameplayStatics::ApplyDamage(
+                HitActor,
+                Damage,
+                GetOwner()->GetInstigatorController(),
+                this,
+                nullptr
+            );
+
+            UE_LOG(LogTemp, Warning, TEXT("샷건이 %s에 명중! 피해량: %f"), *HitActor->GetName(), AppliedDamage);
         }
     }
     else
     {
-        UE_LOG(LogTemp, Warning, TEXT("트레이스 미스!"));
+        UE_LOG(LogTemp, Warning, TEXT("트레이스 미적중!"));
     }
 
     if (bHit)
