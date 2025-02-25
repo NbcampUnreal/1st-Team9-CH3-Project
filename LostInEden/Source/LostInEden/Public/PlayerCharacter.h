@@ -54,7 +54,7 @@ protected:
 
 	// 플레이어 인벤토리
 	TMap<EGunType, class AGun*> EquipInventory;
-	TArray<class AItem*> ItemInventory;
+	TMap<EItemType, class AItem*> ItemInventory;
 
 	// 인벤토리 구현 전 임시 무기
 	AGun* EquippedWeapon;

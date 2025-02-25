@@ -39,8 +39,7 @@ APlayerCharacter::APlayerCharacter()
 	static ConstructorHelpers::FClassFinder<AGun> FindPistol(TEXT("/Game/Items/Blueprints/BP_Pistol.BP_Pistol_C"));
 	if (FindPistol.Succeeded())
 	{
-		EquipInventory.Emplace(FindPistol.Class->GetDefaultObject<APistol>());
-		EquippedWeapon = EquipInventory[0];
+		EquippedWeapon = FindPistol.Class->GetDefaultObject<APistol>();
 
 		FName GunSocketName = "GunSocket_R";
 		if (GetMesh()->DoesSocketExist(GunSocketName))
@@ -70,8 +69,6 @@ int32 APlayerCharacter::MaxGetShieldGauge()
 void APlayerCharacter::BeginPlay()
 {
 	Super::BeginPlay();
-
-	EquipGun();
 }
 
 void APlayerCharacter::Heal(int32 HealAmount)
