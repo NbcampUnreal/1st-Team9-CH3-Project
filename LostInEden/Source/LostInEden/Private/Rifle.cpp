@@ -53,8 +53,26 @@ void ARifle::Fire()
     FCollisionQueryParams QueryParams;
     QueryParams.AddIgnoredActor(this);
 
-    bool bHit = World->LineTraceSingleByChannel(HitResult, TraceStart, TraceEnd, ECC_Visibility, QueryParams);
+    bool bHit = World->LineTraceSingleByChannel(
+        HitResult, TraceStart, TraceEnd, ECC_Pawn, QueryParams);
+
     DrawDebugLine(World, TraceStart, TraceEnd, FColor::Red, false, 2.0f, 0, 1.0f);
+    if (bHit)
+    {
+        AActor* HitActor = HitResult.GetActor();
+        if (HitActor)
+        {
+            UE_LOG(LogTemp, Warning, TEXT("트레이스 명중! 맞은 대상: %s"), *HitActor->GetName());
+        }
+        else
+        {
+            UE_LOG(LogTemp, Error, TEXT("트레이스는 맞았지만 HitActor가 NULL입니다."));
+        }
+    }
+    else
+    {
+        UE_LOG(LogTemp, Warning, TEXT("트레이스 미스!"));
+    }
 
     if (bHit)
     {
