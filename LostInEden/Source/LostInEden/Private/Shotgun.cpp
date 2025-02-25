@@ -69,12 +69,12 @@ void AShotgun::Fire()
         FHitResult HitResult;
         FCollisionQueryParams QueryParams;
         QueryParams.AddIgnoredActor(this);
-        QueryParams.AddIgnoredActor(GetOwner()); // 플레이어도 무시
+        QueryParams.AddIgnoredActor(GetOwner()); // 플레이어 무시
 
         bool bHit = World->LineTraceSingleByChannel(
-            HitResult, TraceStart, TraceEnd, ECC_Pawn, QueryParams); // 🔹 ECC_Pawn 사용
+            HitResult, TraceStart, TraceEnd, ECC_Pawn, QueryParams);
 
-        DrawDebugLine(World, TraceStart, TraceEnd, FColor::Green, false, 5.0f, 0, 5.0f); // 🔹 트레이스 확인
+        DrawDebugLine(World, TraceStart, TraceEnd, FColor::Green, false, 5.0f, 0, 5.0f);
 
         if (bHit)
         {
@@ -83,49 +83,30 @@ void AShotgun::Fire()
             {
                 UE_LOG(LogTemp, Warning, TEXT("트레이스 명중! 맞은 대상: %s"), *HitActor->GetName());
 
-                // 🔹 ApplyDamage 실행
+                // 거리 기반 데미지 계산
+                float Distance = FVector::Dist(MuzzlePos, HitResult.ImpactPoint);
+                float MinRange = 100.0f;  // 최대 데미지 범위
+                float MaxRange = Range;   // 최대 감쇠 거리 (샷건 최대 사거리)
+                float DamageMultiplier = 1.0f - FMath::Clamp((Distance - MinRange) / (MaxRange - MinRange), 0.0f, 1.0f);
+
+                // 최종 데미지 적용
+                float FinalDamage = Damage * DamageMultiplier;
+
+                // ApplyDamage 호출
                 float AppliedDamage = UGameplayStatics::ApplyDamage(
                     HitActor,
-                    Damage,
+                    FinalDamage,
                     GetOwner()->GetInstigatorController(),
                     this,
                     nullptr
                 );
 
-                UE_LOG(LogTemp, Warning, TEXT("샷건이 %s에 명중! 피해량: %f"), *HitActor->GetName(), AppliedDamage);
+                UE_LOG(LogTemp, Warning, TEXT("샷건이 %s에 명중! 피해량: %f (거리: %f)"), *HitActor->GetName(), FinalDamage, Distance);
             }
         }
         else
         {
             UE_LOG(LogTemp, Warning, TEXT("트레이스 미적중!"));
-        }
-
-
-        if (bHit)
-        {
-            AActor* HitActor = HitResult.GetActor();
-            if (HitActor)
-            {
-                UE_LOG(LogTemp, Warning, TEXT("라인 트레이스 적중! 타겟: %s"), *HitActor->GetName());
-
-                UGameplayStatics::ApplyDamage(
-                    HitActor,
-                    Damage,
-                    GetOwner()->GetInstigatorController(),
-                    this,
-                    nullptr
-                );
-
-                UE_LOG(LogTemp, Warning, TEXT("샷건이 %s에 명중! 피해량: %f"), *HitActor->GetName(), Damage);
-            }
-            else
-            {
-                UE_LOG(LogTemp, Warning, TEXT("라인 트레이스 충돌했으나 타겟이 없음!"));
-            }
-        }
-        else
-        {
-            UE_LOG(LogTemp, Warning, TEXT("라인 트레이스 미적중!"));
         }
 
         // 충돌 설정을 추가하여 총알끼리 겹쳐도 문제없도록 처리
