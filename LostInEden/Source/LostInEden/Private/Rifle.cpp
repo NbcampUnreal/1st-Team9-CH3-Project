@@ -69,7 +69,7 @@ void ARifle::Fire()
                 nullptr
             );
 
-            UE_LOG(LogTemp, Warning, TEXT("소총이 %s에 명중! 피해량: %f"), *HitActor->GetName(), Damage);
+            UE_LOG(LogTemp, Warning, TEXT("소총이 %s에 명중! 피해량: %d"), *HitActor->GetName(), Damage);
         }
     }
 

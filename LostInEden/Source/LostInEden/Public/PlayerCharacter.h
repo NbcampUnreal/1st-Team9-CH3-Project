@@ -13,6 +13,19 @@ enum class EPlayerStatus
 	
 };
 
+enum class EGunType
+{
+	Pistol,
+	Rifle,
+	Shotgun
+};
+
+enum class EItemType
+{
+	Shield,
+	HealingItem
+};
+
 UCLASS()
 class LOSTINEDEN_API APlayerCharacter : public AEntity
 {
@@ -20,6 +33,9 @@ class LOSTINEDEN_API APlayerCharacter : public AEntity
 
 public:
 	APlayerCharacter();
+
+	int32 GetShieldGauge();
+	int32 MaxGetShieldGauge();
 
 protected:
 	// 카메라 관련 컴포넌트
@@ -37,15 +53,15 @@ protected:
 	float SprintSpeed;
 
 	// 플레이어 인벤토리
-	TArray<class AGun*> EquipInventory;
+	TMap<EGunType, class AGun*> EquipInventory;
 	TArray<class AItem*> ItemInventory;
 
 	// 인벤토리 구현 전 임시 무기
-	//TUniquePtr<class AGun> EquippedWeapon;
 	AGun* EquippedWeapon;
 
-	UPROPERTY(EditDefaultsOnly, Category = "Weapon")
-	TSubclassOf<AGun> GunClass;
+	//쉴드
+	int32 ShieldGauge;
+	int32 MaxShieldGauge;
 
 	// IMC
 	virtual void SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent) override;
@@ -76,5 +92,5 @@ public:
 	void StopAttack();
 	void ReloadAmmo();
 	void UseItem(class AItem*);
-	void EquipGun();
+	void EquipGun(EGunType);
 };

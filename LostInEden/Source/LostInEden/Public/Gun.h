@@ -14,12 +14,19 @@ class LOSTINEDEN_API AGun : public AItem, public IIFireable
 public:
     AGun();
 
+    int32 GetCurrentAmmo();
+    int32 GetMaxAmo();
+
+    void SetAmmo();
+
     virtual void Fire() override;
     virtual void Reload() override;
     virtual void BeginPlay() override;
 
+protected:
+
     UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Weapon")
-    float Damage;
+    int32 Damage;
 
     UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Weapon")
     float FireRate;
@@ -32,6 +39,7 @@ public:
 
     UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Weapon")
     float Range;
+
 public:
 
     UPROPERTY(VisibleAnywhere, Category = "Components")

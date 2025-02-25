@@ -33,9 +33,38 @@ APlayerCharacter::APlayerCharacter()
 	MaxHealth = 200;
 	Health = MaxHealth;
 
-	// 기본 무기 '피스톨' 세팅
-	/*TUniquePtr<APistol> Pistol = MakeUnique<APistol>();
-	EquipInventory.Emplace(Pistol);*/
+	MaxShieldGauge = 50;
+	ShieldGauge = 0;
+
+	static ConstructorHelpers::FClassFinder<AGun> FindPistol(TEXT("/Game/Items/Blueprints/BP_Pistol.BP_Pistol_C"));
+	if (FindPistol.Succeeded())
+	{
+		EquipInventory.Emplace(FindPistol.Class->GetDefaultObject<APistol>());
+		EquippedWeapon = EquipInventory[0];
+
+		FName GunSocketName = "GunSocket_R";
+		if (GetMesh()->DoesSocketExist(GunSocketName))
+		{
+			EquippedWeapon->AttachToComponent(GetMesh(),
+				FAttachmentTransformRules::SnapToTargetNotIncludingScale,
+				GunSocketName);
+		}
+		EquippedWeapon->SetOwner(this);
+	}
+	else
+	{
+		UE_LOG(LogTemp, Warning, TEXT("Failed load Pistol!!"));
+	}
+}
+
+int32 APlayerCharacter::GetShieldGauge()
+{
+	return ShieldGauge;
+}
+
+int32 APlayerCharacter::MaxGetShieldGauge()
+{
+	return MaxShieldGauge;
 }
 
 void APlayerCharacter::BeginPlay()
@@ -92,26 +121,28 @@ void APlayerCharacter::UseItem(AItem* CurrItem)
 	UE_LOG(LogTemp, Warning, TEXT("Use Item!!"));
 }
 
-void APlayerCharacter::EquipGun()
+void APlayerCharacter::EquipGun(EGunType GunType)
 {
-	/*if (EquippedWeapon)
-	{
-		EquippedWeapon->Destroy();
-		EquippedWeapon = nullptr;
-	}*/
-
-	// 인벤에서 선택된 무기로 스폰하게 변경하기
-	/*if (GunClass)  // 🔹 모든 무기 선택 가능 (Rifle, Shotgun, Pistol 등)
-	{
-		EquippedWeapon = GetWorld()->SpawnActor<AGun>(GunClass);
-	}*/
-
 	//임시
-	if(GetWorld())
+	UClass* Pistol = LoadClass<APistol>(nullptr, TEXT("/Game/Items/Blueprints/BP_Pistol.BP_Pistol_C"));
+	if (GetWorld())
 	{
-		EquippedWeapon = GetWorld()->SpawnActor<AGun>(GunClass);
+		EquippedWeapon = GetWorld()->SpawnActor<AGun>(Pistol);
 	}
-
+	
+	switch (GunType)
+	{
+	case EGunType::Pistol:
+		
+		break;
+	case EGunType::Rifle:
+		break;
+	case EGunType::Shotgun:
+		break;
+	default:
+		break;
+	}
+		
 	if (EquippedWeapon)
 	{
 		FName GunSocketName = "GunSocket_R";
