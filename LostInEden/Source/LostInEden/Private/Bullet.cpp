@@ -22,7 +22,10 @@ ABullet::ABullet()
 	movementComp->MaxSpeed = 5000;
 	movementComp->bShouldBounce = true;
 	movementComp->Bounciness = 0.3f;
+
+
 }
+
 
 void ABullet::BeginPlay()
 {
@@ -34,14 +37,4 @@ void ABullet::Tick(float DeltaTime)
 	Super::Tick(DeltaTime);
 }
 
-void ABullet::OnHit(UPrimitiveComponent* HitComp, AActor* OtherActor, UPrimitiveComponent* OtherComp, FVector NormalImpulse, const FHitResult& Hit)
-{
-	// 충돌한 액터가 자신이 아니라면 데미지 적용
-	if (OtherActor && OtherActor != this && OtherActor != GetOwner())
-	{
-		UGameplayStatics::ApplyDamage(OtherActor, DamageAmount, GetInstigatorController(), this, UDamageType::StaticClass());
 
-		// 총알 제거
-		Destroy();
-	}
-}
