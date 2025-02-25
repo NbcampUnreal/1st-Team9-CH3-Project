@@ -21,7 +21,7 @@ APlayerCharacter::APlayerCharacter()
 	Camera = CreateDefaultSubobject<UCameraComponent>(TEXT("Camera"));
 	Camera->SetupAttachment(SpringArm);
 	Camera->bUsePawnControlRotation = false;
-	 
+
 	NormalSpeed = 600.f;
 	SprintSpeedMultiplier = 1.5f;
 	SprintSpeed = NormalSpeed * SprintSpeedMultiplier;
@@ -33,16 +33,42 @@ APlayerCharacter::APlayerCharacter()
 	MaxHealth = 200;
 	Health = MaxHealth;
 
-	// 기본 무기 '피스톨' 세팅
-	/*TUniquePtr<APistol> Pistol = MakeUnique<APistol>();
-	EquipInventory.Emplace(Pistol);*/
+	MaxShieldGauge = 50;
+	ShieldGauge = 0;
+
+	static ConstructorHelpers::FClassFinder<AGun> FindPistol(TEXT("/Game/Items/Blueprints/BP_Pistol.BP_Pistol_C"));
+	if (FindPistol.Succeeded())
+	{
+		EquippedWeapon = FindPistol.Class->GetDefaultObject<APistol>();
+
+		FName GunSocketName = "GunSocket_R";
+		if (GetMesh()->DoesSocketExist(GunSocketName))
+		{
+			EquippedWeapon->AttachToComponent(GetMesh(),
+				FAttachmentTransformRules::SnapToTargetNotIncludingScale,
+				GunSocketName);
+		}
+		EquippedWeapon->SetOwner(this);
+	}
+	else
+	{
+		UE_LOG(LogTemp, Warning, TEXT("Failed load Pistol!!"));
+	}
+}
+
+int32 APlayerCharacter::GetShieldGauge()
+{
+	return ShieldGauge;
+}
+
+int32 APlayerCharacter::GetMaxShieldGauge()
+{
+	return MaxShieldGauge;
 }
 
 void APlayerCharacter::BeginPlay()
 {
 	Super::BeginPlay();
-
-	EquipGun();
 }
 
 void APlayerCharacter::Heal(int32 HealAmount)
@@ -65,7 +91,7 @@ float APlayerCharacter::TakeDamage(float DamageAmount, FDamageEvent const& Damag
 void APlayerCharacter::StartAttack()
 {
 	UE_LOG(LogTemp, Warning, TEXT("Gun Fire!!"));
-	if(EquippedWeapon)
+	if (EquippedWeapon)
 	{
 		EquippedWeapon->Fire();
 	}
@@ -92,24 +118,26 @@ void APlayerCharacter::UseItem(AItem* CurrItem)
 	UE_LOG(LogTemp, Warning, TEXT("Use Item!!"));
 }
 
-void APlayerCharacter::EquipGun()
+void APlayerCharacter::EquipGun(EGunType GunType)
 {
-	/*if (EquippedWeapon)
-	{
-		EquippedWeapon->Destroy();
-		EquippedWeapon = nullptr;
-	}*/
-
-	// 인벤에서 선택된 무기로 스폰하게 변경하기
-	/*if (GunClass)  // 🔹 모든 무기 선택 가능 (Rifle, Shotgun, Pistol 등)
-	{
-		EquippedWeapon = GetWorld()->SpawnActor<AGun>(GunClass);
-	}*/
-
 	//임시
-	if(GetWorld())
+	UClass* Pistol = LoadClass<APistol>(nullptr, TEXT("/Game/Items/Blueprints/BP_Pistol.BP_Pistol_C"));
+	if (GetWorld())
 	{
-		EquippedWeapon = GetWorld()->SpawnActor<AGun>(GunClass);
+		EquippedWeapon = GetWorld()->SpawnActor<AGun>(Pistol);
+	}
+
+	switch (GunType)
+	{
+	case EGunType::Pistol:
+
+		break;
+	case EGunType::Rifle:
+		break;
+	case EGunType::Shotgun:
+		break;
+	default:
+		break;
 	}
 
 	if (EquippedWeapon)

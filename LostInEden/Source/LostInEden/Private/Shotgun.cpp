@@ -89,7 +89,7 @@ void AShotgun::Fire()
                     nullptr
                 );
 
-                UE_LOG(LogTemp, Warning, TEXT("샷건이 %s에 명중! 피해량: %f"), *HitActor->GetName(), Damage);
+                UE_LOG(LogTemp, Warning, TEXT("샷건이 %s에 명중! 피해량: %d"), *HitActor->GetName(), Damage);
             }
             else
             {
