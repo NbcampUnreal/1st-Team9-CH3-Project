@@ -46,39 +46,7 @@ void AGun::Fire()
             {
                 FVector MuzzlePos = MuzzleLocation->GetComponentLocation();
                 FRotator MuzzleRot = MuzzleLocation->GetComponentRotation();
-                FVector ShotDirection = MuzzleRot.Vector(); // 🔹 MuzzleLocation 기준 발사 방향
-
-                // 🔹 총구에서 라인트레이스 시작
-                FVector TraceStart = MuzzlePos;
-                FVector TraceEnd = TraceStart + (ShotDirection * 10000.0f);
-
-                FHitResult HitResult;
-                FCollisionQueryParams QueryParams;
-                QueryParams.AddIgnoredActor(this);
-
-                bool bHit = World->LineTraceSingleByChannel(HitResult, TraceStart, TraceEnd, ECC_Visibility, QueryParams);
-                DrawDebugLine(World, TraceStart, TraceEnd, FColor::Red, false, 2.0f, 0, 1.0f);
-
-                if (bHit)
-                {
-                    ShotDirection = (HitResult.ImpactPoint - MuzzlePos).GetSafeNormal();
-
-                    // 🔹 Apply Damage 추가
-                    float DamageAmount = 10.0f; // 피해량 설정
-                    AActor* HitActor = HitResult.GetActor();
-                    if (HitActor)
-                    {
-                        UGameplayStatics::ApplyDamage(
-                            HitActor,
-                            DamageAmount,
-                            GetOwner()->GetInstigatorController(), // 피해를 준 주체 (플레이어)
-                            this,
-                            nullptr
-                        );
-
-                        UE_LOG(LogTemp, Warning, TEXT("총알이 %s에 명중! 피해량: %f"), *HitActor->GetName(), DamageAmount);
-                    }
-                }
+                FVector ShotDirection = MuzzleRot.Vector();
 
                 // 🔹 총알 생성
                 ABullet* SpawnedBullet = World->SpawnActor<ABullet>(BulletFactory, MuzzlePos, ShotDirection.Rotation());
@@ -92,10 +60,8 @@ void AGun::Fire()
 
                     UE_LOG(LogTemp, Warning, TEXT("총알 스폰 성공!"));
                 }
-                else
-                {
-                    UE_LOG(LogTemp, Error, TEXT("총알 스폰 실패!"));
-                }
+
+                // 🔹 라인트레이스를 제거하거나, 총알이 맞았을 때만 트리거
             }
         }
         else
@@ -133,3 +99,4 @@ void AGun::BeginPlay()
 
     UE_LOG(LogTemp, Warning, TEXT("%s가 플레이어 손에 장착됨!"), *GetName());
 }
+

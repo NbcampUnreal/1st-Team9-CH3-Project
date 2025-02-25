@@ -2,7 +2,6 @@
 
 #include "CoreMinimal.h"
 #include "GameFramework/Actor.h"
-#include "Components/SkeletalMeshComponent.h"  // ✅ Skeletal Mesh 컴포넌트 추가
 #include "Chest.generated.h"
 
 UCLASS()
@@ -15,12 +14,10 @@ public:
 
 protected:
     virtual void BeginPlay() override;
-public:
 
-    UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Chest")
-    USkeletalMeshComponent* ChestMesh;
-
-
+private:
+    UPROPERTY(VisibleAnywhere, Category = "Chest")
+    class USkeletalMeshComponent* ChestMesh;
 
     UPROPERTY(VisibleAnywhere, Category = "Chest")
     class UBoxComponent* TriggerBox;
@@ -54,4 +51,5 @@ public:
 
     void OpenChest();
     void CloseChest();
+   // void GiveItemsToPlayer(AActor* PlayerActor); // ✅ 플레이어에게 아이템 지급 함수 추가
 };
