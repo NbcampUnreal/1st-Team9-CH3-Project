@@ -69,15 +69,18 @@ void AShotgun::Fire()
         FHitResult HitResult;
         FCollisionQueryParams QueryParams;
         QueryParams.AddIgnoredActor(this);
+        QueryParams.AddIgnoredActor(GetOwner()); // 플레이어도 무시
 
         bool bHit = World->LineTraceSingleByChannel(HitResult, TraceStart, TraceEnd, ECC_Visibility, QueryParams);
-        DrawDebugLine(World, TraceStart, TraceEnd, FColor::Red, false, 2.0f, 0, 1.0f);
+        DrawDebugLine(World, TraceStart, TraceEnd, bHit ? FColor::Green : FColor::Red, false, 2.0f, 0, 1.0f);
 
         if (bHit)
         {
             AActor* HitActor = HitResult.GetActor();
             if (HitActor)
             {
+                UE_LOG(LogTemp, Warning, TEXT("라인 트레이스 적중! 타겟: %s"), *HitActor->GetName());
+
                 UGameplayStatics::ApplyDamage(
                     HitActor,
                     Damage,
@@ -88,11 +91,37 @@ void AShotgun::Fire()
 
                 UE_LOG(LogTemp, Warning, TEXT("샷건이 %s에 명중! 피해량: %f"), *HitActor->GetName(), Damage);
             }
+            else
+            {
+                UE_LOG(LogTemp, Warning, TEXT("라인 트레이스 충돌했으나 타겟이 없음!"));
+            }
+        }
+        else
+        {
+            UE_LOG(LogTemp, Warning, TEXT("라인 트레이스 미적중!"));
         }
 
-        ABullet* SpawnedBullet = World->SpawnActor<ABullet>(BulletFactory, MuzzlePos, ShotDirection.Rotation());
+        // 충돌 설정을 추가하여 총알끼리 겹쳐도 문제없도록 처리
+        FActorSpawnParameters SpawnParams;
+        SpawnParams.SpawnCollisionHandlingOverride = ESpawnActorCollisionHandlingMethod::AdjustIfPossibleButAlwaysSpawn;
+
+        ABullet* SpawnedBullet = World->SpawnActor<ABullet>(BulletFactory, MuzzlePos, ShotDirection.Rotation(), SpawnParams);
         if (SpawnedBullet)
         {
+            // 총알끼리 충돌하지 않도록 충돌 비활성화
+            SpawnedBullet->SetActorEnableCollision(false);
+
+            // 충돌 컴포넌트가 있다면, 총알끼리 충돌하지 않도록 설정
+            UPrimitiveComponent* BulletCollision = Cast<UPrimitiveComponent>(SpawnedBullet->GetRootComponent());
+            if (BulletCollision)
+            {
+                BulletCollision->SetCollisionResponseToChannel(ECC_Pawn, ECR_Ignore);
+                BulletCollision->SetCollisionResponseToChannel(ECC_PhysicsBody, ECR_Ignore);
+                BulletCollision->SetCollisionResponseToChannel(ECC_Camera, ECR_Ignore);
+                BulletCollision->SetCollisionResponseToChannel(ECC_GameTraceChannel1, ECR_Ignore); // 사용자 지정 채널
+                BulletCollision->SetCollisionResponseToChannel(ECC_Visibility, ECR_Ignore); // 샷건 총알끼리 충돌하지 않음
+            }
+
             UE_LOG(LogTemp, Warning, TEXT("샷건 탄환 스폰 성공!"));
         }
     }
@@ -100,6 +129,8 @@ void AShotgun::Fire()
     UE_LOG(LogTemp, Warning, TEXT("샷건 발사 완료! 남은 탄약: %d"), CurrentAmmo);
     GetWorld()->GetTimerManager().SetTimer(FireDelayTimer, this, &AShotgun::ResetFire, FireRate, false);
 }
+
+
 
 
 void AShotgun::ResetFire()

@@ -1,5 +1,5 @@
 #include "Shield.h"
-//#include "MyCharacter.h"
+#include "PlayerCharacter.h"
 
 AShield::AShield()
 {
@@ -10,10 +10,10 @@ AShield::AShield()
 
 void AShield::Use()
 {
-   //AMyCharacter* Player = Cast<AMyCharacter>(GetOwner()); // 플레이어 가져오기
-    //if (Player)
-   // {
-        // ✅ 여기서 플레이어의 방어력을 증가하는 로직 추가
-   //     UE_LOG(LogTemp, Log, TEXT("%s used, gaining %f shield"), *ItemName, ShieldAmount);
-   // }
+   APlayerCharacter* Player = Cast<APlayerCharacter>(GetOwner()); // 플레이어 가져오기
+   if (Player)
+   {
+        
+        UE_LOG(LogTemp, Log, TEXT("%s used, gaining %f shield"), *ItemName, ShieldAmount);
+   }
 }
