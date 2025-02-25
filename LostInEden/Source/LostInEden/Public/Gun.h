@@ -48,4 +48,6 @@ public:
 
     UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Effects")
     class UParticleSystem* ImpactEffect;
+
+
 };
