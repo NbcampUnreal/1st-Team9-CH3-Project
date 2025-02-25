@@ -15,5 +15,5 @@ void AShield::Use()
    {
         
         UE_LOG(LogTemp, Log, TEXT("%s used, gaining %f shield"), *ItemName, ShieldAmount);
-   }
+    }
 }
