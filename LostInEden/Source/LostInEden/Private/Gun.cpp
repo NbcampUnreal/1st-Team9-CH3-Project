@@ -95,3 +95,17 @@ void AGun::BeginPlay()
     UE_LOG(LogTemp, Warning, TEXT("%s가 플레이어 손에 장착됨!"), *GetName());
 }
 
+void AGun::SetGunMeshAndBullet(UStaticMesh* NewMesh, TSubclassOf<ABullet> NewBulletFactory)
+{
+    if (NewMesh)
+    {
+        GunStaticMesh->SetStaticMesh(NewMesh);
+        UE_LOG(LogTemp, Warning, TEXT("총 메쉬 변경 완료: %s"), *NewMesh->GetName());
+    }
+
+    if (NewBulletFactory)
+    {
+        BulletFactory = NewBulletFactory;
+        UE_LOG(LogTemp, Warning, TEXT("총알 공장 설정 완료"));
+    }
+}
