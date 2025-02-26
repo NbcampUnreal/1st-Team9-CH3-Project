@@ -41,5 +41,8 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Input")
 	UInputAction* ReloadAction;
 
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "UI")
+	TSubclassOf<UUserWidget> HUDWidgetClass;
+
 	virtual void BeginPlay() override;
 };
