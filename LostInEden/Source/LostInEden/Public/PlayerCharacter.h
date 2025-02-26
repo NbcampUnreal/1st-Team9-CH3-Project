@@ -10,7 +10,7 @@ struct FInputActionValue;
 
 enum class EPlayerStatus
 {
-	
+
 };
 
 enum class EGunType
@@ -34,17 +34,17 @@ class LOSTINEDEN_API APlayerCharacter : public AEntity
 public:
 	APlayerCharacter();
 
-	int32 GetShieldGauge();
-	int32 MaxGetShieldGauge();
+	int32 GetShieldGauge() const;
+	int32 GetMaxShieldGauge() const;
 
 protected:
-	// Ä«¸Ş¶ó °ü·Ã ÄÄÆ÷³ÍÆ®
+	// ì¹´ë©”ë¼ ê´€ë ¨ ì»´í¬ë„ŒíŠ¸
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Camera")
 	class USpringArmComponent* SpringArm;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Camera")
 	class UCameraComponent* Camera;
 
-	// ÀÌµ¿ ¼Óµµ °ü·Ã
+	// ì´ë™ ì†ë„ ê´€ë ¨
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Movement")
 	float NormalSpeed;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Movement")
@@ -52,14 +52,14 @@ protected:
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Movement")
 	float SprintSpeed;
 
-	// ÇÃ·¹ÀÌ¾î ÀÎº¥Åä¸®
-	TMap<EGunType, class AGun*> EquipInventory;
+	// í”Œë ˆì´ì–´ ì¸ë²¤í† ë¦¬
+	TMap<EGunType, class AGun* > EquipInventory;
 	TMap<EItemType, class AItem*> ItemInventory;
 
-	// ÀÎº¥Åä¸® ±¸Çö Àü ÀÓ½Ã ¹«±â
+	// ì¸ë²¤í† ë¦¬ êµ¬í˜„ ì „ ì„ì‹œ ë¬´ê¸°
 	AGun* EquippedWeapon;
 
-	//½¯µå
+	//ì‰´ë“œ
 	int32 ShieldGauge;
 	int32 MaxShieldGauge;
 
@@ -80,17 +80,17 @@ protected:
 	void StopSprint(const FInputActionValue& Value);
 	UFUNCTION()
 	void DoCrouch(const FInputActionValue& Value);
-	
+
 	virtual void BeginPlay() override;
 
 public:
 	void Heal(int32);
 	void ChangeState(EPlayerStatus);
-	
+
 	virtual float TakeDamage(float DamageAmount, struct FDamageEvent const& DamageEvent, AController* EventInstigator, AActor* DamageCauser) override;
 	void StartAttack();
 	void StopAttack();
 	void ReloadAmmo();
 	void UseItem(class AItem*);
-	void EquipGun(EGunType);
+	void EquipGun();
 };

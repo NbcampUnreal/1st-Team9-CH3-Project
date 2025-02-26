@@ -10,6 +10,8 @@
 #include "GameFramework/CharacterMovementComponent.h"
 #include "Gun.h"
 #include "Pistol.h"
+#include "Rifle.h"
+#include "Shotgun.h"
 
 APlayerCharacter::APlayerCharacter()
 {
@@ -21,7 +23,7 @@ APlayerCharacter::APlayerCharacter()
 	Camera = CreateDefaultSubobject<UCameraComponent>(TEXT("Camera"));
 	Camera->SetupAttachment(SpringArm);
 	Camera->bUsePawnControlRotation = false;
-	 
+
 	NormalSpeed = 600.f;
 	SprintSpeedMultiplier = 1.5f;
 	SprintSpeed = NormalSpeed * SprintSpeedMultiplier;
@@ -35,33 +37,15 @@ APlayerCharacter::APlayerCharacter()
 
 	MaxShieldGauge = 50;
 	ShieldGauge = 0;
-
-	static ConstructorHelpers::FClassFinder<AGun> FindPistol(TEXT("/Game/Items/Blueprints/BP_Pistol.BP_Pistol_C"));
-	if (FindPistol.Succeeded())
-	{
-		EquippedWeapon = FindPistol.Class->GetDefaultObject<APistol>();
-
-		FName GunSocketName = "GunSocket_R";
-		if (GetMesh()->DoesSocketExist(GunSocketName))
-		{
-			EquippedWeapon->AttachToComponent(GetMesh(),
-				FAttachmentTransformRules::SnapToTargetNotIncludingScale,
-				GunSocketName);
-		}
-		EquippedWeapon->SetOwner(this);
-	}
-	else
-	{
-		UE_LOG(LogTemp, Warning, TEXT("Failed load Pistol!!"));
-	}
 }
 
-int32 APlayerCharacter::GetShieldGauge()
+
+int32 APlayerCharacter::GetShieldGauge() const
 {
 	return ShieldGauge;
 }
 
-int32 APlayerCharacter::MaxGetShieldGauge()
+int32 APlayerCharacter::GetMaxShieldGauge() const
 {
 	return MaxShieldGauge;
 }
@@ -69,6 +53,7 @@ int32 APlayerCharacter::MaxGetShieldGauge()
 void APlayerCharacter::BeginPlay()
 {
 	Super::BeginPlay();
+	EquipGun();
 }
 
 void APlayerCharacter::Heal(int32 HealAmount)
@@ -91,7 +76,7 @@ float APlayerCharacter::TakeDamage(float DamageAmount, FDamageEvent const& Damag
 void APlayerCharacter::StartAttack()
 {
 	UE_LOG(LogTemp, Warning, TEXT("Gun Fire!!"));
-	if(EquippedWeapon)
+	if (EquippedWeapon)
 	{
 		EquippedWeapon->Fire();
 	}
@@ -118,28 +103,14 @@ void APlayerCharacter::UseItem(AItem* CurrItem)
 	UE_LOG(LogTemp, Warning, TEXT("Use Item!!"));
 }
 
-void APlayerCharacter::EquipGun(EGunType GunType)
+void APlayerCharacter::EquipGun()
 {
-	//임시
 	UClass* Pistol = LoadClass<APistol>(nullptr, TEXT("/Game/Items/Blueprints/BP_Pistol.BP_Pistol_C"));
 	if (GetWorld())
 	{
 		EquippedWeapon = GetWorld()->SpawnActor<AGun>(Pistol);
 	}
-	
-	switch (GunType)
-	{
-	case EGunType::Pistol:
-		
-		break;
-	case EGunType::Rifle:
-		break;
-	case EGunType::Shotgun:
-		break;
-	default:
-		break;
-	}
-		
+
 	if (EquippedWeapon)
 	{
 		FName GunSocketName = "GunSocket_R";
