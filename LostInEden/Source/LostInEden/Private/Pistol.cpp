@@ -8,7 +8,7 @@
 
 APistol::APistol()
 {
-    Damage = 15.0f;
+    Damage = 20.0f;
     FireRate = 0.3f;
     MaxAmmo = 12;
     CurrentAmmo = MaxAmmo;
