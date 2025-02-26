@@ -34,8 +34,8 @@ class LOSTINEDEN_API APlayerCharacter : public AEntity
 public:
 	APlayerCharacter();
 
-	int32 GetShieldGauge();
-	int32 GetMaxShieldGauge();
+	int32 GetShieldGauge() const;
+	int32 GetMaxShieldGauge() const;
 
 protected:
 	// 카메라 관련 컴포넌트
@@ -53,7 +53,7 @@ protected:
 	float SprintSpeed;
 
 	// 플레이어 인벤토리
-	TMap<EGunType, class AGun*> EquipInventory;
+	TMap<EGunType, class AGun* > EquipInventory;
 	TMap<EItemType, class AItem*> ItemInventory;
 
 	// 인벤토리 구현 전 임시 무기
@@ -92,5 +92,5 @@ public:
 	void StopAttack();
 	void ReloadAmmo();
 	void UseItem(class AItem*);
-	void EquipGun(EGunType);
+	void EquipGun();
 };

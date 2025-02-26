@@ -15,8 +15,8 @@ public:
 	// Sets default values for this character's properties
 	AEntity();
 
-	int32 GetHealth();
-	int32 GetMaxHealth();
+	int32 GetHealth() const;
+	int32 GetMaxHealth() const;
 
 protected:
 	int32 Health;

@@ -11,12 +11,12 @@ AEntity::AEntity()
 	Health = MaxHealth;
 }
 
-int32 AEntity::GetHealth()
+int32 AEntity::GetHealth()const
 {
 	return Health;
 }
 
-int32 AEntity::GetMaxHealth()
+int32 AEntity::GetMaxHealth() const
 {
 	return MaxHealth;
 }

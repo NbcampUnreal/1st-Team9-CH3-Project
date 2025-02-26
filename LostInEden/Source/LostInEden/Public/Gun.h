@@ -14,8 +14,8 @@ class LOSTINEDEN_API AGun : public AItem, public IIFireable
 public:
     AGun();
 
-    int32 GetCurrentAmmo();
-    int32 GetMaxAmmo();
+    int32 GetCurrentAmmo() const;
+    int32 GetMaxAmmo() const;
 
     virtual void Fire() override;
     virtual void Reload() override;
