@@ -3,6 +3,7 @@
 #include "CoreMinimal.h"
 #include "Item.h"
 #include "Bullet.h"
+#include "PlayerCharacter.h"
 #include "IFireable.h"
 #include "Gun.generated.h"
 
