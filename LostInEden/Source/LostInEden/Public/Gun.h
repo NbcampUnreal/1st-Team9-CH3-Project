@@ -56,4 +56,7 @@ public:
     class UParticleSystem* ImpactEffect;
 
 
+    void SetGunMeshAndBullet(UStaticMesh* NewMesh, TSubclassOf<ABullet> NewBulletFactory);
+
+
 };

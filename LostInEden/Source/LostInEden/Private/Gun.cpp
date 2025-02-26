@@ -109,3 +109,5 @@ void AGun::SetGunMeshAndBullet(UStaticMesh* NewMesh, TSubclassOf<ABullet> NewBul
         UE_LOG(LogTemp, Warning, TEXT("총알 공장 설정 완료"));
     }
 }
+
+//NewGun->SetGunMeshAndBullet(NewGunMesh, NewBulletFactory);
