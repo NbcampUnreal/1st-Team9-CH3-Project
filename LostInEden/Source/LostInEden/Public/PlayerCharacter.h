@@ -10,7 +10,20 @@ struct FInputActionValue;
 
 enum class EPlayerStatus
 {
-	
+
+};
+
+enum class EGunType
+{
+	Pistol,
+	Rifle,
+	Shotgun
+};
+
+enum class EItemType
+{
+	Shield,
+	HealingItem
 };
 
 UCLASS()
@@ -21,14 +34,17 @@ class LOSTINEDEN_API APlayerCharacter : public AEntity
 public:
 	APlayerCharacter();
 
+	int32 GetShieldGauge() const;
+	int32 GetMaxShieldGauge() const;
+
 protected:
-	// ī�޶� ���� ������Ʈ
+	// 카메라 관련 컴포넌트
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Camera")
 	class USpringArmComponent* SpringArm;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Camera")
 	class UCameraComponent* Camera;
 
-	// �̵� �ӵ� ����
+	// 이동 속도 관련
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Movement")
 	float NormalSpeed;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Movement")
@@ -36,16 +52,16 @@ protected:
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Movement")
 	float SprintSpeed;
 
-	// �÷��̾� �κ��丮
-	TArray<class AGun*> EquipInventory;
-	TArray<class AItem*> ItemInventory;
+	// 플레이어 인벤토리
+	TMap<EGunType, class AGun* > EquipInventory;
+	TMap<EItemType, class AItem*> ItemInventory;
 
-	// �κ��丮 ���� �� �ӽ� ����
-	//TUniquePtr<class AGun> EquippedWeapon;
+	// 인벤토리 구현 전 임시 무기
 	AGun* EquippedWeapon;
 
-	UPROPERTY(EditDefaultsOnly, Category = "Weapon")
-	TSubclassOf<AGun> GunClass;
+	//쉴드
+	int32 ShieldGauge;
+	int32 MaxShieldGauge;
 
 	// IMC
 	virtual void SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent) override;
@@ -64,13 +80,13 @@ protected:
 	void StopSprint(const FInputActionValue& Value);
 	UFUNCTION()
 	void DoCrouch(const FInputActionValue& Value);
-	
+
 	virtual void BeginPlay() override;
 
 public:
 	void Heal(int32);
 	void ChangeState(EPlayerStatus);
-	
+
 	virtual float TakeDamage(float DamageAmount, struct FDamageEvent const& DamageEvent, AController* EventInstigator, AActor* DamageCauser) override;
 	void StartAttack();
 	void StopAttack();

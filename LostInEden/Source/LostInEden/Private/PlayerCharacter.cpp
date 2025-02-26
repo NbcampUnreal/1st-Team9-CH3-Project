@@ -10,6 +10,8 @@
 #include "GameFramework/CharacterMovementComponent.h"
 #include "Gun.h"
 #include "Pistol.h"
+#include "Rifle.h"
+#include "Shotgun.h"
 
 APlayerCharacter::APlayerCharacter()
 {
@@ -21,7 +23,7 @@ APlayerCharacter::APlayerCharacter()
 	Camera = CreateDefaultSubobject<UCameraComponent>(TEXT("Camera"));
 	Camera->SetupAttachment(SpringArm);
 	Camera->bUsePawnControlRotation = false;
-	 
+
 	NormalSpeed = 600.f;
 	SprintSpeedMultiplier = 1.5f;
 	SprintSpeed = NormalSpeed * SprintSpeedMultiplier;
@@ -33,15 +35,24 @@ APlayerCharacter::APlayerCharacter()
 	MaxHealth = 200;
 	Health = MaxHealth;
 
-	// 기본 무기 '피스톨' 세팅
-	/*TUniquePtr<APistol> Pistol = MakeUnique<APistol>();
-	EquipInventory.Emplace(Pistol);*/
+	MaxShieldGauge = 50;
+	ShieldGauge = 0;
+}
+
+
+int32 APlayerCharacter::GetShieldGauge() const
+{
+	return ShieldGauge;
+}
+
+int32 APlayerCharacter::GetMaxShieldGauge() const
+{
+	return MaxShieldGauge;
 }
 
 void APlayerCharacter::BeginPlay()
 {
 	Super::BeginPlay();
-
 	EquipGun();
 }
 
@@ -65,7 +76,7 @@ float APlayerCharacter::TakeDamage(float DamageAmount, FDamageEvent const& Damag
 void APlayerCharacter::StartAttack()
 {
 	UE_LOG(LogTemp, Warning, TEXT("Gun Fire!!"));
-	if(EquippedWeapon)
+	if (EquippedWeapon)
 	{
 		EquippedWeapon->Fire();
 	}
@@ -94,22 +105,10 @@ void APlayerCharacter::UseItem(AItem* CurrItem)
 
 void APlayerCharacter::EquipGun()
 {
-	/*if (EquippedWeapon)
+	UClass* Pistol = LoadClass<APistol>(nullptr, TEXT("/Game/Items/Blueprints/BP_Pistol.BP_Pistol_C"));
+	if (GetWorld())
 	{
-		EquippedWeapon->Destroy();
-		EquippedWeapon = nullptr;
-	}*/
-
-	// 인벤에서 선택된 무기로 스폰하게 변경하기
-	/*if (GunClass)  // 🔹 모든 무기 선택 가능 (Rifle, Shotgun, Pistol 등)
-	{
-		EquippedWeapon = GetWorld()->SpawnActor<AGun>(GunClass);
-	}*/
-
-	//임시
-	if(GetWorld())
-	{
-		EquippedWeapon = GetWorld()->SpawnActor<AGun>(GunClass);
+		EquippedWeapon = GetWorld()->SpawnActor<AGun>(Pistol);
 	}
 
 	if (EquippedWeapon)

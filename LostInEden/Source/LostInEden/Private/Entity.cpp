@@ -11,6 +11,16 @@ AEntity::AEntity()
 	Health = MaxHealth;
 }
 
+int32 AEntity::GetHealth()const
+{
+	return Health;
+}
+
+int32 AEntity::GetMaxHealth() const
+{
+	return MaxHealth;
+}
+
 float AEntity::TakeDamage(float AmountDamage, FDamageEvent const& DamageEvent, AController* EventInstigator, AActor* DamageCauser)
 {
 	float Damage = Super::TakeDamage(AmountDamage, DamageEvent, EventInstigator, DamageCauser);

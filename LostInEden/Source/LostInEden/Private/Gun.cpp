@@ -18,6 +18,16 @@ AGun::AGun()
     CurrentAmmo = MaxAmmo;
 }
 
+int32 AGun::GetCurrentAmmo() const
+{
+    return CurrentAmmo;
+}
+
+int32 AGun::GetMaxAmmo() const
+{
+    return MaxAmmo;
+}
+
 void AGun::Fire()
 {
     if (CurrentAmmo > 0)
