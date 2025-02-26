@@ -37,7 +37,7 @@ public:
 	int32 GetShieldGauge() const;
 	int32 GetMaxShieldGauge() const;
 
-	AGun* GetCurrentWeapon() const;
+	class AGun* GetCurrentWeapon();
 
 protected:
 	// 카메라 관련 컴포넌트
@@ -55,11 +55,13 @@ protected:
 	float SprintSpeed;
 
 	// 플레이어 인벤토리
-	TMap<EGunType, class AGun* > EquipInventory;
+	TMap<EGunType, class AGun*> EquipInventory;
 	TMap<EItemType, class AItem*> ItemInventory;
 
-	//현재 장착된 총
-	EGunType EquippedWeapon;
+	//현재 장착된 무기 타입
+	EGunType CurrentWeapon;
+	//현재 장착된 무기 블루프린트 객체
+	AGun* BP_Weapon;
 
 	//쉴드
 	int32 ShieldGauge;
@@ -83,7 +85,7 @@ protected:
 	UFUNCTION()
 	void DoCrouch(const FInputActionValue& Value);
 	UFUNCTION()
-	void SelectGun(const FInputActionValue& Value);
+	void SelectWeapon(const FInputActionValue& Value);
 
 	virtual void BeginPlay() override;
 
@@ -96,5 +98,6 @@ public:
 	void StopAttack();
 	void ReloadAmmo();
 	void UseItem(class AItem*);
-	void EquipGun(EGunType);
+	void EquipWeapon(EGunType);
+	void AddWeapon(EGunType);
 };
