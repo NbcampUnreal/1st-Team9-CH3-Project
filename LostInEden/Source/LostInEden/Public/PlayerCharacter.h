@@ -13,17 +13,17 @@ enum class EPlayerStatus
 
 };
 
-enum class EGunType
+enum EGunType : int8
 {
-	Pistol,
-	Rifle,
-	Shotgun
+	PISTOL,
+	RIFLE,
+	SHOTGUN
 };
 
-enum class EItemType
+enum EItemType : int8
 {
-	Shield,
-	HealingItem
+	SHIELD,
+	HEALINGITEM
 };
 
 UCLASS()
@@ -36,6 +36,8 @@ public:
 
 	int32 GetShieldGauge() const;
 	int32 GetMaxShieldGauge() const;
+
+	AGun* GetCurrentWeapon() const;
 
 protected:
 	// 카메라 관련 컴포넌트
@@ -56,8 +58,8 @@ protected:
 	TMap<EGunType, class AGun* > EquipInventory;
 	TMap<EItemType, class AItem*> ItemInventory;
 
-	// 인벤토리 구현 전 임시 무기
-	AGun* EquippedWeapon;
+	//현재 장착된 총
+	EGunType EquippedWeapon;
 
 	//쉴드
 	int32 ShieldGauge;
@@ -80,6 +82,8 @@ protected:
 	void StopSprint(const FInputActionValue& Value);
 	UFUNCTION()
 	void DoCrouch(const FInputActionValue& Value);
+	UFUNCTION()
+	void SelectGun(const FInputActionValue& Value);
 
 	virtual void BeginPlay() override;
 
@@ -92,5 +96,5 @@ public:
 	void StopAttack();
 	void ReloadAmmo();
 	void UseItem(class AItem*);
-	void EquipGun();
+	void EquipGun(EGunType);
 };

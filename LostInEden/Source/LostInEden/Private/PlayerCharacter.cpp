@@ -37,8 +37,10 @@ APlayerCharacter::APlayerCharacter()
 
 	MaxShieldGauge = 50;
 	ShieldGauge = 0;
-}
 
+	//기본 권총 장착
+	EquippedWeapon = EGunType::PISTOL;
+}
 
 int32 APlayerCharacter::GetShieldGauge() const
 {
@@ -50,10 +52,24 @@ int32 APlayerCharacter::GetMaxShieldGauge() const
 	return MaxShieldGauge;
 }
 
+AGun* APlayerCharacter::GetCurrentWeapon() const
+{
+	if (EquipInventory.Contains(EquippedWeapon))
+	{
+		return *EquipInventory.Find(EquippedWeapon);
+	}
+	else
+	{
+		UE_LOG(LogTemp, Warning, TEXT("현재 장착된 총기 없음!!"));
+		return nullptr;
+	}
+}
+
 void APlayerCharacter::BeginPlay()
 {
 	Super::BeginPlay();
-	EquipGun();
+
+	EquipGun(EGunType::PISTOL);
 }
 
 void APlayerCharacter::Heal(int32 HealAmount)
@@ -76,26 +92,35 @@ float APlayerCharacter::TakeDamage(float DamageAmount, FDamageEvent const& Damag
 void APlayerCharacter::StartAttack()
 {
 	UE_LOG(LogTemp, Warning, TEXT("Gun Fire!!"));
-	if (EquippedWeapon)
+	AGun* CurrentWeapon = GetCurrentWeapon();
+	if (CurrentWeapon)
 	{
-		EquippedWeapon->Fire();
+		CurrentWeapon->Fire();
 	}
 }
 
 void APlayerCharacter::StopAttack()
 {
 	UE_LOG(LogTemp, Warning, TEXT("Stop Fire!!"));
+	AGun* CurrentWeapon = GetCurrentWeapon();
+	if (CurrentWeapon)
+	{
+		if (ARifle* Rifle = Cast<ARifle>(CurrentWeapon))
+		{
+			Rifle->StopAutoFire();
+		}
+	}
 }
 
 void APlayerCharacter::ReloadAmmo()
 {
-	if (!EquippedWeapon)
-	{
-		UE_LOG(LogTemp, Warning, TEXT("No Gun!!"));
-		return;
-	}
+	//아이템 탄약 확인해서 장전하기 구현해야함
 
-	EquippedWeapon->Reload();
+	AGun* CurrentWeapon = GetCurrentWeapon();
+	if (CurrentWeapon)
+	{
+		CurrentWeapon->Reload();
+	}
 }
 
 void APlayerCharacter::UseItem(AItem* CurrItem)
@@ -103,12 +128,67 @@ void APlayerCharacter::UseItem(AItem* CurrItem)
 	UE_LOG(LogTemp, Warning, TEXT("Use Item!!"));
 }
 
-void APlayerCharacter::EquipGun()
+void APlayerCharacter::EquipGun(EGunType GunType)
 {
-	UClass* Pistol = LoadClass<APistol>(nullptr, TEXT("/Game/Items/Blueprints/BP_Pistol.BP_Pistol_C"));
-	if (GetWorld())
+	//임시
+	UClass* GunClass;
+	/*if (GetWorld())
 	{
 		EquippedWeapon = GetWorld()->SpawnActor<AGun>(Pistol);
+	}*/
+
+	switch (GunType)
+	{
+	case EGunType::PISTOL:
+		if (EquipInventory.Contains(EGunType::PISTOL))
+		{
+			EquippedWeapon = *EquipInventory.Find(EGunType::PISTOL);
+		}
+
+		if (!EquippedWeapon)
+		{
+			GunClass = LoadClass<AGun>(nullptr, TEXT("/Game/Items/Blueprints/BP_Pistol.BP_Pistol_C"));
+			if(GetWorld())
+			{
+				EquippedWeapon = GetWorld()->SpawnActor<AGun>(GunClass);
+				EquipInventory.Add({ EGunType::PISTOL, EquippedWeapon });
+			}
+		}
+		break;
+	case EGunType::RIFLE:
+		if (EquipInventory.Contains(EGunType::RIFLE))
+		{
+			EquippedWeapon = *EquipInventory.Find(EGunType::RIFLE);
+		}
+
+		if (!EquippedWeapon)
+		{
+			GunClass = LoadClass<AGun>(nullptr, TEXT("/Game/Items/Blueprints/BP_Rifle.BP_Rifle_C"));
+			if (GetWorld())
+			{
+				EquippedWeapon = GetWorld()->SpawnActor<AGun>(GunClass);
+				EquipInventory.Add({ EGunType::RIFLE, EquippedWeapon });
+			}
+		}
+		break;
+	case EGunType::SHOTGUN:
+		if (EquipInventory.Contains(EGunType::SHOTGUN))
+		{
+			EquippedWeapon = *EquipInventory.Find(EGunType::SHOTGUN);
+		}
+
+		if (!EquippedWeapon)
+		{
+			GunClass = LoadClass<AGun>(nullptr, TEXT("/Game/Items/Blueprints/BP_Shotgun.BP_Shotgun_C"));
+			if (GetWorld())
+			{
+				EquippedWeapon = GetWorld()->SpawnActor<AGun>(GunClass);
+				EquipInventory.Add({ EGunType::SHOTGUN, EquippedWeapon });
+			}
+		}
+		break;
+	default:
+		break;
 	}
 
 	if (EquippedWeapon)
@@ -222,6 +302,16 @@ void APlayerCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputCom
 					&APlayerCharacter::ReloadAmmo
 				);
 			}
+
+			if (PlayerController->ChangeGunAction)
+			{
+				EnhancedInput->BindAction(
+					PlayerController->ChangeGunAction,
+					ETriggerEvent::Triggered,
+					this,
+					&APlayerCharacter::SelectGun
+				);
+			}
 		}
 	}
 }
@@ -296,5 +386,10 @@ void APlayerCharacter::StopSprint(const FInputActionValue& Value)
 void APlayerCharacter::DoCrouch(const FInputActionValue& Value)
 {
 	CanCrouch() ? Crouch() : UnCrouch();
+}
+
+void APlayerCharacter::SelectGun(const FInputActionValue& Value)
+{
+	
 }
 
