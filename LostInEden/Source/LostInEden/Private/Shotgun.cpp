@@ -145,6 +145,7 @@ void AShotgun::Fire()
 
 
 
+
 void AShotgun::ResetFire()
 {
     bCanFire = true;
