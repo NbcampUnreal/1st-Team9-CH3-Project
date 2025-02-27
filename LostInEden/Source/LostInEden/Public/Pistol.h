@@ -12,14 +12,20 @@ class LOSTINEDEN_API APistol : public AGun
 public:
     APistol();
 
-protected:
     UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Weapon")
     bool bIsAutomatic;
 
     UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Weapon")
     float BulletSpread;
 
+    class USoundBase* bulletSound;
+ 
+
     virtual void BeginPlay() override;
     virtual void Fire() override;
     virtual void Reload() override;
+
+private:
+    void AutoAssignBulletFactory();
+
 };

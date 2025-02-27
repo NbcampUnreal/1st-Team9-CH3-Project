@@ -19,7 +19,7 @@ private:
     
     AActor* EquippedGun;
 
-protected:
+public:
     UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Weapon")
     bool bIsAutomatic;
 
@@ -31,10 +31,14 @@ protected:
 
     UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Weapon")
     float BurstFireRate;
+protected:
+
 
 public:
     FTimerHandle AutoFireHandle;
     void StartAutoFire();
     void StopAutoFire();
     void BurstFire();
+private:
+    void AutoAssignBulletFactory();
 };
