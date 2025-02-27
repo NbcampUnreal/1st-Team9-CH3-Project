@@ -17,6 +17,17 @@ AShotgun::AShotgun()
     PelletSpread = 8.0f;
 
     bCanFire = true;
+
+    static ConstructorHelpers::FClassFinder<ABullet> BulletBP(TEXT("/Game/Items/Blueprints/BP_Bullet.BP_Bullet"));
+    if (BulletBP.Succeeded())
+    {
+        BulletFactory = BulletBP.Class;
+        UE_LOG(LogTemp, Warning, TEXT(" Bullet Factory 자동 설정 완료!"));
+    }
+    else
+    {
+        UE_LOG(LogTemp, Error, TEXT(" Bullet Factory 자동 설정 실패! 블루프린트 경로 확인 필요."));
+    }
 }
 
 void AShotgun::Fire()
@@ -27,7 +38,7 @@ void AShotgun::Fire()
         return;
     }
 
-    if (CurrentAmmo <= PelletCount)
+    if (CurrentAmmo < PelletCount)
     {
         UE_LOG(LogTemp, Warning, TEXT("샷건 탄약 없음! 현재 탄약: %d"), CurrentAmmo);
         return;
@@ -44,14 +55,24 @@ void AShotgun::Fire()
     }
 
     UWorld* World = GetWorld();
-    if (!World || !MuzzleLocation)
+    if (!World)
     {
-        UE_LOG(LogTemp, Error, TEXT("World 또는 MuzzleLocation이 없음!"));
+        UE_LOG(LogTemp, Error, TEXT("World 없음!"));
         return;
+    }
+
+    if (!MuzzleLocation)
+    {
+        UE_LOG(LogTemp, Error, TEXT("Gun: MuzzleLocation이 nullptr입니다! GunStaticMesh를 사용합니다."));
+
+        MuzzleLocation = GunStaticMesh;
     }
 
     FVector MuzzlePos = MuzzleLocation->GetComponentLocation();
     FRotator MuzzleRot = MuzzleLocation->GetComponentRotation();
+
+    // 🚀 중복 공격 방지 
+    TSet<AActor*> DamagedActors;
 
     for (int32 i = 0; i < NumShots; i++)
     {
@@ -66,69 +87,79 @@ void AShotgun::Fire()
         FVector TraceStart = MuzzlePos;
         FVector TraceEnd = TraceStart + (ShotDirection * Range);
 
-        FHitResult HitResult;
+        TArray<FHitResult> HitResults;
         FCollisionQueryParams QueryParams;
         QueryParams.AddIgnoredActor(this);
-        QueryParams.AddIgnoredActor(GetOwner()); // 플레이어도 무시
+        QueryParams.AddIgnoredActor(GetOwner()); // 플레이어 무시
+        QueryParams.bTraceComplex = true;  // 🔹 복잡한 충돌 검사 활성화
 
-        bool bHit = World->LineTraceSingleByChannel(HitResult, TraceStart, TraceEnd, ECC_Visibility, QueryParams);
-        DrawDebugLine(World, TraceStart, TraceEnd, bHit ? FColor::Green : FColor::Red, false, 2.0f, 0, 1.0f);
+        // 🔹 감지 반경 증가
+        float SphereRadius = 100.0f;
+
+        // 🔹 SphereTraceMultiByChannel을 사용하여 여러 적 감지
+        bool bHit = World->SweepMultiByChannel(
+            HitResults,
+            TraceStart,
+            TraceEnd,
+            FQuat::Identity,
+            ECC_Pawn,  // 🔹 필요하면 ECC_Visibility로 변경
+            FCollisionShape::MakeSphere(SphereRadius),
+            QueryParams
+        );
+
+        DrawDebugLine(World, TraceStart, TraceEnd, bHit ? FColor::Green : FColor::Red, false, 5.0f, 0, 5.0f);
 
         if (bHit)
         {
-            AActor* HitActor = HitResult.GetActor();
-            if (HitActor)
-            {
-                UE_LOG(LogTemp, Warning, TEXT("라인 트레이스 적중! 타겟: %s"), *HitActor->GetName());
+            UE_LOG(LogTemp, Warning, TEXT("트레이스에서 감지된 적 수: %d"), HitResults.Num());
 
-                UGameplayStatics::ApplyDamage(
-                    HitActor,
-                    Damage,
-                    GetOwner()->GetInstigatorController(),
-                    this,
-                    nullptr
-                );
-
-                UE_LOG(LogTemp, Warning, TEXT("샷건이 %s에 명중! 피해량: %d"), *HitActor->GetName(), Damage);
-            }
-            else
+            for (const FHitResult& HitResult : HitResults)
             {
-                UE_LOG(LogTemp, Warning, TEXT("라인 트레이스 충돌했으나 타겟이 없음!"));
+                AActor* HitActor = HitResult.GetActor();
+                if (HitActor && !DamagedActors.Contains(HitActor))
+                {
+                    UE_LOG(LogTemp, Warning, TEXT("트레이스 명중! 맞은 대상: %s"), *HitActor->GetName());
+
+                    float Distance = FVector::Dist(MuzzlePos, HitResult.ImpactPoint);
+                    float MinRange = 100.0f;
+                    float MaxRange = Range;
+                    float DamageMultiplier = 1.0f - FMath::Clamp((Distance - MinRange) / (MaxRange - MinRange), 0.0f, 1.0f);
+
+                    float FinalDamage = Damage * DamageMultiplier;
+
+                    float AppliedDamage = UGameplayStatics::ApplyDamage(
+                        HitActor,
+                        FinalDamage,
+                        GetOwner()->GetInstigatorController(),
+                        this,
+                        nullptr
+                    );
+
+                    UE_LOG(LogTemp, Warning, TEXT("샷건이 %s에 명중! 피해량: %f (거리: %f)"), *HitActor->GetName(), AppliedDamage, Distance);
+
+                    // ✅ 중복 공격 방지
+                    DamagedActors.Add(HitActor);
+
+                    // 🔹 여러 개의 구체가 그려지도록 변경
+                    DrawDebugSphere(World, HitResult.ImpactPoint, 20.0f, 12, FColor::Yellow, false, 5.0f);
+                }
             }
         }
         else
         {
-            UE_LOG(LogTemp, Warning, TEXT("라인 트레이스 미적중!"));
-        }
-
-        // 충돌 설정을 추가하여 총알끼리 겹쳐도 문제없도록 처리
-        FActorSpawnParameters SpawnParams;
-        SpawnParams.SpawnCollisionHandlingOverride = ESpawnActorCollisionHandlingMethod::AdjustIfPossibleButAlwaysSpawn;
-
-        ABullet* SpawnedBullet = World->SpawnActor<ABullet>(BulletFactory, MuzzlePos, ShotDirection.Rotation(), SpawnParams);
-        if (SpawnedBullet)
-        {
-            // 총알끼리 충돌하지 않도록 충돌 비활성화
-            SpawnedBullet->SetActorEnableCollision(false);
-
-            // 충돌 컴포넌트가 있다면, 총알끼리 충돌하지 않도록 설정
-            UPrimitiveComponent* BulletCollision = Cast<UPrimitiveComponent>(SpawnedBullet->GetRootComponent());
-            if (BulletCollision)
-            {
-                BulletCollision->SetCollisionResponseToChannel(ECC_Pawn, ECR_Ignore);
-                BulletCollision->SetCollisionResponseToChannel(ECC_PhysicsBody, ECR_Ignore);
-                BulletCollision->SetCollisionResponseToChannel(ECC_Camera, ECR_Ignore);
-                BulletCollision->SetCollisionResponseToChannel(ECC_GameTraceChannel1, ECR_Ignore); // 사용자 지정 채널
-                BulletCollision->SetCollisionResponseToChannel(ECC_Visibility, ECR_Ignore); // 샷건 총알끼리 충돌하지 않음
-            }
-
-            UE_LOG(LogTemp, Warning, TEXT("샷건 탄환 스폰 성공!"));
+            UE_LOG(LogTemp, Warning, TEXT("트레이스 미적중!"));
         }
     }
 
     UE_LOG(LogTemp, Warning, TEXT("샷건 발사 완료! 남은 탄약: %d"), CurrentAmmo);
     GetWorld()->GetTimerManager().SetTimer(FireDelayTimer, this, &AShotgun::ResetFire, FireRate, false);
 }
+
+
+
+
+
+
 
 
 

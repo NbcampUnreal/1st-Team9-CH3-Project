@@ -2,21 +2,21 @@
 #include "Engine/World.h"
 #include "Kismet/GameplayStatics.h"
 #include "Bullet.h"
-#include "PlayerCharacter.h"
+#include "Components/SphereComponent.h"
 #include "GameFramework/ProjectileMovementComponent.h"
 
 AGun::AGun()
 {
     PrimaryActorTick.bCanEverTick = true;
 
+
     GunStaticMesh = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("GunStaticMesh"));
     SetRootComponent(GunStaticMesh);
 
     MuzzleLocation = CreateDefaultSubobject<USceneComponent>(TEXT("MuzzleLocation"));
     MuzzleLocation->SetupAttachment(GunStaticMesh);
-
-    CurrentAmmo = MaxAmmo;
 }
+
 
 int32 AGun::GetCurrentAmmo() const
 {
@@ -28,27 +28,40 @@ int32 AGun::GetMaxAmmo() const
     return MaxAmmo;
 }
 
-/*void AGun::ReduceAmmo()
-{
-    CurrentAmmo--;
-}*/
-
 void AGun::Fire()
 {
     if (CurrentAmmo > 0)
     {
         CurrentAmmo--;
-
         if (BulletFactory)
         {
             UWorld* World = GetWorld();
             if (World)
             {
-                FVector MuzzlePos = MuzzleLocation->GetComponentLocation();
-                FRotator MuzzleRot = MuzzleLocation->GetComponentRotation();
-                FVector ShotDirection = MuzzleRot.Vector();
 
-                // 🔹 총알 생성
+                FVector MuzzlePos;
+                FRotator MuzzleRot;
+                FVector ShotDirection;
+
+               
+                if (MuzzleLocation)
+                {
+                    MuzzlePos = MuzzleLocation->GetComponentLocation();
+                    MuzzleRot = MuzzleLocation->GetComponentRotation();
+                }
+                else
+                {
+                    MuzzlePos = GetActorLocation();
+                    MuzzleRot = GetActorRotation();
+                }
+
+                ShotDirection = MuzzleRot.Vector();
+
+           
+                World->SpawnActor<ABullet>(BulletFactory, MuzzlePos, MuzzleRot);
+
+
+               
                 ABullet* SpawnedBullet = World->SpawnActor<ABullet>(BulletFactory, MuzzlePos, ShotDirection.Rotation());
                 if (SpawnedBullet)
                 {
@@ -62,6 +75,7 @@ void AGun::Fire()
                 }
 
                 // 🔹 라인트레이스를 제거하거나, 총알이 맞았을 때만 트리거
+
             }
         }
         else
@@ -75,28 +89,8 @@ void AGun::Fire()
     }
 }
 
-
-
 void AGun::Reload()
 {
     UE_LOG(LogTemp, Warning, TEXT("재장전!"));
     CurrentAmmo = MaxAmmo;
 }
-
-void AGun::BeginPlay()
-{
-    Super::BeginPlay();
-
-    APlayerCharacter* PlayerCharacter = Cast<APlayerCharacter>(UGameplayStatics::GetPlayerCharacter(GetWorld(), 0));
-    if (!PlayerCharacter)
-    {
-        UE_LOG(LogTemp, Error, TEXT("Gun: 플레이어 캐릭터를 찾을 수 없습니다!"));
-        return;
-    }
-
-    FName WeaponSocket = "GunSocket_R";
-    AttachToComponent(PlayerCharacter->GetMesh(), FAttachmentTransformRules::SnapToTargetIncludingScale, WeaponSocket);
-
-    UE_LOG(LogTemp, Warning, TEXT("%s가 플레이어 손에 장착됨!"), *GetName());
-}
-

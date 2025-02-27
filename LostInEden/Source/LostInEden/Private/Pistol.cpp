@@ -16,6 +16,21 @@ APistol::APistol()
     bIsAutomatic = false;
     BulletSpread = 1.0f;
 
+    static ConstructorHelpers::FClassFinder<ABullet> BulletBP(TEXT("/Game/Items/Blueprints/BP_Bullet.BP_Bullet"));
+    if (BulletBP.Succeeded())
+    {
+        BulletFactory = BulletBP.Class;
+        UE_LOG(LogTemp, Warning, TEXT(" Bullet Factory 자동 설정 완료!"));
+    }
+    else
+    {
+        UE_LOG(LogTemp, Error, TEXT(" Bullet Factory 자동 설정 실패! 블루프린트 경로 확인 필요."));
+    }
+
+    ConstructorHelpers::FObjectFinder<USoundBase> tempSound(TEXT("/Game/Items/Sci-Fi_Shots_Pack2_Game_Of_Weapons/Wave/SciFi_Shot_P2__147_.SciFi_Shot_P2__147_"));
+    if (tempSound.Succeeded()) {
+       bulletSound = tempSound.Object;
+   }
 }
 void APistol::BeginPlay()
 {
@@ -33,17 +48,19 @@ void APistol::BeginPlay()
     AttachToComponent(PlayerCharacter->GetMesh(), FAttachmentTransformRules::SnapToTargetNotIncludingScale, WeaponSocket);*/
 
     // 🔹 총 회전값을 보정 (Yaw 180도 회전)
-    FRotator NewRotation = GetActorRotation();
-    NewRotation.Yaw += 180.0f;
-    SetActorRotation(NewRotation);
+    //FRotator NewRotation = GetActorRotation();
+    //NewRotation.Yaw += 180.0f;
+    //SetActorRotation(NewRotation);
 
-    UE_LOG(LogTemp, Warning, TEXT("%s가 플레이어 손에 올바르게 장착됨!"), *GetName());
+    //UE_LOG(LogTemp, Warning, TEXT("%s가 플레이어 손에 올바르게 장착됨!"), *GetName());
 }
 
 
 
 void APistol::Fire()
 {
+
+
     if (!BulletFactory)
     {
         UE_LOG(LogTemp, Error, TEXT("Bullet Factory가 설정되지 않음! 블루프린트에서 확인하세요."));
@@ -51,10 +68,17 @@ void APistol::Fire()
     }
 
     UWorld* World = GetWorld();
-    if (!World || !MuzzleLocation)
+    if (!World)
     {
-        UE_LOG(LogTemp, Error, TEXT("World 또는 MuzzleLocation이 없음!"));
+        UE_LOG(LogTemp, Error, TEXT("World 없음!"));
         return;
+    }
+
+    if (!MuzzleLocation)
+    {
+        UE_LOG(LogTemp, Error, TEXT("Gun: MuzzleLocation이 nullptr입니다! GunStaticMesh를 사용합니다."));
+
+        MuzzleLocation = GunStaticMesh;
     }
 
     FVector MuzzlePos = MuzzleLocation->GetComponentLocation();
@@ -68,15 +92,21 @@ void APistol::Fire()
     FCollisionQueryParams QueryParams;
     QueryParams.AddIgnoredActor(this);
 
-    bool bHit = World->LineTraceSingleByChannel(HitResult, TraceStart, TraceEnd, ECC_Visibility, QueryParams);
-    DrawDebugLine(World, TraceStart, TraceEnd, FColor::Red, false, 2.0f, 0, 1.0f);
+    bool bHit = World->LineTraceSingleByChannel(
+        HitResult, TraceStart, TraceEnd, ECC_Pawn, QueryParams);
 
+    DrawDebugLine(World, TraceStart, TraceEnd, FColor::Green, false, 5.0f, 0, 5.0f);
+    UGameplayStatics::PlaySound2D(GetWorld(), bulletSound);
     if (bHit)
-    {
+    { 
+
         AActor* HitActor = HitResult.GetActor();
         if (HitActor)
         {
-            UGameplayStatics::ApplyDamage(
+            UE_LOG(LogTemp, Warning, TEXT("트레이스 명중! 맞은 대상: %s"), *HitActor->GetName());
+
+            // 🔹 ApplyDamage 실행 (한 번만 실행)
+            float AppliedDamage = UGameplayStatics::ApplyDamage(
                 HitActor,
                 Damage,
                 GetOwner()->GetInstigatorController(),
@@ -84,10 +114,15 @@ void APistol::Fire()
                 nullptr
             );
 
-            UE_LOG(LogTemp, Warning, TEXT("권총이 %s에 명중! 피해량: %d"), *HitActor->GetName(), Damage);
+            UE_LOG(LogTemp, Warning, TEXT("권총이 %s에 명중! 피해량: %f"), *HitActor->GetName(), AppliedDamage);
         }
     }
+    else
+    {
+        UE_LOG(LogTemp, Warning, TEXT("트레이스 미적중!"));
+    }
 
+    // 🔹 총알 스폰
     ABullet* SpawnedBullet = World->SpawnActor<ABullet>(BulletFactory, MuzzlePos, ShotDirection.Rotation());
     if (SpawnedBullet)
     {
@@ -96,7 +131,26 @@ void APistol::Fire()
 }
 
 
+
 void APistol::Reload()
 {
     UE_LOG(LogTemp, Warning, TEXT("권총은 무한 탄창이므로 재장전이 필요 없음!"));
+}
+
+void APistol::AutoAssignBulletFactory()
+{
+    if (BulletFactory) return;
+
+    FString BulletPath = TEXT("/Game/Items/Blueprints/BP_Bullet.BP_Bullet'");
+    UClass* BulletClass = LoadObject<UClass>(nullptr, *BulletPath);
+
+    if (BulletClass)
+    {
+        BulletFactory = BulletClass;
+        UE_LOG(LogTemp, Warning, TEXT("Pistol: Bullet Factory 자동 설정 완료!"));
+    }
+    else
+    {
+        UE_LOG(LogTemp, Error, TEXT("Pistol: Bullet Factory 자동 설정 실패! 블루프린트 경로 확인 필요."));
+    }
 }
