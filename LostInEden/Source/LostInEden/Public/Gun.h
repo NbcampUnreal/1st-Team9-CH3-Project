@@ -14,15 +14,8 @@ class LOSTINEDEN_API AGun : public AItem, public IIFireable
 public:
     AGun();
 
-    int32 GetCurrentAmmo() const;
-    int32 GetMaxAmmo() const;
-
     virtual void Fire() override;
     virtual void Reload() override;
-    virtual void BeginPlay() override;
-
-    /** BP_Bullet을 자동으로 할당하는 함수 */
-    void AutoAssignBulletFactory();
 
 protected:
     UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Weapon")
@@ -40,20 +33,6 @@ protected:
     UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Weapon")
     float Range;
 
-public:
-    UPROPERTY(VisibleAnywhere, Category = "Components")
-    UStaticMeshComponent* GunStaticMesh;
-
-
-
-    UPROPERTY(EditDefaultsOnly, Category = "Weapon")
+    UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Weapon")
     TSubclassOf<class ABullet> BulletFactory;
-
-    UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Effects")
-    class UParticleSystem* MuzzleEffect;
-
-    UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Effects")
-    class UParticleSystem* ImpactEffect;
-
-    void SetGunMeshAndBullet(UStaticMesh* NewMesh, TSubclassOf<ABullet> NewBulletFactory);
 };

@@ -34,6 +34,7 @@ ARifle::ARifle()
 
     MaxAmmo = 30;
     CurrentAmmo = MaxAmmo;
+    bIsAutomatic = true;
 }
 
 
