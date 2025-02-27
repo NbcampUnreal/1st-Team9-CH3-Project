@@ -13,7 +13,8 @@ AMainPlayerController::AMainPlayerController():
 	SprintAction(nullptr),
 	CrouchAction(nullptr),
 	AttackAction(nullptr),
-	ReloadAction(nullptr)
+	ReloadAction(nullptr),
+	ChangeGunAction(nullptr)
 {
 }
 
