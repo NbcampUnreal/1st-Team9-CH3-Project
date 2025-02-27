@@ -18,6 +18,7 @@ public:
     UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Weapon")
     float BulletSpread;
 
+    class USoundBase* bulletSound;
  
 
     virtual void BeginPlay() override;

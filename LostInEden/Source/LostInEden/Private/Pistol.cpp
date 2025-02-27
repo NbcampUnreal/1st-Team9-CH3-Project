@@ -26,6 +26,11 @@ APistol::APistol()
     {
         UE_LOG(LogTemp, Error, TEXT("Shotgun: Bullet Factory 자동 설정 실패! 블루프린트 경로 확인 필요."));
     }
+
+    ConstructorHelpers::FObjectFinder<USoundBase> tempSound(TEXT("/Game/Items/GunSound/SciFi_Shot_P2__133__Cue.SciFi_Shot_P2__133__Cue"));
+    if (tempSound.Succeeded()) {
+        bulletSound = tempSound.Object;
+    }
 }
 void APistol::BeginPlay()
 {
@@ -88,9 +93,10 @@ void APistol::Fire()
         HitResult, TraceStart, TraceEnd, ECC_Pawn, QueryParams);
 
     DrawDebugLine(World, TraceStart, TraceEnd, FColor::Green, false, 5.0f, 0, 5.0f);
-
+    UGameplayStatics::PlaySound2D(GetWorld(), bulletSound);
     if (bHit)
-    {
+    { 
+
         AActor* HitActor = HitResult.GetActor();
         if (HitActor)
         {
