@@ -21,7 +21,7 @@ ARifle::ARifle()
 
     MaxAmmo = 30;
     CurrentAmmo = MaxAmmo;
-    bIsAutomatic = true;
+    bIsAutomatic = false;
 }
 
 
@@ -131,6 +131,7 @@ void ARifle::StartAutoFire()
         World->SpawnActor<ABullet>(BulletFactory, MuzzlePos, MuzzleRot);
 
         GetWorld()->GetTimerManager().SetTimer(AutoFireHandle, this, &ARifle::StartAutoFire, FireRate, false);
+        bIsAutomatic = true;
     }
     else
     {
@@ -140,7 +141,10 @@ void ARifle::StartAutoFire()
 
 void ARifle::StopAutoFire()
 {
-    GetWorld()->GetTimerManager().ClearTimer(AutoFireHandle);
+    if(bIsAutomatic)
+    {
+        GetWorld()->GetTimerManager().ClearTimer(AutoFireHandle);
+    }
 }
 
 void ARifle::BurstFire()
