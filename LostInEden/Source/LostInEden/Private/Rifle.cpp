@@ -7,6 +7,18 @@
 
 ARifle::ARifle()
 {
+    static ConstructorHelpers::FClassFinder<ABullet> BulletBP(TEXT("/Game/Items/Blueprints/BP_Bullet.BP_Bullet"));
+
+    if (BulletBP.Succeeded())
+    {
+        BulletFactory = BulletBP.Class;
+        UE_LOG(LogTemp, Warning, TEXT("Rifle 생성자: Bullet Factory 자동 설정 완료!"));
+    }
+    else
+    {
+        UE_LOG(LogTemp, Error, TEXT("Rifle 생성자: Bullet Factory 자동 설정 실패! 블루프린트 경로 확인 필요."));
+    }
+
     Damage = 35.0f;
     FireRate = 0.1f;
     MaxAmmo = 30;
@@ -31,8 +43,8 @@ void ARifle::Fire()
 
     if (!BulletFactory)
     {
-        UE_LOG(LogTemp, Error, TEXT("Bullet Factory가 설정되지 않음! 블루프린트에서 확인하세요."));
-        return;
+        UE_LOG(LogTemp, Error, TEXT("Rifle: Bullet Factory가 설정되지 않음! 자동 할당 시도."));
+        AutoAssignBulletFactory();
     }
 
     UWorld* World = GetWorld();
@@ -88,6 +100,7 @@ void ARifle::Fire()
     {
         UE_LOG(LogTemp, Warning, TEXT("총알 스폰 성공!"));
     }
+    Super::Fire();
 }
 
 
@@ -156,4 +169,22 @@ void ARifle::Reload()
 
     UE_LOG(LogTemp, Warning, TEXT("소총 재장전!"));
     CurrentAmmo = MaxAmmo;
+}
+
+void ARifle::AutoAssignBulletFactory()
+{
+    if (BulletFactory) return;
+
+    FString BulletPath = TEXT("/Game/Items/Blueprints/BP_Bullet.BP_Bullet");
+    UClass* BulletClass = LoadClass<ABullet>(nullptr, *BulletPath);
+
+    if (BulletClass)
+    {
+        BulletFactory = BulletClass;
+        UE_LOG(LogTemp, Warning, TEXT("Rifle: Bullet Factory 자동 설정 완료!"));
+    }
+    else
+    {
+        UE_LOG(LogTemp, Error, TEXT("Rifle: Bullet Factory 자동 설정 실패! 블루프린트 경로 확인 필요."));
+    }
 }

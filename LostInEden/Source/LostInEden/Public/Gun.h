@@ -3,7 +3,6 @@
 #include "CoreMinimal.h"
 #include "Item.h"
 #include "Bullet.h"
-#include "PlayerCharacter.h"
 #include "IFireable.h"
 #include "Gun.generated.h"
 
@@ -26,7 +25,6 @@ public:
     void AutoAssignBulletFactory();
 
 protected:
-
     UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Weapon")
     int32 Damage;
 
@@ -43,14 +41,13 @@ protected:
     float Range;
 
 public:
-
     UPROPERTY(VisibleAnywhere, Category = "Components")
     UStaticMeshComponent* GunStaticMesh;
 
     UPROPERTY(VisibleAnywhere, Category = "Components")
     USceneComponent* MuzzleLocation;
 
-    UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Weapon")
+    UPROPERTY(EditDefaultsOnly, Category = "Weapon")
     TSubclassOf<class ABullet> BulletFactory;
 
     UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Effects")

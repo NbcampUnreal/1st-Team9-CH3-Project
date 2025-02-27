@@ -32,4 +32,6 @@ private:
 
     FTimerHandle FireDelayTimer; // ✅ 발사 후 대기 시간 타이머
     FTimerHandle ReloadTimer; // ✅ 재장전 타이머
+private:
+    void AutoAssignBulletFactory();
 };
