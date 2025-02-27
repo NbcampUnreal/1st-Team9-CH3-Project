@@ -44,8 +44,7 @@ public:
     UPROPERTY(VisibleAnywhere, Category = "Components")
     UStaticMeshComponent* GunStaticMesh;
 
-    UPROPERTY(VisibleAnywhere, Category = "Components")
-    USceneComponent* MuzzleLocation;
+
 
     UPROPERTY(EditDefaultsOnly, Category = "Weapon")
     TSubclassOf<class ABullet> BulletFactory;

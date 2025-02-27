@@ -7,7 +7,7 @@
 
 ARifle::ARifle()
 {
-    static ConstructorHelpers::FClassFinder<ABullet> BulletBP(TEXT("/Game/Items/Blueprints/BP_Bullet.BP_Bullet"));
+    static ConstructorHelpers::FClassFinder<AActor> BulletBP(TEXT("/Game/Items/Blueprints/BP_Bullet.BP_Bullet_C"));
 
     if (BulletBP.Succeeded())
     {
@@ -19,17 +19,23 @@ ARifle::ARifle()
         UE_LOG(LogTemp, Error, TEXT("Rifle 생성자: Bullet Factory 자동 설정 실패! 블루프린트 경로 확인 필요."));
     }
 
-    Damage = 35.0f;
-    FireRate = 0.1f;
+    if (!GunStaticMesh)
+    {
+        UE_LOG(LogTemp, Error, TEXT("GunStaticMesh가 nullptr입니다! MuzzleLocation을 연결할 수 없습니다."));
+    }
+    else if (!MuzzleLocation)
+    {
+        // 🔥 중복 생성 방지
+        MuzzleLocation = CreateDefaultSubobject<USceneComponent>(TEXT("MuzzleLocation"));
+        MuzzleLocation->SetupAttachment(GunStaticMesh);
+        MuzzleLocation->SetRelativeLocation(FVector(0.f, 40.f, 15.f));
+        UE_LOG(LogTemp, Warning, TEXT("MuzzleLocation 생성 완료!"));
+    }
+
     MaxAmmo = 30;
     CurrentAmmo = MaxAmmo;
-    Range = 3000.0f;
-
-    bIsAutomatic = true;
-    BulletSpread = 2.0f;
-    BurstCount = 3;
-    BurstFireRate = 0.15f;
 }
+
 
 void ARifle::Fire()
 {

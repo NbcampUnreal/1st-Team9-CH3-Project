@@ -22,8 +22,10 @@ public:
     void Reload() override; // ✅ AGun의 Reload()를 오버라이딩
     void FinishReload();
     void ResetFire(); // ✅ 발사 후 대기 시간 후 재사용 가능
+protected:
+    UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Components")
+    USceneComponent* MuzzleLocation;
 
-private:
     UPROPERTY(EditAnywhere, Category = "Weapon Stats")
     float ReloadTime; // ✅ 재장전 시간
 

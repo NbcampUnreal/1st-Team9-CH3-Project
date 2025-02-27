@@ -19,7 +19,7 @@ private:
     
     AActor* EquippedGun;
 
-protected:
+public:
     UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Weapon")
     bool bIsAutomatic;
 
@@ -31,6 +31,10 @@ protected:
 
     UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Weapon")
     float BurstFireRate;
+protected:
+    UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Components")
+    USceneComponent* MuzzleLocation;
+
 
 public:
     FTimerHandle AutoFireHandle;

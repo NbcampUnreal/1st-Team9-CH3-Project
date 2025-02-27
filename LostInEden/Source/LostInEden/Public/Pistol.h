@@ -12,12 +12,16 @@ class LOSTINEDEN_API APistol : public AGun
 public:
     APistol();
 
-protected:
     UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Weapon")
     bool bIsAutomatic;
 
     UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Weapon")
     float BulletSpread;
+
+protected:
+    UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Components")
+    USceneComponent* MuzzleLocation;
+
 
     virtual void BeginPlay() override;
     virtual void Fire() override;

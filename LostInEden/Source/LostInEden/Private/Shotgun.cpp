@@ -7,8 +7,7 @@
 
 AShotgun::AShotgun()
 {
-
-    static ConstructorHelpers::FClassFinder<ABullet> BulletBP(TEXT("/Game/Items/Blueprints/BP_Bullet.BP_Bullet'"));
+    static ConstructorHelpers::FClassFinder<AActor> BulletBP(TEXT("/Game/Items/Blueprints/BP_Bullet.BP_Bullet_C"));
 
     if (BulletBP.Succeeded())
     {
@@ -19,16 +18,21 @@ AShotgun::AShotgun()
     {
         UE_LOG(LogTemp, Error, TEXT("Shotgun 생성자: Bullet Factory 자동 설정 실패! 블루프린트 경로 확인 필요."));
     }
-    Damage = 45.0f;
-    FireRate = 2.0f;
-    MaxAmmo = 20;
-    CurrentAmmo = MaxAmmo;
-    Range = 500.0f;
-    ReloadTime = 3.0f;
-    PelletCount = 8;
-    PelletSpread = 8.0f;
 
-    bCanFire = true;
+    if (!GunStaticMesh)
+    {
+        UE_LOG(LogTemp, Error, TEXT("GunStaticMesh가 nullptr입니다! MuzzleLocation을 연결할 수 없습니다."));
+    }
+    else if (!MuzzleLocation)
+    {
+        // 🔥 중복 생성 방지
+        MuzzleLocation = CreateDefaultSubobject<USceneComponent>(TEXT("MuzzleLocation"));
+        MuzzleLocation->SetupAttachment(GunStaticMesh);
+        MuzzleLocation->SetRelativeLocation(FVector(0.f, 52.f, 5.f));
+        UE_LOG(LogTemp, Warning, TEXT("MuzzleLocation 생성 완료!"));
+    }
+    MaxAmmo = 8;
+    CurrentAmmo = MaxAmmo;
 }
 
 void AShotgun::Fire()
