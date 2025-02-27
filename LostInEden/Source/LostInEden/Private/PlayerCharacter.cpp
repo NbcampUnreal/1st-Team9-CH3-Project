@@ -71,6 +71,10 @@ void APlayerCharacter::BeginPlay()
 
 	AddWeapon(CurrentWeapon);
 	EquipWeapon(CurrentWeapon);
+
+	//무기 인벤토리 테스트용
+	AddWeapon(EGunType::SHOTGUN);
+	AddWeapon(EGunType::RIFLE);
 }
 
 void APlayerCharacter::Heal(int32 HealAmount)
@@ -384,12 +388,12 @@ void APlayerCharacter::DoCrouch(const FInputActionValue& Value)
 void APlayerCharacter::SelectWeapon(const FInputActionValue& Value)
 {
 	int32 SelectInput = Value.Get<float>();
-	int32 WeaponNum;
+	int32 WeaponNum = CurrentWeapon;
 	EGunType ChangeWeapon;
 
 	while (1)
 	{
-		WeaponNum = CurrentWeapon + SelectInput;
+		WeaponNum += SelectInput;
 
 		if (WeaponNum < EGunType::PISTOL)
 		{
@@ -406,6 +410,10 @@ void APlayerCharacter::SelectWeapon(const FInputActionValue& Value)
 		{
 			EquipWeapon(ChangeWeapon);
 			CurrentWeapon = ChangeWeapon;
+			//인벤토리 테스트용 총기 확인
+			AGun* EquippedWeapon = GetCurrentWeapon();
+			UE_LOG(LogTemp, Warning, TEXT("현재 총: %d번, 탄약 수 : %d"), WeaponNum, EquippedWeapon->GetCurrentAmmo());
+			//EquippedWeapon->ReduceAmmo();
 			break;
 		}
 	}
