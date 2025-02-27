@@ -72,19 +72,19 @@ void AShotgun::Fire()
         TArray<FHitResult> HitResults;
         FCollisionQueryParams QueryParams;
         QueryParams.AddIgnoredActor(this);
-        QueryParams.AddIgnoredActor(GetOwner()); // 플레이어 무시
-        QueryParams.bTraceComplex = true;  // 🔹 복잡한 충돌 검사 활성화
+        QueryParams.AddIgnoredActor(GetOwner()); 
+        QueryParams.bTraceComplex = true;  // 
 
         // 🔹 감지 반경 증가
         float SphereRadius = 100.0f;
 
-        // 🔹 SphereTraceMultiByChannel을 사용하여 여러 적 감지
+        
         bool bHit = World->SweepMultiByChannel(
             HitResults,
             TraceStart,
             TraceEnd,
             FQuat::Identity,
-            ECC_Pawn,  // 🔹 필요하면 ECC_Visibility로 변경
+            ECC_Pawn,  
             FCollisionShape::MakeSphere(SphereRadius),
             QueryParams
         );
@@ -119,10 +119,10 @@ void AShotgun::Fire()
 
                     UE_LOG(LogTemp, Warning, TEXT("샷건이 %s에 명중! 피해량: %f (거리: %f)"), *HitActor->GetName(), AppliedDamage, Distance);
 
-                    // ✅ 중복 공격 방지
+                    
                     DamagedActors.Add(HitActor);
 
-                    // 🔹 여러 개의 구체가 그려지도록 변경
+                    
                     DrawDebugSphere(World, HitResult.ImpactPoint, 20.0f, 12, FColor::Yellow, false, 5.0f);
                 }
             }

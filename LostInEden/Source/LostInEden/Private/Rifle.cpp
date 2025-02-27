@@ -65,7 +65,7 @@ void ARifle::Fire()
         {
             UE_LOG(LogTemp, Warning, TEXT("트레이스 명중! 맞은 대상: %s"), *HitActor->GetName());
 
-            // 🔹 ApplyDamage 실행 (한 번만 실행)
+            
             float AppliedDamage = UGameplayStatics::ApplyDamage(
                 HitActor,
                 Damage,
@@ -147,7 +147,7 @@ void ARifle::BurstFire()
 
 void ARifle::Reload()
 {
-    // ✅ 탄창이 가득 차 있으면 재장전 불필요
+    
     if (CurrentAmmo >= MaxAmmo)
     {
         UE_LOG(LogTemp, Warning, TEXT("이미 탄창이 가득 찼음!"));

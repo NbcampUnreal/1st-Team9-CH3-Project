@@ -80,7 +80,7 @@ void APistol::Fire()
         {
             UE_LOG(LogTemp, Warning, TEXT("트레이스 명중! 맞은 대상: %s"), *HitActor->GetName());
 
-            // 🔹 ApplyDamage 실행 (한 번만 실행)
+            
             float AppliedDamage = UGameplayStatics::ApplyDamage(
                 HitActor,
                 Damage,
@@ -97,7 +97,7 @@ void APistol::Fire()
         UE_LOG(LogTemp, Warning, TEXT("트레이스 미적중!"));
     }
 
-    // 🔹 총알 스폰
+    
     ABullet* SpawnedBullet = World->SpawnActor<ABullet>(BulletFactory, MuzzlePos, ShotDirection.Rotation());
     if (SpawnedBullet)
     {
