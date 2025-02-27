@@ -18,12 +18,12 @@ public:
     int32 GetCurrentAmmo() const;
     int32 GetMaxAmmo() const;
 
-    //�׽�Ʈ��
-    //void ReduceAmmo();
-
     virtual void Fire() override;
     virtual void Reload() override;
     virtual void BeginPlay() override;
+
+    /** BP_Bullet을 자동으로 할당하는 함수 */
+    void AutoAssignBulletFactory();
 
 protected:
 
@@ -41,6 +41,7 @@ protected:
 
     UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Weapon")
     float Range;
+
 public:
 
     UPROPERTY(VisibleAnywhere, Category = "Components")
@@ -58,8 +59,5 @@ public:
     UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Effects")
     class UParticleSystem* ImpactEffect;
 
-
     void SetGunMeshAndBullet(UStaticMesh* NewMesh, TSubclassOf<ABullet> NewBulletFactory);
-
-
 };
