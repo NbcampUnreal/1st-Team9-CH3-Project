@@ -53,8 +53,7 @@ void AShotgun::Fire()
     FVector MuzzlePos = MuzzleLocation->GetComponentLocation();
     FRotator MuzzleRot = MuzzleLocation->GetComponentRotation();
 
-    // 🚀 중복 공격 방지 
-    TSet<AActor*> DamagedActors;
+        TSet<AActor*> DamagedActors;
 
     for (int32 i = 0; i < NumShots; i++)
     {
@@ -75,7 +74,7 @@ void AShotgun::Fire()
         QueryParams.AddIgnoredActor(GetOwner()); 
         QueryParams.bTraceComplex = true;  // 
 
-        // 🔹 감지 반경 증가
+        
         float SphereRadius = 100.0f;
 
         

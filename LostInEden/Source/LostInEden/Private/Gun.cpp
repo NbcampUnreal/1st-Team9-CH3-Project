@@ -43,7 +43,7 @@ void AGun::Fire()
                 FRotator MuzzleRot = MuzzleLocation->GetComponentRotation();
                 FVector ShotDirection = MuzzleRot.Vector();
 
-                // 🔹 총알 생성
+                
                 ABullet* SpawnedBullet = World->SpawnActor<ABullet>(BulletFactory, MuzzlePos, ShotDirection.Rotation());
                 if (SpawnedBullet)
                 {
@@ -56,7 +56,7 @@ void AGun::Fire()
                     UE_LOG(LogTemp, Warning, TEXT("총알 스폰 성공!"));
                 }
 
-                // 🔹 라인트레이스를 제거하거나, 총알이 맞았을 때만 트리거
+              
             }
         }
         else
