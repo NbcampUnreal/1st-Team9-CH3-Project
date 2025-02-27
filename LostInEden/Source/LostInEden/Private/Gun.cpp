@@ -2,6 +2,8 @@
 #include "Engine/World.h"
 #include "Kismet/GameplayStatics.h"
 #include "Bullet.h"
+#include "Components/SphereComponent.h"
+#include "GameFramework/ProjectileMovementComponent.h"
 
 AGun::AGun()
 {
@@ -9,8 +11,6 @@ AGun::AGun()
     CurrentAmmo = MaxAmmo;
 }
 
-<<<<<<< HEAD
-=======
 int32 AGun::GetCurrentAmmo() const
 {
     return CurrentAmmo;
@@ -21,7 +21,6 @@ int32 AGun::GetMaxAmmo() const
     return MaxAmmo;
 }
 
->>>>>>> parent of 0478c4b (Merge branch 'dev.player' into Item)
 void AGun::Fire()
 {
     if (CurrentAmmo > 0)
@@ -32,16 +31,30 @@ void AGun::Fire()
             UWorld* World = GetWorld();
             if (World)
             {
-<<<<<<< HEAD
-                FVector MuzzlePos = GetActorLocation();
-                FRotator MuzzleRot = GetActorRotation();
-                World->SpawnActor<ABullet>(BulletFactory, MuzzlePos, MuzzleRot);
-=======
-                FVector MuzzlePos = MuzzleLocation->GetComponentLocation();
-                FRotator MuzzleRot = MuzzleLocation->GetComponentRotation();
-                FVector ShotDirection = MuzzleRot.Vector();
 
-                // 🔹 총알 생성
+                FVector MuzzlePos;
+                FRotator MuzzleRot;
+                FVector ShotDirection;
+
+               
+                if (MuzzleLocation)
+                {
+                    MuzzlePos = MuzzleLocation->GetComponentLocation();
+                    MuzzleRot = MuzzleLocation->GetComponentRotation();
+                }
+                else
+                {
+                    MuzzlePos = GetActorLocation();
+                    MuzzleRot = GetActorRotation();
+                }
+
+                ShotDirection = MuzzleRot.Vector();
+
+           
+                World->SpawnActor<ABullet>(BulletFactory, MuzzlePos, MuzzleRot);
+
+
+               
                 ABullet* SpawnedBullet = World->SpawnActor<ABullet>(BulletFactory, MuzzlePos, ShotDirection.Rotation());
                 if (SpawnedBullet)
                 {
@@ -55,13 +68,7 @@ void AGun::Fire()
                 }
 
                 // 🔹 라인트레이스를 제거하거나, 총알이 맞았을 때만 트리거
-<<<<<<< HEAD
-<<<<<<< HEAD
->>>>>>> parent of a5dd2e3 (주석 필요한 것만)
-=======
->>>>>>> parent of a5dd2e3 (주석 필요한 것만)
-=======
->>>>>>> parent of a5dd2e3 (주석 필요한 것만)
+
             }
         }
         else

@@ -18,9 +18,6 @@ public:
     UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Weapon")
     float BulletSpread;
 
-protected:
-    UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Components")
-    USceneComponent* MuzzleLocation;
  
 
     virtual void BeginPlay() override;
@@ -29,4 +26,5 @@ protected:
 
 private:
     void AutoAssignBulletFactory();
+
 };

@@ -14,12 +14,9 @@ class LOSTINEDEN_API AGun : public AItem, public IIFireable
 public:
     AGun();
 
-<<<<<<< HEAD
-=======
     int32 GetCurrentAmmo() const;
     int32 GetMaxAmmo() const;
 
->>>>>>> parent of 0478c4b (Merge branch 'dev.player' into Item)
     virtual void Fire() override;
     virtual void Reload() override;
 
@@ -41,4 +38,11 @@ protected:
 
     UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Weapon")
     TSubclassOf<class ABullet> BulletFactory;
+
+    // 🔹 추가된 변수들
+    UPROPERTY(VisibleAnywhere, Category = "Components")
+    UStaticMeshComponent* GunStaticMesh;
+
+    UPROPERTY(VisibleAnywhere, Category = "Components")
+    USceneComponent* MuzzleLocation;
 };

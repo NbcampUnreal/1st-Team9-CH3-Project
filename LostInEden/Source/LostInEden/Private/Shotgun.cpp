@@ -7,32 +7,16 @@
 
 AShotgun::AShotgun()
 {
-    static ConstructorHelpers::FClassFinder<AActor> BulletBP(TEXT("/Game/Items/Blueprints/BP_Bullet.BP_Bullet_C"));
-
-    if (BulletBP.Succeeded())
-    {
-        BulletFactory = BulletBP.Class;
-        UE_LOG(LogTemp, Warning, TEXT("Shotgun 생성자: Bullet Factory 자동 설정 완료!"));
-    }
-    else
-    {
-        UE_LOG(LogTemp, Error, TEXT("Shotgun 생성자: Bullet Factory 자동 설정 실패! 블루프린트 경로 확인 필요."));
-    }
-
-    if (!GunStaticMesh)
-    {
-        UE_LOG(LogTemp, Error, TEXT("GunStaticMesh가 nullptr입니다! MuzzleLocation을 연결할 수 없습니다."));
-    }
-    else if (!MuzzleLocation)
-    {
-        // 🔥 중복 생성 방지
-        MuzzleLocation = CreateDefaultSubobject<USceneComponent>(TEXT("MuzzleLocation"));
-        MuzzleLocation->SetupAttachment(GunStaticMesh);
-        MuzzleLocation->SetRelativeLocation(FVector(0.f, 52.f, 5.f));
-        UE_LOG(LogTemp, Warning, TEXT("MuzzleLocation 생성 완료!"));
-    }
-    MaxAmmo = 8;
+    Damage = 30.0f;
+    FireRate = 2.0f;
+    MaxAmmo = 20;
     CurrentAmmo = MaxAmmo;
+    Range = 500.0f;
+    ReloadTime = 3.0f;
+    PelletCount = 8;
+    PelletSpread = 8.0f;
+
+    bCanFire = true;
 }
 
 void AShotgun::Fire()
@@ -55,11 +39,9 @@ void AShotgun::Fire()
 
     if (!BulletFactory)
     {
-        UE_LOG(LogTemp, Error, TEXT("Shotgun: Bullet Factory가 설정되지 않음! 자동 할당 시도."));
-        AutoAssignBulletFactory();
+        UE_LOG(LogTemp, Error, TEXT("Bullet Factory가 설정되지 않음! 블루프린트에서 확인하세요."));
+        return;
     }
-
-    
 
     UWorld* World = GetWorld();
     if (!World || !MuzzleLocation)
@@ -90,19 +72,19 @@ void AShotgun::Fire()
         TArray<FHitResult> HitResults;
         FCollisionQueryParams QueryParams;
         QueryParams.AddIgnoredActor(this);
-        QueryParams.AddIgnoredActor(GetOwner()); 
-        QueryParams.bTraceComplex = true;  // 
+        QueryParams.AddIgnoredActor(GetOwner()); // 플레이어 무시
+        QueryParams.bTraceComplex = true;  // 🔹 복잡한 충돌 검사 활성화
 
         // 🔹 감지 반경 증가
         float SphereRadius = 100.0f;
 
-        
+        // 🔹 SphereTraceMultiByChannel을 사용하여 여러 적 감지
         bool bHit = World->SweepMultiByChannel(
             HitResults,
             TraceStart,
             TraceEnd,
             FQuat::Identity,
-            ECC_Pawn,  
+            ECC_Pawn,  // 🔹 필요하면 ECC_Visibility로 변경
             FCollisionShape::MakeSphere(SphereRadius),
             QueryParams
         );
@@ -137,10 +119,10 @@ void AShotgun::Fire()
 
                     UE_LOG(LogTemp, Warning, TEXT("샷건이 %s에 명중! 피해량: %f (거리: %f)"), *HitActor->GetName(), AppliedDamage, Distance);
 
-                    
+                    // ✅ 중복 공격 방지
                     DamagedActors.Add(HitActor);
 
-                    
+                    // 🔹 여러 개의 구체가 그려지도록 변경
                     DrawDebugSphere(World, HitResult.ImpactPoint, 20.0f, 12, FColor::Yellow, false, 5.0f);
                 }
             }
@@ -153,7 +135,6 @@ void AShotgun::Fire()
 
     UE_LOG(LogTemp, Warning, TEXT("샷건 발사 완료! 남은 탄약: %d"), CurrentAmmo);
     GetWorld()->GetTimerManager().SetTimer(FireDelayTimer, this, &AShotgun::ResetFire, FireRate, false);
-    Super::Fire();
 }
 
 
@@ -196,22 +177,4 @@ void AShotgun::BeginPlay()
     Super::BeginPlay();
     Reload();
     UE_LOG(LogTemp, Warning, TEXT("샷건 시작! 현재 탄약: %d"), CurrentAmmo);
-}
-
-void AShotgun::AutoAssignBulletFactory()
-{
-    if (BulletFactory) return;
-
-    FString BulletPath = TEXT("/Game/Items/Blueprints/BP_Bullet.BP_Bullet");
-    UClass* BulletClass = LoadClass<ABullet>(nullptr, *BulletPath);
-
-    if (BulletClass)
-    {
-        BulletFactory = BulletClass;
-        UE_LOG(LogTemp, Warning, TEXT("Shotgun: Bullet Factory 자동 설정 완료!"));
-    }
-    else
-    {
-        UE_LOG(LogTemp, Error, TEXT("Shotgun: Bullet Factory 자동 설정 실패! 블루프린트 경로 확인 필요."));
-    }
 }
