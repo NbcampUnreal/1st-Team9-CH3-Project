@@ -13,17 +13,19 @@ enum class EPlayerStatus
 
 };
 
+UENUM(BlueprintType)
 enum EGunType : int8
 {
-	PISTOL,
-	RIFLE,
-	SHOTGUN
+	PISTOL		UMETA(DisplayName = "Pistol"),
+	RIFLE		UMETA(DisplayName = "Rifle"),
+	SHOTGUN		UMETA(DisplayName = "Shotgun")
 };
 
+UENUM(BlueprintType)
 enum EItemType : int8
 {
-	SHIELD,
-	HEALINGITEM
+	SHIELD		UMETA(DisplayName = "Shield"),
+	HEALINGITEM	UMETA(DisplayName = "HealingItem")
 };
 
 UCLASS()
@@ -59,7 +61,8 @@ protected:
 	TMap<EItemType, class AItem*> ItemInventory;
 
 	//현재 장착된 무기 타입
-	EGunType CurrentWeapon;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Weapon")
+	TEnumAsByte<EGunType> CurrentWeapon;
 	//현재 장착된 무기 블루프린트 객체
 	AGun* BP_Weapon;
 

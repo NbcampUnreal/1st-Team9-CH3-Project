@@ -40,6 +40,7 @@ APlayerCharacter::APlayerCharacter()
 
 	//기본 권총 장착
 	CurrentWeapon = EGunType::PISTOL;
+	BP_Weapon = nullptr;
 }
 
 int32 APlayerCharacter::GetShieldGauge() const
@@ -98,9 +99,17 @@ void APlayerCharacter::StartAttack()
 {
 	UE_LOG(LogTemp, Warning, TEXT("Gun Fire!!"));
 	AGun* EquippedWeapon = GetCurrentWeapon();
-	if (EquippedWeapon)
+	if(EquippedWeapon)
 	{
-		EquippedWeapon->Fire();
+		switch (CurrentWeapon)
+		{
+		case RIFLE:
+			Cast<ARifle>(EquippedWeapon)->StartAutoFire();
+			break;
+		default:
+			EquippedWeapon->Fire();
+			break;
+		}
 	}
 }
 
