@@ -21,7 +21,7 @@ public:
 protected:
     UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Components")
     USceneComponent* MuzzleLocation;
-
+ 
 
     virtual void BeginPlay() override;
     virtual void Fire() override;
