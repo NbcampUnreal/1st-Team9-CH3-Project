@@ -6,12 +6,15 @@
 #include "MainPlayerController.h"
 #include "EnhancedInputComponent.h"
 #include "Camera/CameraComponent.h"
+#include "Components/BoxComponent.h"
 #include "GameFramework/SpringArmComponent.h"
 #include "GameFramework/CharacterMovementComponent.h"
 #include "Gun.h"
 #include "Pistol.h"
 #include "Rifle.h"
 #include "Shotgun.h"
+#include "Shield.h"
+#include "HealingItem.h"
 
 APlayerCharacter::APlayerCharacter()
 {
@@ -23,6 +26,16 @@ APlayerCharacter::APlayerCharacter()
 	Camera = CreateDefaultSubobject<UCameraComponent>(TEXT("Camera"));
 	Camera->SetupAttachment(SpringArm);
 	Camera->bUsePawnControlRotation = false;
+
+	// 드롭된 아이템을 인식하기 위한 충돌 박스
+	BoxCollisionComp = CreateDefaultSubobject<UBoxComponent>(TEXT("BoxCollision"));
+	BoxCollisionComp->SetupAttachment(RootComponent);
+	BoxCollisionComp->SetBoxExtent(FVector(30.0f, 30.f, 30.f));
+	BoxCollisionComp->AddLocalOffset(FVector(50.f, 0.f, -55.f));
+
+	// 오버랩 이벤트 바인딩
+	BoxCollisionComp->OnComponentBeginOverlap.AddDynamic(this, &APlayerCharacter::OnOverlapBegin);
+	BoxCollisionComp->OnComponentEndOverlap.AddDynamic(this, &APlayerCharacter::OnOverlapEnd);
 
 	NormalSpeed = 600.f;
 	SprintSpeedMultiplier = 1.5f;
@@ -37,8 +50,14 @@ APlayerCharacter::APlayerCharacter()
 
 	MaxShieldGauge = 50;
 	ShieldGauge = 0;
-}
 
+	//기본 권총 장착
+	CurrentWeapon = EGunType::PISTOL;
+	BP_Weapon = nullptr;
+
+	// 오버랩된 아이템 초기화
+	OverlappingItem = nullptr;
+}
 
 int32 APlayerCharacter::GetShieldGauge() const
 {
@@ -50,10 +69,52 @@ int32 APlayerCharacter::GetMaxShieldGauge() const
 	return MaxShieldGauge;
 }
 
+AGun* APlayerCharacter::GetCurrentWeapon()
+{
+	if (EquipInventory.Contains(CurrentWeapon))
+	{
+		return *EquipInventory.Find(CurrentWeapon);
+	}
+	else
+	{
+		UE_LOG(LogTemp, Warning, TEXT("현재 장착된 총기 없음!!"));
+		return nullptr;
+	}
+}
+
+void APlayerCharacter::OnOverlapBegin(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)
+{
+	if (OtherActor && OtherActor != this)
+	{
+		OverlappingItem = Cast<AItem>(OtherActor);
+		if (OverlappingItem)
+		{
+			UE_LOG(LogTemp, Warning, TEXT("주울 수 있는 아이템 : %s"), *OverlappingItem->GetName());
+		}
+	}
+}
+
+void APlayerCharacter::OnOverlapEnd(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex)
+{
+	if(OverlappingItem)
+	{
+		if (OtherActor == OverlappingItem)
+		{
+			OverlappingItem = nullptr;
+		}
+	}
+}
+
 void APlayerCharacter::BeginPlay()
 {
 	Super::BeginPlay();
-	EquipGun();
+
+	AddWeapon(CurrentWeapon);
+	EquipWeapon(CurrentWeapon);
+
+	//무기 인벤토리 테스트용
+	AddWeapon(EGunType::SHOTGUN);
+	AddWeapon(EGunType::RIFLE);
 }
 
 void APlayerCharacter::Heal(int32 HealAmount)
@@ -76,51 +137,130 @@ float APlayerCharacter::TakeDamage(float DamageAmount, FDamageEvent const& Damag
 void APlayerCharacter::StartAttack()
 {
 	UE_LOG(LogTemp, Warning, TEXT("Gun Fire!!"));
-	if (EquippedWeapon)
+	AGun* EquippedWeapon = GetCurrentWeapon();
+	if(EquippedWeapon)
 	{
-		EquippedWeapon->Fire();
+		switch (CurrentWeapon)
+		{
+		case RIFLE:
+			Cast<ARifle>(EquippedWeapon)->StartAutoFire();
+			break;
+		default:
+			EquippedWeapon->Fire();
+			break;
+		}
 	}
 }
 
 void APlayerCharacter::StopAttack()
 {
 	UE_LOG(LogTemp, Warning, TEXT("Stop Fire!!"));
+	AGun* EquippedWeapon = GetCurrentWeapon();
+	if (EquippedWeapon)
+	{
+		if (ARifle* Rifle = Cast<ARifle>(EquippedWeapon))
+		{
+			Rifle->StopAutoFire();
+		}
+	}
 }
 
 void APlayerCharacter::ReloadAmmo()
 {
-	if (!EquippedWeapon)
-	{
-		UE_LOG(LogTemp, Warning, TEXT("No Gun!!"));
-		return;
-	}
+	//아이템 탄약 확인해서 장전하기 구현해야함
 
-	EquippedWeapon->Reload();
+	AGun* EquippedWeapon = GetCurrentWeapon();
+	if (EquippedWeapon)
+	{
+		EquippedWeapon->Reload();
+	}
 }
 
-void APlayerCharacter::UseItem(AItem* CurrItem)
+void APlayerCharacter::UseItem(EItemType ItemType)
 {
 	UE_LOG(LogTemp, Warning, TEXT("Use Item!!"));
 }
 
-void APlayerCharacter::EquipGun()
+void APlayerCharacter::AddItem(EItemType ItemType)
 {
-	UClass* Pistol = LoadClass<APistol>(nullptr, TEXT("/Game/Items/Blueprints/BP_Pistol.BP_Pistol_C"));
-	if (GetWorld())
+	switch (ItemType)
 	{
-		EquippedWeapon = GetWorld()->SpawnActor<AGun>(Pistol);
+	case SHIELD:
+		ItemInventory.Add({ ItemType, 1 });
+		break;
+	case HEALINGITEM:
+		ItemInventory.Add({ ItemType, 1 });
+		break;
+	default:
+		break;
+	}
+}
+
+void APlayerCharacter::AddWeapon(EGunType GunType)
+{
+	if (EquipInventory.Find(GunType))
+	{
+		UE_LOG(LogTemp, Warning, TEXT("이미 소지하고 있는 무기입니다. %d번 무기"), GunType);
+	}
+	else
+	{
+		switch (GunType)
+		{
+		case PISTOL:
+			EquipInventory.Add({ EGunType::PISTOL, NewObject<APistol>() });
+			break;
+		case RIFLE:
+			EquipInventory.Add({ EGunType::RIFLE, NewObject<ARifle>() });
+			break;
+		case SHOTGUN:
+			EquipInventory.Add({ EGunType::SHOTGUN, NewObject<AShotgun>() });
+			break;
+		default:
+			break;
+		}
+	}
+}
+
+void APlayerCharacter::EquipWeapon(EGunType GunType)
+{
+	UClass* GunClass = nullptr;
+
+	if (BP_Weapon)
+	{
+		BP_Weapon->Destroy();
+		BP_Weapon = nullptr;
 	}
 
-	if (EquippedWeapon)
+	switch (GunType)
+	{
+	case EGunType::PISTOL:
+		GunClass = LoadClass<AGun>(nullptr, TEXT("/Game/Items/Blueprints/BP_Pistol.BP_Pistol_C"));
+		break;
+	case EGunType::RIFLE:
+		GunClass = LoadClass<AGun>(nullptr, TEXT("/Game/Items/Blueprints/BP_Rifle.BP_Rifle_C"));
+		break;
+	case EGunType::SHOTGUN:
+		GunClass = LoadClass<AGun>(nullptr, TEXT("/Game/Items/Blueprints/BP_Shotgun.BP_Shotgun_C"));
+		break;
+	default:
+		break;
+	}
+
+	if(GetWorld()&&GunClass)
+	{
+		BP_Weapon = GetWorld()->SpawnActor<AGun>(GunClass);
+	}
+
+	if (BP_Weapon)
 	{
 		FName GunSocketName = "GunSocket_R";
 		if (GetMesh()->DoesSocketExist(GunSocketName))
 		{
-			EquippedWeapon->AttachToComponent(GetMesh(),
+			BP_Weapon->AttachToComponent(GetMesh(),
 				FAttachmentTransformRules::SnapToTargetNotIncludingScale,
 				GunSocketName);
 		}
-		EquippedWeapon->SetOwner(this);
+		BP_Weapon->SetOwner(this);
 	}
 }
 
@@ -222,6 +362,26 @@ void APlayerCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputCom
 					&APlayerCharacter::ReloadAmmo
 				);
 			}
+
+			if (PlayerController->ChangeGunAction)
+			{
+				EnhancedInput->BindAction(
+					PlayerController->ChangeGunAction,
+					ETriggerEvent::Triggered,
+					this,
+					&APlayerCharacter::SelectWeapon
+				);
+			}
+
+			if (PlayerController->PickupAction)
+			{
+				EnhancedInput->BindAction(
+					PlayerController->PickupAction,
+					ETriggerEvent::Triggered,
+					this,
+					&APlayerCharacter::PickupItem
+				);
+			}
 		}
 	}
 }
@@ -296,5 +456,48 @@ void APlayerCharacter::StopSprint(const FInputActionValue& Value)
 void APlayerCharacter::DoCrouch(const FInputActionValue& Value)
 {
 	CanCrouch() ? Crouch() : UnCrouch();
+}
+
+void APlayerCharacter::SelectWeapon(const FInputActionValue& Value)
+{
+	int32 SelectInput = Value.Get<float>();
+	int32 WeaponNum = CurrentWeapon;
+	EGunType ChangeWeapon;
+
+	while (1)
+	{
+		WeaponNum += SelectInput;
+
+		if (WeaponNum < EGunType::PISTOL)
+		{
+			WeaponNum = EGunType::SHOTGUN;
+		}
+		else if (WeaponNum > EGunType::SHOTGUN)
+		{
+			WeaponNum = EGunType::PISTOL;
+		}
+
+		ChangeWeapon = static_cast<EGunType>(WeaponNum);
+
+		if (EquipInventory.Find(ChangeWeapon))
+		{
+			EquipWeapon(ChangeWeapon);
+			CurrentWeapon = ChangeWeapon;
+			//인벤토리 테스트용 총기 확인
+			AGun* EquippedWeapon = GetCurrentWeapon();
+			UE_LOG(LogTemp, Warning, TEXT("현재 총: %d번, 탄약 수 : %d"), WeaponNum, EquippedWeapon->GetCurrentAmmo());
+			//EquippedWeapon->ReduceAmmo();
+			break;
+		}
+	}
+}
+
+void APlayerCharacter::PickupItem(const FInputActionValue& Value)
+{
+	if (OverlappingItem)
+	{
+		UE_LOG(LogTemp, Warning, TEXT("%s 획득!"), *OverlappingItem->GetName());
+		OverlappingItem->Destroy();
+	}
 }
 
