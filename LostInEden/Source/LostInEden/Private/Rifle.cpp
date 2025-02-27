@@ -7,29 +7,16 @@
 
 ARifle::ARifle()
 {
-    static ConstructorHelpers::FClassFinder<AActor> BulletBP(TEXT("/Game/Items/Blueprints/BP_Bullet.BP_Bullet_C"));
 
+    static ConstructorHelpers::FClassFinder<ABullet> BulletBP(TEXT("/Game/Items/Blueprints/BP_Bullet.BP_Bullet"));
     if (BulletBP.Succeeded())
     {
         BulletFactory = BulletBP.Class;
-        UE_LOG(LogTemp, Warning, TEXT("Rifle 생성자: Bullet Factory 자동 설정 완료!"));
+        UE_LOG(LogTemp, Warning, TEXT(" Bullet Factory 자동 설정 완료!"));
     }
     else
     {
-        UE_LOG(LogTemp, Error, TEXT("Rifle 생성자: Bullet Factory 자동 설정 실패! 블루프린트 경로 확인 필요."));
-    }
-
-    if (!GunStaticMesh)
-    {
-        UE_LOG(LogTemp, Error, TEXT("GunStaticMesh가 nullptr입니다! MuzzleLocation을 연결할 수 없습니다."));
-    }
-    else if (!MuzzleLocation)
-    {
-        // 🔥 중복 생성 방지
-        MuzzleLocation = CreateDefaultSubobject<USceneComponent>(TEXT("MuzzleLocation"));
-        MuzzleLocation->SetupAttachment(GunStaticMesh);
-        MuzzleLocation->SetRelativeLocation(FVector(0.f, 40.f, 15.f));
-        UE_LOG(LogTemp, Warning, TEXT("MuzzleLocation 생성 완료!"));
+        UE_LOG(LogTemp, Error, TEXT(" Bullet Factory 자동 설정 실패! 블루프린트 경로 확인 필요."));
     }
 
     MaxAmmo = 30;
@@ -55,10 +42,17 @@ void ARifle::Fire()
     }
 
     UWorld* World = GetWorld();
-    if (!World || !MuzzleLocation)
+    if (!World)
     {
-        UE_LOG(LogTemp, Error, TEXT("World 또는 MuzzleLocation이 없음!"));
+        UE_LOG(LogTemp, Error, TEXT("World 없음!"));
         return;
+    }
+
+    if (!MuzzleLocation)
+    {
+        UE_LOG(LogTemp, Error, TEXT("Gun: MuzzleLocation이 nullptr입니다! GunStaticMesh를 사용합니다."));
+
+        MuzzleLocation = GunStaticMesh;
     }
 
     FVector MuzzlePos = MuzzleLocation->GetComponentLocation();

@@ -17,6 +17,17 @@ AShotgun::AShotgun()
     PelletSpread = 8.0f;
 
     bCanFire = true;
+
+    static ConstructorHelpers::FClassFinder<ABullet> BulletBP(TEXT("/Game/Items/Blueprints/BP_Bullet.BP_Bullet"));
+    if (BulletBP.Succeeded())
+    {
+        BulletFactory = BulletBP.Class;
+        UE_LOG(LogTemp, Warning, TEXT(" Bullet Factory 자동 설정 완료!"));
+    }
+    else
+    {
+        UE_LOG(LogTemp, Error, TEXT(" Bullet Factory 자동 설정 실패! 블루프린트 경로 확인 필요."));
+    }
 }
 
 void AShotgun::Fire()
@@ -44,10 +55,17 @@ void AShotgun::Fire()
     }
 
     UWorld* World = GetWorld();
-    if (!World || !MuzzleLocation)
+    if (!World)
     {
-        UE_LOG(LogTemp, Error, TEXT("World 또는 MuzzleLocation이 없음!"));
+        UE_LOG(LogTemp, Error, TEXT("World 없음!"));
         return;
+    }
+
+    if (!MuzzleLocation)
+    {
+        UE_LOG(LogTemp, Error, TEXT("Gun: MuzzleLocation이 nullptr입니다! GunStaticMesh를 사용합니다."));
+
+        MuzzleLocation = GunStaticMesh;
     }
 
     FVector MuzzlePos = MuzzleLocation->GetComponentLocation();

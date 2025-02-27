@@ -16,21 +16,21 @@ APistol::APistol()
     bIsAutomatic = false;
     BulletSpread = 1.0f;
 
-    static ConstructorHelpers::FClassFinder<ABullet> BulletBP(TEXT("/Game/Items/Blueprints/BP_Bullet.BP_Bullet'"));
+    static ConstructorHelpers::FClassFinder<ABullet> BulletBP(TEXT("/Game/Items/Blueprints/BP_Bullet.BP_Bullet"));
     if (BulletBP.Succeeded())
     {
         BulletFactory = BulletBP.Class;
-        UE_LOG(LogTemp, Warning, TEXT("Shotgun: Bullet Factory 자동 설정 완료!"));
+        UE_LOG(LogTemp, Warning, TEXT(" Bullet Factory 자동 설정 완료!"));
     }
     else
     {
-        UE_LOG(LogTemp, Error, TEXT("Shotgun: Bullet Factory 자동 설정 실패! 블루프린트 경로 확인 필요."));
+        UE_LOG(LogTemp, Error, TEXT(" Bullet Factory 자동 설정 실패! 블루프린트 경로 확인 필요."));
     }
 
-    ConstructorHelpers::FObjectFinder<USoundBase> tempSound(TEXT("/Game/Items/GunSound/SciFi_Shot_P2__133__Cue.SciFi_Shot_P2__133__Cue"));
+    ConstructorHelpers::FObjectFinder<USoundBase> tempSound(TEXT("/Game/Items/Sci-Fi_Shots_Pack2_Game_Of_Weapons/Wave/SciFi_Shot_P2__147_.SciFi_Shot_P2__147_"));
     if (tempSound.Succeeded()) {
-        bulletSound = tempSound.Object;
-    }
+       bulletSound = tempSound.Object;
+   }
 }
 void APistol::BeginPlay()
 {
@@ -59,6 +59,8 @@ void APistol::BeginPlay()
 
 void APistol::Fire()
 {
+
+
     if (!BulletFactory)
     {
         UE_LOG(LogTemp, Error, TEXT("Bullet Factory가 설정되지 않음! 블루프린트에서 확인하세요."));
@@ -74,8 +76,9 @@ void APistol::Fire()
 
     if (!MuzzleLocation)
     {
-        UE_LOG(LogTemp, Error, TEXT(" MuzzleLocation이 없음!"));
-        return;
+        UE_LOG(LogTemp, Error, TEXT("Gun: MuzzleLocation이 nullptr입니다! GunStaticMesh를 사용합니다."));
+
+        MuzzleLocation = GunStaticMesh;
     }
 
     FVector MuzzlePos = MuzzleLocation->GetComponentLocation();

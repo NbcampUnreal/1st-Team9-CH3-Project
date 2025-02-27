@@ -8,8 +8,15 @@
 AGun::AGun()
 {
     PrimaryActorTick.bCanEverTick = true;
-    CurrentAmmo = MaxAmmo;
+
+
+    GunStaticMesh = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("GunStaticMesh"));
+    SetRootComponent(GunStaticMesh);
+
+    MuzzleLocation = CreateDefaultSubobject<USceneComponent>(TEXT("MuzzleLocation"));
+    MuzzleLocation->SetupAttachment(GunStaticMesh);
 }
+
 
 int32 AGun::GetCurrentAmmo() const
 {
