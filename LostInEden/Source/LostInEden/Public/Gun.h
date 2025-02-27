@@ -18,6 +18,9 @@ public:
     int32 GetCurrentAmmo() const;
     int32 GetMaxAmmo() const;
 
+    //테스트용
+    //void ReduceAmmo();
+
     virtual void Fire() override;
     virtual void Reload() override;
     virtual void BeginPlay() override;

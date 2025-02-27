@@ -28,6 +28,11 @@ int32 AGun::GetMaxAmmo() const
     return MaxAmmo;
 }
 
+/*void AGun::ReduceAmmo()
+{
+    CurrentAmmo--;
+}*/
+
 void AGun::Fire()
 {
     if (CurrentAmmo > 0)
