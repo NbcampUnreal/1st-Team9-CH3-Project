@@ -7,6 +7,8 @@
 #include "PlayerCharacter.generated.h"
 
 struct FInputActionValue;
+class AGun;
+class AItem;
 
 enum class EPlayerStatus
 {
@@ -25,7 +27,8 @@ UENUM(BlueprintType)
 enum EItemType : int8
 {
 	SHIELD		UMETA(DisplayName = "Shield"),
-	HEALINGITEM	UMETA(DisplayName = "HealingItem")
+	HEALINGITEM	UMETA(DisplayName = "HealingItem"),
+	NONE		UMETA(DisplayName = "None")
 };
 
 UCLASS()
@@ -39,36 +42,59 @@ public:
 	int32 GetShieldGauge() const;
 	int32 GetMaxShieldGauge() const;
 
-	class AGun* GetCurrentWeapon();
+	// 현재 장착하고 있는 무기의 객체를 반환
+	AGun* GetCurrentWeapon();
+
+	UFUNCTION()
+	void OnOverlapBegin(
+		class UPrimitiveComponent* OverlappedComponent,
+		class AActor* OtherActor,
+		class UPrimitiveComponent* OtherComp,
+		int32 OtherBodyIndex,
+		bool bFromSweep,
+		const FHitResult& SweepResult
+	);
+
+	UFUNCTION()
+	void OnOverlapEnd(
+		class UPrimitiveComponent* OverlappedComponent,
+		class AActor* OtherActor,
+		class UPrimitiveComponent* OtherComp,
+		int32 OtherBodyIndex
+	);
 
 protected:
-	// 카메라 관련 컴포넌트
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Camera")
-	class USpringArmComponent* SpringArm;
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Camera")
-	class UCameraComponent* Camera;
+	// 쉴드 게이지
+	int32 ShieldGauge;
+	int32 MaxShieldGauge;
 
 	// 이동 속도 관련
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Movement")
 	float NormalSpeed;
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Movement")
 	float SprintSpeedMultiplier;
-	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Movement")
 	float SprintSpeed;
 
 	// 플레이어 인벤토리
-	TMap<EGunType, class AGun*> EquipInventory;
-	TMap<EItemType, class AItem*> ItemInventory;
+	TMap<EGunType, AGun*> EquipInventory;
+	TMap<EItemType, int32> ItemInventory;
 
-	//현재 장착된 무기 타입
+	// 현재 장착된 무기 타입
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Weapon")
 	TEnumAsByte<EGunType> CurrentWeapon;
-	//현재 장착된 무기 블루프린트 객체
+	// 현재 장착된 무기 블루프린트 객체
 	AGun* BP_Weapon;
 
-	//쉴드
-	int32 ShieldGauge;
-	int32 MaxShieldGauge;
+	// 오버랩된 드롭 아이템
+	AItem* OverlappingItem;
+
+	// 카메라 관련 컴포넌트
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Component|Camera")
+	class USpringArmComponent* SpringArm;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Component|Camera")
+	class UCameraComponent* Camera;
+
+	// 박스 컴포넌트
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Component|Collision")
+	class UBoxComponent* BoxCollisionComp;
 
 	// IMC
 	virtual void SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent) override;
@@ -89,18 +115,34 @@ protected:
 	void DoCrouch(const FInputActionValue& Value);
 	UFUNCTION()
 	void SelectWeapon(const FInputActionValue& Value);
+	UFUNCTION()
+	void PickupItem(const FInputActionValue& Value);
 
 	virtual void BeginPlay() override;
 
 public:
+	// 체력 회복
 	void Heal(int32);
+	// 캐릭터 상태 변화
 	void ChangeState(EPlayerStatus);
 
+	// 데미지를 처리하는 함수
 	virtual float TakeDamage(float DamageAmount, struct FDamageEvent const& DamageEvent, AController* EventInstigator, AActor* DamageCauser) override;
+	
+	// 무기 공격
 	void StartAttack();
 	void StopAttack();
+
+	// 총 재장전
 	void ReloadAmmo();
-	void UseItem(class AItem*);
+
+	// 아이템 사용
+	void UseItem(EItemType);
+	// 아이템 추가
+	void AddItem(EItemType);
+
+	// 무기 장착
 	void EquipWeapon(EGunType);
+	// 무기 추가
 	void AddWeapon(EGunType);
 };
