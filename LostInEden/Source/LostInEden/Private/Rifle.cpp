@@ -7,17 +7,23 @@
 
 ARifle::ARifle()
 {
-    Damage = 35.0f;
-    FireRate = 0.1f;
+
+    static ConstructorHelpers::FClassFinder<ABullet> BulletBP(TEXT("/Game/Items/Blueprints/BP_Bullet.BP_Bullet"));
+    if (BulletBP.Succeeded())
+    {
+        BulletFactory = BulletBP.Class;
+        UE_LOG(LogTemp, Warning, TEXT(" Bullet Factory 자동 설정 완료!"));
+    }
+    else
+    {
+        UE_LOG(LogTemp, Error, TEXT(" Bullet Factory 자동 설정 실패! 블루프린트 경로 확인 필요."));
+    }
+
     MaxAmmo = 30;
     CurrentAmmo = MaxAmmo;
-    Range = 3000.0f;
-
     bIsAutomatic = true;
-    BulletSpread = 2.0f;
-    BurstCount = 3;
-    BurstFireRate = 0.15f;
 }
+
 
 void ARifle::Fire()
 {
@@ -31,15 +37,22 @@ void ARifle::Fire()
 
     if (!BulletFactory)
     {
-        UE_LOG(LogTemp, Error, TEXT("Bullet Factory가 설정되지 않음! 블루프린트에서 확인하세요."));
-        return;
+        UE_LOG(LogTemp, Error, TEXT("Rifle: Bullet Factory가 설정되지 않음! 자동 할당 시도."));
+        AutoAssignBulletFactory();
     }
 
     UWorld* World = GetWorld();
-    if (!World || !MuzzleLocation)
+    if (!World)
     {
-        UE_LOG(LogTemp, Error, TEXT("World 또는 MuzzleLocation이 없음!"));
+        UE_LOG(LogTemp, Error, TEXT("World 없음!"));
         return;
+    }
+
+    if (!MuzzleLocation)
+    {
+        UE_LOG(LogTemp, Error, TEXT("Gun: MuzzleLocation이 nullptr입니다! GunStaticMesh를 사용합니다."));
+
+        MuzzleLocation = GunStaticMesh;
     }
 
     FVector MuzzlePos = MuzzleLocation->GetComponentLocation();
@@ -53,15 +66,20 @@ void ARifle::Fire()
     FCollisionQueryParams QueryParams;
     QueryParams.AddIgnoredActor(this);
 
-    bool bHit = World->LineTraceSingleByChannel(HitResult, TraceStart, TraceEnd, ECC_Visibility, QueryParams);
-    DrawDebugLine(World, TraceStart, TraceEnd, FColor::Red, false, 2.0f, 0, 1.0f);
+    bool bHit = World->LineTraceSingleByChannel(
+        HitResult, TraceStart, TraceEnd, ECC_Pawn, QueryParams);
+
+    DrawDebugLine(World, TraceStart, TraceEnd, FColor::Green, false, 5.0f, 0, 5.0f);
 
     if (bHit)
     {
         AActor* HitActor = HitResult.GetActor();
         if (HitActor)
         {
-            UGameplayStatics::ApplyDamage(
+            UE_LOG(LogTemp, Warning, TEXT("트레이스 명중! 맞은 대상: %s"), *HitActor->GetName());
+
+            
+            float AppliedDamage = UGameplayStatics::ApplyDamage(
                 HitActor,
                 Damage,
                 GetOwner()->GetInstigatorController(),
@@ -69,8 +87,12 @@ void ARifle::Fire()
                 nullptr
             );
 
-            UE_LOG(LogTemp, Warning, TEXT("소총이 %s에 명중! 피해량: %d"), *HitActor->GetName(), Damage);
+            UE_LOG(LogTemp, Warning, TEXT("소총이 %s에 명중! 피해량: %f"), *HitActor->GetName(), AppliedDamage);
         }
+    }
+    else
+    {
+        UE_LOG(LogTemp, Warning, TEXT("트레이스 미적중!"));
     }
 
     // 🔹 총알 스폰
@@ -79,7 +101,9 @@ void ARifle::Fire()
     {
         UE_LOG(LogTemp, Warning, TEXT("총알 스폰 성공!"));
     }
+    Super::Fire();
 }
+
 
 
 void ARifle::StartAutoFire()
@@ -137,7 +161,7 @@ void ARifle::BurstFire()
 
 void ARifle::Reload()
 {
-    // ✅ 탄창이 가득 차 있으면 재장전 불필요
+    
     if (CurrentAmmo >= MaxAmmo)
     {
         UE_LOG(LogTemp, Warning, TEXT("이미 탄창이 가득 찼음!"));
@@ -146,4 +170,22 @@ void ARifle::Reload()
 
     UE_LOG(LogTemp, Warning, TEXT("소총 재장전!"));
     CurrentAmmo = MaxAmmo;
+}
+
+void ARifle::AutoAssignBulletFactory()
+{
+    if (BulletFactory) return;
+
+    FString BulletPath = TEXT("/Game/Items/Blueprints/BP_Bullet.BP_Bullet");
+    UClass* BulletClass = LoadClass<ABullet>(nullptr, *BulletPath);
+
+    if (BulletClass)
+    {
+        BulletFactory = BulletClass;
+        UE_LOG(LogTemp, Warning, TEXT("Rifle: Bullet Factory 자동 설정 완료!"));
+    }
+    else
+    {
+        UE_LOG(LogTemp, Error, TEXT("Rifle: Bullet Factory 자동 설정 실패! 블루프린트 경로 확인 필요."));
+    }
 }

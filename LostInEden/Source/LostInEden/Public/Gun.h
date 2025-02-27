@@ -17,15 +17,10 @@ public:
     int32 GetCurrentAmmo() const;
     int32 GetMaxAmmo() const;
 
-    //�׽�Ʈ��
-    //void ReduceAmmo();
-
     virtual void Fire() override;
     virtual void Reload() override;
-    virtual void BeginPlay() override;
 
 protected:
-
     UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Weapon")
     int32 Damage;
 
@@ -40,22 +35,14 @@ protected:
 
     UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Weapon")
     float Range;
-public:
 
+    UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Weapon")
+    TSubclassOf<class ABullet> BulletFactory;
+
+    // 🔹 추가된 변수들
     UPROPERTY(VisibleAnywhere, Category = "Components")
     UStaticMeshComponent* GunStaticMesh;
 
     UPROPERTY(VisibleAnywhere, Category = "Components")
     USceneComponent* MuzzleLocation;
-
-    UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Weapon")
-    TSubclassOf<class ABullet> BulletFactory;
-
-    UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Effects")
-    class UParticleSystem* MuzzleEffect;
-
-    UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Effects")
-    class UParticleSystem* ImpactEffect;
-
-
 };
