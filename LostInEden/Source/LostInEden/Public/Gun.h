@@ -14,6 +14,12 @@ class LOSTINEDEN_API AGun : public AItem, public IIFireable
 public:
     AGun();
 
+<<<<<<< HEAD
+=======
+    int32 GetCurrentAmmo() const;
+    int32 GetMaxAmmo() const;
+
+>>>>>>> parent of 0478c4b (Merge branch 'dev.player' into Item)
     virtual void Fire() override;
     virtual void Reload() override;
 

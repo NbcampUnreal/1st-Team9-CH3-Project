@@ -9,6 +9,19 @@ AGun::AGun()
     CurrentAmmo = MaxAmmo;
 }
 
+<<<<<<< HEAD
+=======
+int32 AGun::GetCurrentAmmo() const
+{
+    return CurrentAmmo;
+}
+
+int32 AGun::GetMaxAmmo() const
+{
+    return MaxAmmo;
+}
+
+>>>>>>> parent of 0478c4b (Merge branch 'dev.player' into Item)
 void AGun::Fire()
 {
     if (CurrentAmmo > 0)
