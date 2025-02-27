@@ -48,11 +48,11 @@ void APistol::BeginPlay()
     AttachToComponent(PlayerCharacter->GetMesh(), FAttachmentTransformRules::SnapToTargetNotIncludingScale, WeaponSocket);*/
 
     // 🔹 총 회전값을 보정 (Yaw 180도 회전)
-    FRotator NewRotation = GetActorRotation();
-    NewRotation.Yaw += 180.0f;
-    SetActorRotation(NewRotation);
+    //FRotator NewRotation = GetActorRotation();
+    //NewRotation.Yaw += 180.0f;
+    //SetActorRotation(NewRotation);
 
-    UE_LOG(LogTemp, Warning, TEXT("%s가 플레이어 손에 올바르게 장착됨!"), *GetName());
+    //UE_LOG(LogTemp, Warning, TEXT("%s가 플레이어 손에 올바르게 장착됨!"), *GetName());
 }
 
 
