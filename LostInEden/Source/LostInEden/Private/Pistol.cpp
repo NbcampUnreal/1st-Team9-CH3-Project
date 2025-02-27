@@ -16,7 +16,7 @@ APistol::APistol()
     bIsAutomatic = false;
     BulletSpread = 1.0f;
 
-    static ConstructorHelpers::FClassFinder<ABullet> BulletBP(TEXT("/Game/Items/Blueprints/BP_Bullet.BP_Bullet"));
+    static ConstructorHelpers::FClassFinder<ABullet> BulletBP(TEXT("/Game/Items/Blueprints/BP_Bullet.BP_Bullet_C"));
     if (BulletBP.Succeeded())
     {
         BulletFactory = BulletBP.Class;
