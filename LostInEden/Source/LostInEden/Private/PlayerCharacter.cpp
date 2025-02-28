@@ -143,10 +143,12 @@ void APlayerCharacter::StartAttack()
 		switch (CurrentWeapon)
 		{
 		case RIFLE:
-			Cast<ARifle>(EquippedWeapon)->StartAutoFire();
+			//Cast<ARifle>(EquippedWeapon)->StartAutoFire();
+			Cast<ARifle>(BP_Weapon)->StartAutoFire();
 			break;
 		default:
-			EquippedWeapon->Fire();
+			BP_Weapon->Fire();
+			//EquippedWeapon->Fire();
 			break;
 		}
 	}
@@ -158,7 +160,11 @@ void APlayerCharacter::StopAttack()
 	AGun* EquippedWeapon = GetCurrentWeapon();
 	if (EquippedWeapon)
 	{
-		if (ARifle* Rifle = Cast<ARifle>(EquippedWeapon))
+		/*if (ARifle* Rifle = Cast<ARifle>(EquippedWeapon))
+		{
+			Rifle->StopAutoFire();
+		}*/
+		if (ARifle* Rifle = Cast<ARifle>(BP_Weapon))
 		{
 			Rifle->StopAutoFire();
 		}
@@ -172,7 +178,8 @@ void APlayerCharacter::ReloadAmmo()
 	AGun* EquippedWeapon = GetCurrentWeapon();
 	if (EquippedWeapon)
 	{
-		EquippedWeapon->Reload();
+		//EquippedWeapon->Reload();
+		BP_Weapon->Reload();
 	}
 }
 
