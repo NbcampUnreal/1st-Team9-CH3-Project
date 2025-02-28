@@ -22,6 +22,7 @@ ARifle::ARifle()
     MaxAmmo = 30;
     CurrentAmmo = MaxAmmo;
     bIsAutomatic = false;
+    FireRate = 0.1f;
 }
 
 
