@@ -2,6 +2,7 @@
 
 #include "CoreMinimal.h"
 #include "Gun.h"
+#include "PlayerCharacter.h"
 #include "Rifle.generated.h"
 
 UCLASS()
@@ -31,7 +32,9 @@ public:
 
     UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Weapon")
     float BurstFireRate;
-protected:
+    
+    UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Weapon")
+    TEnumAsByte<EGunType> GunType = EGunType::RIFLE;
 
 
 public:

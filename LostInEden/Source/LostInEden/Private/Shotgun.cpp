@@ -7,7 +7,7 @@
 
 AShotgun::AShotgun()
 {
-    Damage = 30.0f;
+    Damage = 45.0f;
     FireRate = 2.0f;
     MaxAmmo = 20;
     CurrentAmmo = MaxAmmo;

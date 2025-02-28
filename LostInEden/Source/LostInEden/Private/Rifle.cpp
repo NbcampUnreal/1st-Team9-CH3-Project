@@ -18,7 +18,7 @@ ARifle::ARifle()
     {
         UE_LOG(LogTemp, Error, TEXT(" Bullet Factory 자동 설정 실패! 블루프린트 경로 확인 필요."));
     }
-
+    Damage = 30.0f;
     MaxAmmo = 30;
     CurrentAmmo = MaxAmmo;
     bIsAutomatic = false;

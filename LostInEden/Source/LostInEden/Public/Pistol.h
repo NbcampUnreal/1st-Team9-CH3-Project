@@ -2,6 +2,9 @@
 
 #include "CoreMinimal.h"
 #include "Gun.h"
+#include "Engine/DataTable.h"
+#include "BulletData.h"
+#include "PlayerCharacter.h"
 #include "Pistol.generated.h"
 
 UCLASS()
@@ -19,11 +22,17 @@ public:
     float BulletSpread;
 
     class USoundBase* bulletSound;
- 
+    
+    UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Weapon")
+    UDataTable* BulletDataTable;
+
 
     virtual void BeginPlay() override;
     virtual void Fire() override;
     virtual void Reload() override;
+
+    UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Weapon")
+    TEnumAsByte<EGunType> GunType = EGunType::PISTOL;
 
 
 };

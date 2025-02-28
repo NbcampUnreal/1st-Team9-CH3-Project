@@ -1,11 +1,12 @@
 #pragma once
 
 #include "CoreMinimal.h"
-#include "Gun.h"  // ✅ AGun을 상속받기 위해 추가
+#include "Gun.h"  
+#include "PlayerCharacter.h"
 #include "Shotgun.generated.h"
 
 UCLASS()
-class AShotgun : public AGun  // ✅ AActor → AGun으로 변경
+class AShotgun : public AGun  
 {
     GENERATED_BODY()
 
@@ -33,6 +34,10 @@ protected:
 
     FTimerHandle FireDelayTimer; 
     FTimerHandle ReloadTimer; 
-private:
-    void AutoAssignBulletFactory();
+
+    UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Weapon")
+    TEnumAsByte<EGunType> GunType = EGunType::SHOTGUN;
+
+
+
 };
