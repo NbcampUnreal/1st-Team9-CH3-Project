@@ -131,6 +131,13 @@ float APlayerCharacter::TakeDamage(float DamageAmount, FDamageEvent const& Damag
 {
 	float Damage = Super::TakeDamage(DamageAmount, DamageEvent, EventInstigator, DamageCauser);
 
+	// 컨트롤러의 HUD 업데이트 함수 호출
+	AMainPlayerController* PC = Cast<AMainPlayerController>(GetController());
+	if (PC)
+	{
+		PC->UpdateHUD();
+	}
+
 	return Damage;
 }
 

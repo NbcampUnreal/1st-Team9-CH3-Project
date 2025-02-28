@@ -6,9 +6,9 @@
 #include "GameFramework/PlayerController.h"
 #include "MainPlayerController.generated.h"
 
-/**
- * 
- */
+class UUserWidget;
+class APlayerCharacter;
+
 UCLASS()
 class LOSTINEDEN_API AMainPlayerController : public APlayerController
 {
@@ -41,8 +41,21 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Input")
 	UInputAction* ReloadAction;
 
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "UI")
+	// HUD 위젯 클래스
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "HUD")
 	TSubclassOf<UUserWidget> HUDWidgetClass;
+
+	// HUD 위젯 인스턴스
+	UPROPERTY(BlueprintReadOnly, Category = "HUD")
+	UUserWidget* HUDWidget;
+
+	// HUD 업데이트 함수
+	UFUNCTION(BlueprintCallable, Category = "HUD")
+	void UpdateHUD();
+
+
+
+
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Input")
 	UInputAction* ChangeGunAction;
 
@@ -50,4 +63,8 @@ public:
 	UInputAction* PickupAction;
 
 	virtual void BeginPlay() override;
+
+private:
+	// 캐릭터 참조
+	APlayerCharacter* PlayerCharacter;
 };

@@ -3,6 +3,8 @@
 
 #include "EdenGameState.h"
 
+
+
 AEdenGameState::AEdenGameState()
 {
 
@@ -23,10 +25,6 @@ void AEdenGameState::EndLevel()
 
 }
 
-void AEdenGameState::UpdateHUD()
-{
-
-}
 
 void AEdenGameState::OnGameOver()
 {
