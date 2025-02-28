@@ -3,3 +3,12 @@
 
 #include "EdenGameMode.h"
 
+void AEdenGameMode::BeginPlay()
+{
+
+}
+
+void AEdenGameMode::Tick(float _DeltaTime)
+{
+
+}

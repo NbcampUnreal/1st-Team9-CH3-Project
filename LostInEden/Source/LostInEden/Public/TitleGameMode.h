@@ -4,17 +4,14 @@
 
 #include "CoreMinimal.h"
 #include "GameFramework/GameMode.h"
-#include "EdenGameMode.generated.h"
+#include "TitleGameMode.generated.h"
 
 /**
  * 
  */
 UCLASS()
-class LOSTINEDEN_API AEdenGameMode : public AGameMode
+class LOSTINEDEN_API ATitleGameMode : public AGameMode
 {
 	GENERATED_BODY()
 	
-protected:
-	void BeginPlay() override;
-	void Tick(float _DeltaTime) override;
 };

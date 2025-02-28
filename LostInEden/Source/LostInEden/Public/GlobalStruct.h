@@ -6,9 +6,8 @@
 #include "UObject/NoExportTypes.h"
 #include "GlobalStruct.generated.h"
 
-/**
- * 
- */
+// Global하게 사용되는 struct
+
 UCLASS()
 class LOSTINEDEN_API UGlobalStruct : public UObject
 {
