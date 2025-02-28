@@ -9,13 +9,20 @@ AGun::AGun()
 {
     PrimaryActorTick.bCanEverTick = true;
 
+  
+    SceneRoot = CreateDefaultSubobject<USceneComponent>(TEXT("SceneRoot"));
+    SetRootComponent(SceneRoot);
 
+    
     GunStaticMesh = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("GunStaticMesh"));
-    SetRootComponent(GunStaticMesh);
+    GunStaticMesh->SetupAttachment(SceneRoot);
+    GunStaticMesh->SetMobility(EComponentMobility::Movable); 
+
 
     MuzzleLocation = CreateDefaultSubobject<USceneComponent>(TEXT("MuzzleLocation"));
     MuzzleLocation->SetupAttachment(GunStaticMesh);
 }
+
 
 
 int32 AGun::GetCurrentAmmo() const
@@ -94,3 +101,4 @@ void AGun::Reload()
     UE_LOG(LogTemp, Warning, TEXT("재장전!"));
     CurrentAmmo = MaxAmmo;
 }
+
