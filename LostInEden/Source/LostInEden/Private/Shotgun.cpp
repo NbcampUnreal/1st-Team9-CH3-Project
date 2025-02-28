@@ -71,7 +71,6 @@ void AShotgun::Fire()
     FVector MuzzlePos = MuzzleLocation->GetComponentLocation();
     FRotator MuzzleRot = MuzzleLocation->GetComponentRotation();
 
-    // 🚀 중복 공격 방지 
     TSet<AActor*> DamagedActors;
 
     for (int32 i = 0; i < NumShots; i++)

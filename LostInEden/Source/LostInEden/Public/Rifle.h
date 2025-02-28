@@ -39,6 +39,5 @@ public:
     void StartAutoFire();
     void StopAutoFire();
     void BurstFire();
-private:
-    void AutoAssignBulletFactory();
+
 };

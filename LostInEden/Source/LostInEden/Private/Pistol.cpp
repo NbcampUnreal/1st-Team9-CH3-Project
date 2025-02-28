@@ -137,20 +137,3 @@ void APistol::Reload()
     UE_LOG(LogTemp, Warning, TEXT("권총은 무한 탄창이므로 재장전이 필요 없음!"));
 }
 
-void APistol::AutoAssignBulletFactory()
-{
-    if (BulletFactory) return;
-
-    FString BulletPath = TEXT("/Game/Items/Blueprints/BP_Bullet.BP_Bullet'");
-    UClass* BulletClass = LoadObject<UClass>(nullptr, *BulletPath);
-
-    if (BulletClass)
-    {
-        BulletFactory = BulletClass;
-        UE_LOG(LogTemp, Warning, TEXT("Pistol: Bullet Factory 자동 설정 완료!"));
-    }
-    else
-    {
-        UE_LOG(LogTemp, Error, TEXT("Pistol: Bullet Factory 자동 설정 실패! 블루프린트 경로 확인 필요."));
-    }
-}

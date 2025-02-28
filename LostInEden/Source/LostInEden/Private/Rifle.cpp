@@ -38,7 +38,6 @@ void ARifle::Fire()
     if (!BulletFactory)
     {
         UE_LOG(LogTemp, Error, TEXT("Rifle: Bullet Factory가 설정되지 않음! 자동 할당 시도."));
-        AutoAssignBulletFactory();
     }
 
     UWorld* World = GetWorld();
@@ -176,20 +175,3 @@ void ARifle::Reload()
     CurrentAmmo = MaxAmmo;
 }
 
-void ARifle::AutoAssignBulletFactory()
-{
-    if (BulletFactory) return;
-
-    FString BulletPath = TEXT("/Game/Items/Blueprints/BP_Bullet.BP_Bullet");
-    UClass* BulletClass = LoadClass<ABullet>(nullptr, *BulletPath);
-
-    if (BulletClass)
-    {
-        BulletFactory = BulletClass;
-        UE_LOG(LogTemp, Warning, TEXT("Rifle: Bullet Factory 자동 설정 완료!"));
-    }
-    else
-    {
-        UE_LOG(LogTemp, Error, TEXT("Rifle: Bullet Factory 자동 설정 실패! 블루프린트 경로 확인 필요."));
-    }
-}
