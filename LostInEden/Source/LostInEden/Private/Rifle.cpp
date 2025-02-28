@@ -109,25 +109,7 @@ void ARifle::StartAutoFire()
 {
     if (CurrentAmmo > 0)
     {
-        UE_LOG(LogTemp, Warning, TEXT("자동사격 남은 탄약: %d"), CurrentAmmo);
-        CurrentAmmo--;
-
-        if (!BulletFactory)
-        {
-            UE_LOG(LogTemp, Error, TEXT("Bullet Factory가 설정되지 않음!"));
-            return;
-        }
-
-        UWorld* World = GetWorld();
-        if (!World || !MuzzleLocation)
-        {
-            UE_LOG(LogTemp, Error, TEXT("World 또는 MuzzleLocation이 없음!"));
-            return;
-        }
-
-        FVector MuzzlePos = MuzzleLocation->GetComponentLocation();
-        FRotator MuzzleRot = MuzzleLocation->GetComponentRotation();
-        World->SpawnActor<ABullet>(BulletFactory, MuzzlePos, MuzzleRot);
+        Fire();  
 
         GetWorld()->GetTimerManager().SetTimer(AutoFireHandle, this, &ARifle::StartAutoFire, FireRate, false);
         bIsAutomatic = true;
@@ -135,16 +117,20 @@ void ARifle::StartAutoFire()
     else
     {
         UE_LOG(LogTemp, Warning, TEXT("탄약 없음!"));
+        StopAutoFire(); 
     }
 }
 
+
 void ARifle::StopAutoFire()
 {
-    if(bIsAutomatic)
+    if (bIsAutomatic)
     {
         GetWorld()->GetTimerManager().ClearTimer(AutoFireHandle);
+        bIsAutomatic = false;
     }
 }
+
 
 void ARifle::BurstFire()
 {
@@ -152,15 +138,17 @@ void ARifle::BurstFire()
     {
         if (CurrentAmmo > 0)
         {
-            CurrentAmmo--;
+            Fire();  
             UE_LOG(LogTemp, Warning, TEXT("점사 사격: %d/%d"), i + 1, BurstCount);
         }
         else
         {
+            UE_LOG(LogTemp, Warning, TEXT("탄약 없음! 점사 중지."));
             break;
         }
     }
 }
+
 
 void ARifle::Reload()
 {
