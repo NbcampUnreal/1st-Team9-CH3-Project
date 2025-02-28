@@ -10,9 +10,9 @@ AHealingItem::AHealingItem()
 
 void AHealingItem::Use()
 {
-   APlayerCharacter* Player = Cast<APlayerCharacter>(GetOwner()); // 플레이어 가져오기
-   if (Player)
-   {  
-      UE_LOG(LogTemp, Log, TEXT("%s used, restoring %f HP"), *ItemName, HealAmount);
-   }
+    APlayerCharacter* Player = Cast<APlayerCharacter>(GetOwner()); 
+    if (Player)
+    {
+       // Player->Health = FMath::Clamp(Player->Health + 40, 0, Player->MaxHealth);
+    }
 }

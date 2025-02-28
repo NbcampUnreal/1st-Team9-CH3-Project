@@ -10,10 +10,10 @@ AShield::AShield()
 
 void AShield::Use()
 {
-   APlayerCharacter* Player = Cast<APlayerCharacter>(GetOwner()); // 플레이어 가져오기
-   if (Player)
-   {
-        
-        UE_LOG(LogTemp, Log, TEXT("%s used, gaining %f shield"), *ItemName, ShieldAmount);
+    APlayerCharacter* Player = Cast<APlayerCharacter>(GetOwner()); // 플레이어 가져오기
+    if (Player)
+    {
+        //Player->ShieldGauge = FMath::Clamp(Player->ShieldGauge + ShieldAmount, 0, Player->GetMaxShieldGauge());
     }
 }
+

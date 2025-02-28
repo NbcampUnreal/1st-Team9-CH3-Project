@@ -18,11 +18,16 @@ ARifle::ARifle()
     {
         UE_LOG(LogTemp, Error, TEXT(" Bullet Factory 자동 설정 실패! 블루프린트 경로 확인 필요."));
     }
-    Damage = 30.0f;
+    Damage = 35.0f;
+    FireRate = 0.1f;
     MaxAmmo = 30;
     CurrentAmmo = MaxAmmo;
+    Range = 3000.0f;
+
     bIsAutomatic = false;
-    FireRate = 0.1f;
+    BulletSpread = 2.0f;
+    BurstCount = 3;
+    BurstFireRate = 0.15f;
 }
 
 
@@ -112,7 +117,7 @@ void ARifle::StartAutoFire()
     {
         Fire();  
 
-        GetWorld()->GetTimerManager().SetTimer(AutoFireHandle, this, &ARifle::StartAutoFire, FireRate, false);
+        GetWorld()->GetTimerManager().SetTimer(AutoFireHandle, this, &ARifle::StartAutoFire, FireRate, true);
         bIsAutomatic = true;
     }
     else
