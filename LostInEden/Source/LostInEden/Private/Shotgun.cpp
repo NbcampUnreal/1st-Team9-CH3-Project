@@ -160,16 +160,14 @@ void AShotgun::Fire()
 
                     UE_LOG(LogTemp, Warning, TEXT("샷건이 %s에 명중! 피해량: %f"), *HitActor->GetName(), AppliedDamage);
 
-                    // ✅ 중복 공격 방지
+                    
                     DamagedActors.Add(HitActor);
 
-                    // 🔹 피격 이펙트 추가
                     if (ImpactEffect)
                     {
                         UGameplayStatics::SpawnEmitterAtLocation(World, ImpactEffect, HitResult.ImpactPoint, FRotator::ZeroRotator);
                     }
 
-                    // 🔹 **여기서만 총소리 재생! (맞았을 때만)**
                     if (bulletSound)
                     {
                         UGameplayStatics::PlaySoundAtLocation(this, bulletSound, HitResult.ImpactPoint);

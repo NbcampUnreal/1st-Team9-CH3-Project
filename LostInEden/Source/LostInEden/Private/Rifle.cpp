@@ -104,18 +104,18 @@ void ARifle::Fire()
     FHitResult HitResult;
     FCollisionQueryParams QueryParams;
     QueryParams.AddIgnoredActor(this);
-    QueryParams.AddIgnoredActor(GetOwner());  // 플레이어 제외
+    QueryParams.AddIgnoredActor(GetOwner());  
 
     bool bHit = World->LineTraceSingleByChannel(
         HitResult, TraceStart, TraceEnd, ECC_Pawn, QueryParams);
 
-    // 🔹 총구에서 발사 이펙트
+    
     if (MuzzleFlash)
     {
         UGameplayStatics::SpawnEmitterAtLocation(World, MuzzleFlash, MuzzlePos, MuzzleRot);
     }
 
-    // 🔹 라인트레이스가 적중했을 때만 사운드 및 피격 이펙트 적용
+    
     if (bHit)
     {
         AActor* HitActor = HitResult.GetActor();
@@ -134,7 +134,7 @@ void ARifle::Fire()
                 UGameplayStatics::SpawnEmitterAtLocation(World, ImpactEffect, HitResult.Location, FRotator::ZeroRotator);
             }
 
-            // 🔹 데미지 적용
+            
             float AppliedDamage = UGameplayStatics::ApplyDamage(
                 HitActor,
                 Damage,

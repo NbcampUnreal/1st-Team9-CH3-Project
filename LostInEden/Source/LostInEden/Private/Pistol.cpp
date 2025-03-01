@@ -122,12 +122,12 @@ void APistol::Fire()
     FHitResult HitResult;
     FCollisionQueryParams QueryParams;
     QueryParams.AddIgnoredActor(this);
-    QueryParams.AddIgnoredActor(GetOwner());  // 🔹 플레이어를 맞추지 않도록 예외 처리
+    QueryParams.AddIgnoredActor(GetOwner());  
 
     bool bHit = World->LineTraceSingleByChannel(
-        HitResult, TraceStart, TraceEnd, ECC_Pawn, QueryParams);  // 🔹 ECC_Pawn 대신 ECC_Visibility로 변경
+        HitResult, TraceStart, TraceEnd, ECC_Pawn, QueryParams); 
 
-    // 🔹 총구에서 발사 이펙트 (머즐 플래시)
+    
     if (MuzzleFlash)
     {
         UGameplayStatics::SpawnEmitterAtLocation(World, MuzzleFlash, MuzzlePos, MuzzleRot);
@@ -140,13 +140,13 @@ void APistol::Fire()
         {
             UE_LOG(LogTemp, Warning, TEXT("트레이스 명중! 맞은 대상: %s"), *HitActor->GetName());
 
-            // 🔹 총알이 적중했을 때만 사운드 재생
+            
             if (bulletSound)
             {
                 UGameplayStatics::PlaySoundAtLocation(this, bulletSound, HitResult.Location);
             }
 
-            // 🔹 피격 지점에 이펙트 생성
+           
             if (ImpactEffect)
             {
                 UGameplayStatics::SpawnEmitterAtLocation(World, ImpactEffect, HitResult.Location, FRotator::ZeroRotator);
