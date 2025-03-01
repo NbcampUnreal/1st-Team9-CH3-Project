@@ -133,7 +133,6 @@ void AShotgun::Fire()
         bool bHit = World->LineTraceMultiByChannel(
             HitResults, TraceStart, TraceEnd, ECC_Pawn, QueryParams);
 
-        //DrawDebugLine(World, TraceStart, TraceEnd, bHit ? FColor::Green : FColor::Red, false, 5.0f, 0, 5.0f);
 
         if (bHit)
         {
