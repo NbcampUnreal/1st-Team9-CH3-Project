@@ -5,7 +5,7 @@ AHealingItem::AHealingItem()
 {
     ItemName = "Healing Potion";
     ItemDescription = "Restores health when used.";
-    HealAmount = 50.0f; 
+    HealAmount = 40.0f; 
 }
 
 void AHealingItem::Use()

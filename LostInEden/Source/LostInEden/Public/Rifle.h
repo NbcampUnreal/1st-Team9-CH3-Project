@@ -36,6 +36,14 @@ public:
     UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Weapon")
     TEnumAsByte<EGunType> GunType = EGunType::RIFLE;
 
+    UPROPERTY(EditAnywhere, Category = "Effects")
+    class USoundBase* bulletSound;
+
+    UPROPERTY(EditAnywhere, Category = "Effects")
+    UParticleSystem* MuzzleFlash;
+
+    UPROPERTY(EditAnywhere, Category = "Effects")
+    UParticleSystem* ImpactEffect;
 
 public:
     FTimerHandle AutoFireHandle;

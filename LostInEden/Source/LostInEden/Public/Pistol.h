@@ -21,7 +21,17 @@ public:
     UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Weapon")
     float BulletSpread;
 
+    UPROPERTY(EditAnywhere, Category = "Effects")
     class USoundBase* bulletSound;
+
+    UPROPERTY(EditAnywhere, Category = "Effects")
+    UParticleSystem* MuzzleFlash;  
+
+    UPROPERTY(EditAnywhere, Category = "Effects")
+    UParticleSystem* ImpactEffect;
+
+
+
     
     UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Weapon")
     UDataTable* BulletDataTable;

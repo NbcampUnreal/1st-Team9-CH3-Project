@@ -38,6 +38,14 @@ protected:
     UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Weapon")
     TEnumAsByte<EGunType> GunType = EGunType::SHOTGUN;
 
+    UPROPERTY(EditAnywhere, Category = "Effects")
+    class USoundBase* bulletSound;
+
+    UPROPERTY(EditAnywhere, Category = "Effects")
+    UParticleSystem* MuzzleFlash;
+
+    UPROPERTY(EditAnywhere, Category = "Effects")
+    UParticleSystem* ImpactEffect;
 
 
 };
