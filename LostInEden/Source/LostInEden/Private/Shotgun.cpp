@@ -133,11 +133,9 @@ void AShotgun::Fire()
         bool bHit = World->LineTraceMultiByChannel(
             HitResults, TraceStart, TraceEnd, ECC_Pawn, QueryParams);
 
-
         if (bHit)
         {
            
-
             for (const FHitResult& HitResult : HitResults)
             {
                 AActor* HitActor = HitResult.GetActor();
@@ -176,7 +174,7 @@ void AShotgun::Fire()
         }
         else
         {
-            UE_LOG(LogTemp, Warning, TEXT("트레이스 미적중!"));
+            
         }
     }
 
