@@ -3,8 +3,6 @@
 #pragma once
 
 #include "CoreMinimal.h"
-#include "UObject/NoExportTypes.h"
-#include "GlobalEnum.generated.h"
 
 // Global하게 사용되는 enum class
 
@@ -18,10 +16,23 @@ enum class EStageIndex : uint8
 };
 */
 
-
-UCLASS()
-class LOSTINEDEN_API UGlobalEnum : public UObject
+enum class EPlayerStatus
 {
-	GENERATED_BODY()
-	
+
+};
+
+UENUM(BlueprintType)
+enum EGunType : int8
+{
+	PISTOL		UMETA(DisplayName = "Pistol"),
+	RIFLE		UMETA(DisplayName = "Rifle"),
+	SHOTGUN		UMETA(DisplayName = "Shotgun")
+};
+
+UENUM(BlueprintType)
+enum EItemType : int8
+{
+	SHIELD		UMETA(DisplayName = "Shield"),
+	HEALINGITEM	UMETA(DisplayName = "HealingItem"),
+	NONE		UMETA(DisplayName = "None")
 };

@@ -3,33 +3,14 @@
 #pragma once
 
 #include "CoreMinimal.h"
+#include "GlobalEnum.h"
 #include "Entity.h"
 #include "PlayerCharacter.generated.h"
 
 struct FInputActionValue;
 class AGun;
 class AItem;
-
-enum class EPlayerStatus
-{
-
-};
-
-UENUM(BlueprintType)
-enum EGunType : int8
-{
-	PISTOL		UMETA(DisplayName = "Pistol"),
-	RIFLE		UMETA(DisplayName = "Rifle"),
-	SHOTGUN		UMETA(DisplayName = "Shotgun")
-};
-
-UENUM(BlueprintType)
-enum EItemType : int8
-{
-	SHIELD		UMETA(DisplayName = "Shield"),
-	HEALINGITEM	UMETA(DisplayName = "HealingItem"),
-	NONE		UMETA(DisplayName = "None")
-};
+class UGunManager;
 
 UCLASS()
 class LOSTINEDEN_API APlayerCharacter : public AEntity
@@ -74,14 +55,13 @@ protected:
 	float SprintSpeed;
 
 	// 플레이어 인벤토리
-	TMap<EGunType, AGun*> EquipInventory;
 	TMap<EItemType, int32> ItemInventory;
 
-	// 현재 장착된 무기 타입
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Weapon")
-	TEnumAsByte<EGunType> CurrentWeapon;
-	// 현재 장착된 무기 블루프린트 객체
-	AGun* BP_Weapon;
+	// Gun 매니저
+	UGunManager* GunManager;
+
+	// 현재 장착된 무기 타입과 객체
+	TPair<EGunType, AGun*> CurrWeapon;
 
 	// 오버랩된 드롭 아이템
 	AItem* OverlappingItem;
@@ -143,6 +123,4 @@ public:
 
 	// 무기 장착
 	void EquipWeapon(EGunType);
-	// 무기 추가
-	void AddWeapon(EGunType);
 };
