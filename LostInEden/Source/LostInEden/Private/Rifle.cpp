@@ -121,9 +121,6 @@ void ARifle::Fire()
         AActor* HitActor = HitResult.GetActor();
         if (HitActor)
         {
-            UE_LOG(LogTemp, Warning, TEXT("트레이스 명중! 맞은 대상: %s"), *HitActor->GetName());
-
-            // 🔹 피격 사운드 및 이펙트
             if (bulletSound)
             {
                 UGameplayStatics::PlaySoundAtLocation(this, bulletSound, HitResult.Location);
@@ -143,7 +140,6 @@ void ARifle::Fire()
                 nullptr
             );
 
-            UE_LOG(LogTemp, Warning, TEXT("소총이 %s에 명중! 피해량: %f"), *HitActor->GetName(), AppliedDamage);
         }
     }
     else
@@ -168,7 +164,6 @@ void ARifle::StartAutoFire()
     }
     else
     {
-        UE_LOG(LogTemp, Warning, TEXT("탄약 없음!"));
         StopAutoFire(); 
     }
 }
@@ -191,11 +186,9 @@ void ARifle::BurstFire()
         if (CurrentAmmo > 0)
         {
             Fire();  
-            UE_LOG(LogTemp, Warning, TEXT("점사 사격: %d/%d"), i + 1, BurstCount);
         }
         else
         {
-            UE_LOG(LogTemp, Warning, TEXT("탄약 없음! 점사 중지."));
             break;
         }
     }
@@ -207,11 +200,10 @@ void ARifle::Reload()
     
     if (CurrentAmmo >= MaxAmmo)
     {
-        UE_LOG(LogTemp, Warning, TEXT("이미 탄창이 가득 찼음!"));
         return;
     }
 
-    UE_LOG(LogTemp, Warning, TEXT("소총 재장전!"));
+    
     CurrentAmmo = MaxAmmo;
 }
 

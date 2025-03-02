@@ -108,7 +108,6 @@ void APistol::Fire()
 
     if (!MuzzleLocation)
     {
-        UE_LOG(LogTemp, Error, TEXT("Gun: MuzzleLocation이 nullptr입니다! GunStaticMesh를 사용합니다."));
         MuzzleLocation = GunStaticMesh;
     }
 
@@ -138,8 +137,6 @@ void APistol::Fire()
         AActor* HitActor = HitResult.GetActor();
         if (HitActor)
         {
-            UE_LOG(LogTemp, Warning, TEXT("트레이스 명중! 맞은 대상: %s"), *HitActor->GetName());
-
             
             if (bulletSound)
             {
@@ -151,8 +148,6 @@ void APistol::Fire()
             {
                 UGameplayStatics::SpawnEmitterAtLocation(World, ImpactEffect, HitResult.Location, FRotator::ZeroRotator);
             }
-
-            // 🔹 적에게 데미지 적용
             float AppliedDamage = UGameplayStatics::ApplyDamage(
                 HitActor,
                 Damage,
@@ -161,12 +156,12 @@ void APistol::Fire()
                 nullptr
             );
 
-            UE_LOG(LogTemp, Warning, TEXT("권총이 %s에 명중! 피해량: %f"), *HitActor->GetName(), AppliedDamage);
+            
         }
     }
     else
     {
-        UE_LOG(LogTemp, Warning, TEXT("트레이스 미적중!"));
+       
     }
 }
 

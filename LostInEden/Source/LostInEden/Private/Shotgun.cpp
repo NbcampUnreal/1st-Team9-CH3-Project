@@ -136,14 +136,14 @@ void AShotgun::Fire()
 
         if (bHit)
         {
-            UE_LOG(LogTemp, Warning, TEXT("트레이스에서 감지된 적 수: %d"), HitResults.Num());
+           
 
             for (const FHitResult& HitResult : HitResults)
             {
                 AActor* HitActor = HitResult.GetActor();
                 if (HitActor && !DamagedActors.Contains(HitActor))
                 {
-                    UE_LOG(LogTemp, Warning, TEXT("트레이스 명중! 맞은 대상: %s"), *HitActor->GetName());
+                    
 
                     float Distance = FVector::Dist(MuzzlePos, HitResult.ImpactPoint);
                     float DamageMultiplier = 1.0f - FMath::Clamp((Distance - 100.0f) / (Range - 100.0f), 0.0f, 1.0f);
@@ -157,7 +157,7 @@ void AShotgun::Fire()
                         nullptr
                     );
 
-                    UE_LOG(LogTemp, Warning, TEXT("샷건이 %s에 명중! 피해량: %f"), *HitActor->GetName(), AppliedDamage);
+                    ;
 
                     
                     DamagedActors.Add(HitActor);
@@ -180,7 +180,6 @@ void AShotgun::Fire()
         }
     }
 
-    UE_LOG(LogTemp, Warning, TEXT("샷건 발사 완료! 남은 탄약: %d"), CurrentAmmo);
     GetWorld()->GetTimerManager().SetTimer(FireDelayTimer, this, &AShotgun::ResetFire, FireRate, false);
 }
 
@@ -188,18 +187,17 @@ void AShotgun::Fire()
 void AShotgun::ResetFire()
 {
     bCanFire = true;
-    UE_LOG(LogTemp, Warning, TEXT("샷건 재사용 가능!"));
+    
 }
 
 void AShotgun::Reload()
 {
     if (CurrentAmmo >= MaxAmmo)
     {
-        UE_LOG(LogTemp, Warning, TEXT("샷건 이미 탄창 가득 참!"));
         return;
     }
 
-    UE_LOG(LogTemp, Warning, TEXT("샷건 재장전 중..."));
+    
     GetWorld()->GetTimerManager().ClearTimer(ReloadTimer);
     GetWorld()->GetTimerManager().SetTimer(ReloadTimer, this, &AShotgun::FinishReload, ReloadTime, false);
 }
@@ -208,12 +206,12 @@ void AShotgun::FinishReload()
 {
     CurrentAmmo = MaxAmmo;
     bCanFire = true;
-    UE_LOG(LogTemp, Warning, TEXT("샷건 재장전 완료! 탄약: %d"), CurrentAmmo);
+    
 }
 
 void AShotgun::BeginPlay()
 {
     Super::BeginPlay();
     Reload();
-    UE_LOG(LogTemp, Warning, TEXT("샷건 시작! 현재 탄약: %d"), CurrentAmmo);
+    
 }
