@@ -25,7 +25,6 @@ ARifle::ARifle()
     if (BulletBP.Succeeded())
     {
         BulletFactory = BulletBP.Class;
-        UE_LOG(LogTemp, Warning, TEXT(" Bullet Factory 자동 설정 완료!"));
     }
     else
     {
@@ -69,7 +68,6 @@ void ARifle::Fire()
 {
     if (CurrentAmmo <= 0)
     {
-        UE_LOG(LogTemp, Warning, TEXT("탄약 없음!"));
         return;
     }
 
@@ -77,20 +75,17 @@ void ARifle::Fire()
 
     if (!BulletFactory)
     {
-        UE_LOG(LogTemp, Error, TEXT("Rifle: Bullet Factory가 설정되지 않음!"));
         return;
     }
 
     UWorld* World = GetWorld();
     if (!World)
     {
-        UE_LOG(LogTemp, Error, TEXT("World 없음!"));
         return;
     }
 
     if (!MuzzleLocation)
     {
-        UE_LOG(LogTemp, Error, TEXT("Gun: MuzzleLocation이 nullptr입니다! GunStaticMesh를 사용합니다."));
         MuzzleLocation = GunStaticMesh;
     }
 
@@ -144,7 +139,7 @@ void ARifle::Fire()
     }
     else
     {
-        UE_LOG(LogTemp, Warning, TEXT("트레이스 미적중!"));
+
     }
 }
 
