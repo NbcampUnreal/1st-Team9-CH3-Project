@@ -5,13 +5,12 @@
 #include "DrawDebugHelpers.h"
 #include "PlayerCharacter.h"
 #include "Particles/ParticleSystem.h"
-
 #include "Camera/CameraComponent.h"
 
 APistol::APistol()
 {
     Damage = 15.0f;
-    FireRate = 0.3f;
+    FireRate = 0.7f;  
     MaxAmmo = 12;
     CurrentAmmo = MaxAmmo;
     Range = 2000.0f;
@@ -19,7 +18,8 @@ APistol::APistol()
     BulletSpread = 1.0f;
 
     GunType = EGunType::PISTOL;
-   
+    bCanFire = true;  // 🔹 처음에는 발사가 가능해야 함.
+
     static ConstructorHelpers::FClassFinder<ABullet> BulletBP(TEXT("/Game/Items/Blueprints/BP_Bullet.BP_Bullet_C"));
     if (BulletBP.Succeeded())
     {
@@ -30,7 +30,6 @@ APistol::APistol()
     {
         UE_LOG(LogTemp, Error, TEXT(" Bullet Factory 자동 설정 실패! 블루프린트 경로 확인 필요."));
     }
-
     bulletSound = LoadObject<USoundBase>(GetTransientPackage(), TEXT("/Game/Items/Sci-Fi_Shots_Pack2_Game_Of_Weapons/Wave/SciFi_Shot_P2__147_.SciFi_Shot_P2__147_"));
     if (bulletSound)
     {
@@ -63,37 +62,20 @@ APistol::APistol()
     }
 
 
-    
+
+
 }
-
-
-void APistol::BeginPlay()
-{
-    Super::BeginPlay();
-
-    /*APlayerCharacter* PlayerCharacter = Cast<APlayerCharacter>(UGameplayStatics::GetPlayerCharacter(GetWorld(), 0));
-    if (!PlayerCharacter)
-    {
-        UE_LOG(LogTemp, Error, TEXT("Pistol: 플레이어 캐릭터를 찾을 수 없습니다!"));
-        return;
-    }*/
-
-    // 🔹 총을 캐릭터 손에 부착
-    /*FName WeaponSocket = "GunSocket_R";
-    AttachToComponent(PlayerCharacter->GetMesh(), FAttachmentTransformRules::SnapToTargetNotIncludingScale, WeaponSocket);*/
-
-    // 🔹 총 회전값을 보정 (Yaw 180도 회전)
-    //FRotator NewRotation = GetActorRotation();
-    //NewRotation.Yaw += 180.0f;
-    //SetActorRotation(NewRotation);
-
-    //UE_LOG(LogTemp, Warning, TEXT("%s가 플레이어 손에 올바르게 장착됨!"), *GetName());
-}
-
-
 
 void APistol::Fire()
 {
+    if (!bCanFire || CurrentAmmo <= 0)
+    {
+        UE_LOG(LogTemp, Warning, TEXT("발사 대기 중..."));
+        return;
+    }
+
+    bCanFire = false;  // 🔹 한 번 발사 후, 다시 발사할 수 없도록 설정
+
     if (!BulletFactory)
     {
         UE_LOG(LogTemp, Error, TEXT("Bullet Factory가 설정되지 않음! 블루프린트에서 확인하세요."));
@@ -122,12 +104,11 @@ void APistol::Fire()
     FHitResult HitResult;
     FCollisionQueryParams QueryParams;
     QueryParams.AddIgnoredActor(this);
-    QueryParams.AddIgnoredActor(GetOwner());  
+    QueryParams.AddIgnoredActor(GetOwner());
 
     bool bHit = World->LineTraceSingleByChannel(
-        HitResult, TraceStart, TraceEnd, ECC_Pawn, QueryParams); 
+        HitResult, TraceStart, TraceEnd, ECC_Pawn, QueryParams);
 
-    
     if (MuzzleFlash)
     {
         UGameplayStatics::SpawnEmitterAtLocation(World, MuzzleFlash, MuzzlePos, MuzzleRot);
@@ -138,17 +119,16 @@ void APistol::Fire()
         AActor* HitActor = HitResult.GetActor();
         if (HitActor)
         {
-            
             if (bulletSound)
             {
                 UGameplayStatics::PlaySoundAtLocation(this, bulletSound, HitResult.Location);
             }
 
-           
             if (ImpactEffect)
             {
                 UGameplayStatics::SpawnEmitterAtLocation(World, ImpactEffect, HitResult.Location, FRotator::ZeroRotator);
             }
+
             float AppliedDamage = UGameplayStatics::ApplyDamage(
                 HitActor,
                 Damage,
@@ -156,22 +136,21 @@ void APistol::Fire()
                 this,
                 nullptr
             );
-
-            
         }
     }
-    else
+
+    // 🔹 탄약 감소
+    if (CurrentAmmo > 0)
     {
-       
+        CurrentAmmo--;
     }
+
+    // 🔹 일정 시간 후 다시 발사 가능하도록 설정
+    GetWorld()->GetTimerManager().SetTimer(FireCooldownTimer, this, &APistol::ResetFireCooldown, FireRate, false);
 }
 
-
-
-
-
-void APistol::Reload()
+void APistol::ResetFireCooldown()
 {
-    UE_LOG(LogTemp, Warning, TEXT("권총은 무한 탄창이므로 재장전이 필요 없음!"));
+    bCanFire = true;
 }
 

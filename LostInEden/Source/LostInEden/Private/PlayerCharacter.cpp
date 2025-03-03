@@ -185,7 +185,7 @@ void APlayerCharacter::ReloadAmmo()
 
 	if (CurrWeapon)
 	{
-		CurrWeapon->Reload(ItemInventory);
+		CurrWeapon->Reload();
 	}
 }
 
