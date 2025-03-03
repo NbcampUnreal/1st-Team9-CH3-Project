@@ -11,11 +11,14 @@ AShield::AShield()
 
 void AShield::Use()
 {
-    APlayerCharacter* Player = Cast<APlayerCharacter>(GetOwner()); 
+    APlayerCharacter* Player = Cast<APlayerCharacter>(GetOwner());
     if (Player)
     {
-       // Player->ShieldGauge = FMath::Clamp(Player->ShieldGauge + ShieldAmount, 0, Player->GetMaxShieldGauge());
+        int32 NewShieldValue = FMath::Clamp(Player->GetShieldGauge() + ShieldAmount, 0, Player->GetMaxShieldGauge());
 
+        Player->SetShieldGauge(NewShieldValue);
+
+        Destroy();
     }
 }
 

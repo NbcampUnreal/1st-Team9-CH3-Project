@@ -10,9 +10,14 @@ AHealingItem::AHealingItem()
 }
 void AHealingItem::Use()
 {
-    APlayerCharacter* Player = Cast<APlayerCharacter>(GetOwner()); 
+    APlayerCharacter* Player = Cast<APlayerCharacter>(GetOwner());
     if (Player)
     {
-       // Player->Health = FMath::Clamp(Player->Health + 40, 0, Player->MaxHealth);
+        int32 NewHealthValue = FMath::Clamp(Player->GetHealth() + HealAmount, 0, Player->GetMaxHealth());
+
+        Player->SetHealth(NewHealthValue);
+
+
+        Destroy();9
     }
 }
