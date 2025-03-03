@@ -3,14 +3,15 @@
 
 AShield::AShield()
 {
-    ItemName = "Shield";
+    ItemName = EItemType::SHIELD;
     ItemDescription = "Increases player's defense.";
-    ShieldAmount = 25.0f; // 기본 방어력 증가량 25
+    ShieldAmount = 25.0f; 
+    ItemType = EItemType::SHIELD;
 }
 
 void AShield::Use()
 {
-    APlayerCharacter* Player = Cast<APlayerCharacter>(GetOwner()); // 플레이어 가져오기
+    APlayerCharacter* Player = Cast<APlayerCharacter>(GetOwner()); 
     if (Player)
     {
        // Player->ShieldGauge = FMath::Clamp(Player->ShieldGauge + ShieldAmount, 0, Player->GetMaxShieldGauge());

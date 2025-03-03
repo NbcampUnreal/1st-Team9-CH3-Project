@@ -4,15 +4,15 @@
 
 #include "CoreMinimal.h"
 
-// GlobalÇÏ°Ô »ç¿ëµÇ´Â enum class
+// Globalï¿½Ï°ï¿½ ï¿½ï¿½ï¿½Ç´ï¿½ enum class
 
 /* 
 e.g.
 UENUM(BlueprintType)
 enum class EStageIndex : uint8
 {
-	Stage1	UMETA(DisplayName = "Áö»ó"),
-	Stage2	UMETA(DisplayName = "ÁöÇÏ"),
+	Stage1	UMETA(DisplayName = "ï¿½ï¿½ï¿½ï¿½"),
+	Stage2	UMETA(DisplayName = "ï¿½ï¿½ï¿½ï¿½"),
 };
 */
 

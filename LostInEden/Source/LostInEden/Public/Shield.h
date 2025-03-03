@@ -13,7 +13,7 @@ public:
     AShield();
 
     UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Shield")
-    float ShieldAmount; // ✅ 쉴드량
+    float ShieldAmount; // 
 
-    virtual void Use() override; // ✅ 아이템 사용 오버라이드
+    virtual void Use() override; 
 };

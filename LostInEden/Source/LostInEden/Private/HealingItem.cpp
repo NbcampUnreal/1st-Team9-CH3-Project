@@ -3,11 +3,11 @@
 
 AHealingItem::AHealingItem()
 {
-    ItemName = "Healing Potion";
+    ItemName = EItemType::HEALINGITEM;
     ItemDescription = "Restores health when used.";
-    HealAmount = 40.0f; 
+    HealAmount = 40.0f;
+    ItemType = EItemType::HEALINGITEM; 
 }
-
 void AHealingItem::Use()
 {
     APlayerCharacter* Player = Cast<APlayerCharacter>(GetOwner()); 

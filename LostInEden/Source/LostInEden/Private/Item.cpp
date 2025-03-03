@@ -9,5 +9,15 @@ AItem::AItem()
 
 void AItem::Use()
 {
-    UE_LOG(LogTemp, Warning, TEXT("%s was used!"), *ItemName);
+    //UE_LOG(LogTemp, Warning, TEXT("%s was used!"), *ItemName);
+}
+
+EItemType AItem::GetItemName() const
+{
+    return ItemName;
+}
+
+EItemType AItem::GetItemType() const
+{
+    return ItemType; 
 }
