@@ -13,7 +13,10 @@ public:
     AShield();
 
     UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Shield")
-    float ShieldAmount; // 
+    float ShieldAmount; 
+
+    UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Shield")
+    int32 Count;
 
     virtual void Use() override; 
 };

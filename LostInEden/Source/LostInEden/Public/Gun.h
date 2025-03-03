@@ -19,6 +19,9 @@ public:
     int32 GetMaxAmmo() const;
     EGunType GetGunType() const;
 
+
+
+
     virtual void Fire() override;
     virtual void Reload() override;
     void SetCurrentAmmo(int32 NewAmmo);

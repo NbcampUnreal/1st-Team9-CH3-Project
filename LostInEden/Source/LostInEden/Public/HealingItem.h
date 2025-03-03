@@ -13,7 +13,12 @@ public:
     AHealingItem();
 
     UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Healing")
-    float HealAmount; // ✅ 회복량
+    float HealAmount; 
 
-    virtual void Use() override; // ✅ 아이템 사용 오버라이드
+    UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Healing")
+    int32 Count;
+
+    void IncrementCount(int32 Amount = 1); // 기본값 1로 설정
+
+    virtual void Use() override; 
 };

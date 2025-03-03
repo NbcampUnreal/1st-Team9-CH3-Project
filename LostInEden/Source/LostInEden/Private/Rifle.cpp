@@ -23,7 +23,7 @@ ARifle::ARifle()
 
     GunType = EGunType::RIFLE;
 
-    static ConstructorHelpers::FClassFinder<ABullet> BulletBP(TEXT("/Game/Items/Blueprints/BP_Bullet.BP_Bullet_C"));
+    static ConstructorHelpers::FClassFinder<ABullet> BulletBP(TEXT("/Game/Items/Blueprints/BP_BulletRifle.BP_BulletRifle_C"));
     if (BulletBP.Succeeded())
     {
         BulletFactory = BulletBP.Class;

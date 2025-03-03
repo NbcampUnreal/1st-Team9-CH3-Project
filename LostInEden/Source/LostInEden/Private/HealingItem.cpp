@@ -8,16 +8,27 @@ AHealingItem::AHealingItem()
     HealAmount = 40.0f;
     ItemType = EItemType::HEALINGITEM; 
 }
+
+void AHealingItem::IncrementCount(int32 Amount)
+{
+    Count += Amount;
+}
+
+
 void AHealingItem::Use()
 {
     APlayerCharacter* Player = Cast<APlayerCharacter>(GetOwner());
-    if (Player)
+    if (Player && Count > 0)  
     {
-        int32 NewHealthValue = FMath::Clamp(Player->GetHealth() + HealAmount, 0, Player->GetMaxHealth());
+        int32 NewHealth = Player->GetHealth() + HealAmount;
+        Player->SetHealth(NewHealth); 
 
-        Player->SetHealth(NewHealthValue);
+        Count--;  
 
-
-        Destroy();
+        if (Count <= 0)
+        {
+            Destroy();
+        }
     }
 }
+

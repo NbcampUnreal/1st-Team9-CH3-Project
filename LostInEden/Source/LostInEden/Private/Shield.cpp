@@ -12,13 +12,16 @@ AShield::AShield()
 void AShield::Use()
 {
     APlayerCharacter* Player = Cast<APlayerCharacter>(GetOwner());
-    if (Player)
+    if (Player && Count > 0) 
     {
-        int32 NewShieldValue = FMath::Clamp(Player->GetShieldGauge() + ShieldAmount, 0, Player->GetMaxShieldGauge());
-
+        int32 NewShieldValue = Player->GetShieldGauge() + ShieldAmount;
         Player->SetShieldGauge(NewShieldValue);
 
-        Destroy();
+        Count--; 
+
+        if (Count <= 0)
+        {
+            Destroy(); 
+        }
     }
 }
-
