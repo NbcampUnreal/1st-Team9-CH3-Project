@@ -31,7 +31,7 @@ public:
     UParticleSystem* ImpactEffect;
 
 
-
+    void Reload() override;
     virtual void Fire() override;
 
 

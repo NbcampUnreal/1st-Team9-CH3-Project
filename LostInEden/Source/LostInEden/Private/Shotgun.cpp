@@ -105,7 +105,6 @@ void AShotgun::Fire()
     FVector MuzzlePos = MuzzleLocation->GetComponentLocation();
     FRotator MuzzleRot = MuzzleLocation->GetComponentRotation();
 
-    // 🔹 총구에서 발사 이펙트 (머즐 플래시)
     if (MuzzleFlash)
     {
         UGameplayStatics::SpawnEmitterAtLocation(World, MuzzleFlash, MuzzlePos, MuzzleRot);
@@ -192,22 +191,11 @@ void AShotgun::ResetFire()
 
 void AShotgun::Reload()
 {
-    if (CurrentAmmo >= MaxAmmo)
-    {
-        return;
-    }
+  
+    Super::Reload();
 
-    
-    GetWorld()->GetTimerManager().ClearTimer(ReloadTimer);
-    GetWorld()->GetTimerManager().SetTimer(ReloadTimer, this, &AShotgun::FinishReload, ReloadTime, false);
 }
 
-void AShotgun::FinishReload()
-{
-    CurrentAmmo = MaxAmmo;
-    bCanFire = true;
-    
-}
 
 void AShotgun::BeginPlay()
 {

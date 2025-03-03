@@ -195,12 +195,6 @@ void ARifle::BurstFire()
 void ARifle::Reload()
 {
     
-    if (CurrentAmmo >= MaxAmmo)
-    {
-        return;
-    }
-
-    
-    CurrentAmmo = MaxAmmo;
+    Super::Reload();
 }
 

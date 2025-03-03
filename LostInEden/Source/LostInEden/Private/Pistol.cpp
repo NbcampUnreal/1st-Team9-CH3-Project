@@ -66,6 +66,11 @@ APistol::APistol()
 
 }
 
+void APistol::Reload()
+{
+    Super::Reload();
+}
+
 void APistol::Fire()
 {
     if (!bCanFire || CurrentAmmo <= 0)
@@ -153,4 +158,5 @@ void APistol::ResetFireCooldown()
 {
     bCanFire = true;
 }
+
 
