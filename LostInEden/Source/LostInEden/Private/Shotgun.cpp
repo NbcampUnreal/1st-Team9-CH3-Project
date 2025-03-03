@@ -18,6 +18,8 @@ AShotgun::AShotgun()
     PelletCount = 8;
     PelletSpread = 8.0f;
 
+    GunType = EGunType::SHOTGUN;
+
     bCanFire = true;
 
     static ConstructorHelpers::FClassFinder<ABullet> BulletBP(TEXT("/Game/Items/Blueprints/BP_Bullet.BP_Bullet_C"));

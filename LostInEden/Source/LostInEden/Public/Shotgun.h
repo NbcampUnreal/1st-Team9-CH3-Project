@@ -33,10 +33,7 @@ protected:
     bool bCanFire; 
 
     FTimerHandle FireDelayTimer; 
-    FTimerHandle ReloadTimer; 
-
-    UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Weapon")
-    TEnumAsByte<EGunType> GunType = EGunType::SHOTGUN;
+    FTimerHandle ReloadTimer;
 
     UPROPERTY(EditAnywhere, Category = "Effects")
     class USoundBase* bulletSound;

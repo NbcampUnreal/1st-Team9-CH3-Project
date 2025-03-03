@@ -41,8 +41,5 @@ public:
     virtual void Fire() override;
     virtual void Reload() override;
 
-    UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Weapon")
-    TEnumAsByte<EGunType> GunType = EGunType::PISTOL;
-
 
 };

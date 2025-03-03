@@ -20,8 +20,8 @@ protected:
 public:
 	UGunManager();
 
-	TArray<EGunType> GetOwnedGunList();
+	TArray<EGunType> GetOwnedGunList() const;
 
-	void UpdateGunData(TPair<EGunType, AGun*>);
-	void SetCurrentGun(TPair<EGunType, AGun*>);
+	void UpdateGunData(AGun*);
+	void SetCurrentGun(AGun*);
 };

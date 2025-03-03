@@ -26,7 +26,8 @@ enum EGunType : int8
 {
 	PISTOL		UMETA(DisplayName = "Pistol"),
 	RIFLE		UMETA(DisplayName = "Rifle"),
-	SHOTGUN		UMETA(DisplayName = "Shotgun")
+	SHOTGUN		UMETA(DisplayName = "Shotgun"),
+	GUN			UMETA(DisplayName = "DefaultGun")
 };
 
 UENUM(BlueprintType)

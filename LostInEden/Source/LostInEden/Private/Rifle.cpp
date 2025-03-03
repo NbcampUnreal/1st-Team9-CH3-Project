@@ -21,6 +21,8 @@ ARifle::ARifle()
     BurstCount = 3;
     BurstFireRate = 0.15f;
 
+    GunType = EGunType::RIFLE;
+
     static ConstructorHelpers::FClassFinder<ABullet> BulletBP(TEXT("/Game/Items/Blueprints/BP_Bullet.BP_Bullet_C"));
     if (BulletBP.Succeeded())
     {

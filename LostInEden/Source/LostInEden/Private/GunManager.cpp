@@ -18,23 +18,23 @@ UGunManager::UGunManager()
 	OwnedGuns.Add({ EGunType::SHOTGUN, Shotgun->GetCurrentAmmo() });
 }
 
-TArray<EGunType> UGunManager::GetOwnedGunList()
+TArray<EGunType> UGunManager::GetOwnedGunList() const
 {
 	TArray<EGunType> KeyArray;
 	OwnedGuns.GenerateKeyArray(KeyArray);
 	return KeyArray;
 }
 
-void UGunManager::UpdateGunData(TPair<EGunType, AGun*> CurrGun)
+void UGunManager::UpdateGunData(AGun* CurrGun)
 {
-	OwnedGuns.Add({ CurrGun.Key, CurrGun.Value->GetCurrentAmmo() });
+	OwnedGuns.Add({ CurrGun->GetGunType(), CurrGun->GetCurrentAmmo()});
 }
 
-void UGunManager::SetCurrentGun(TPair<EGunType, AGun*> NextGun)
+void UGunManager::SetCurrentGun(AGun* NextGun)
 {
-	if (OwnedGuns.Find(NextGun.Key))
+	if (int32* Ammo = OwnedGuns.Find(NextGun->GetGunType()))
 	{
-		NextGun.Value->SetCurrentAmmo(NextGun.Value->GetCurrentAmmo());
+		NextGun->SetCurrentAmmo(*Ammo);
 	}
 	else
 	{

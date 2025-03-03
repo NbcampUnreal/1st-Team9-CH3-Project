@@ -21,6 +21,8 @@ AGun::AGun()
 
     MuzzleLocation = CreateDefaultSubobject<USceneComponent>(TEXT("MuzzleLocation"));
     MuzzleLocation->SetupAttachment(GunStaticMesh);
+
+    GunType = EGunType::GUN;
 }
 
 
@@ -33,6 +35,11 @@ int32 AGun::GetCurrentAmmo() const
 int32 AGun::GetMaxAmmo() const
 {
     return MaxAmmo;
+}
+
+EGunType AGun::GetGunType() const
+{
+    return GunType;
 }
 
 void AGun::Fire()

@@ -20,6 +20,9 @@ class LOSTINEDEN_API APlayerCharacter : public AEntity
 public:
 	APlayerCharacter();
 
+	void SetHealth(int32);
+	void SetShieldGauge(int32);
+
 	int32 GetShieldGauge() const;
 	int32 GetMaxShieldGauge() const;
 
@@ -61,10 +64,9 @@ protected:
 	UGunManager* GunManager;
 
 	// 현재 장착된 무기 타입과 객체
-	TPair<EGunType, AGun*> CurrWeapon;
+	AGun* CurrWeapon;
 
-	// 오버랩된 드롭 아이템
-	AItem* OverlappingItem;
+	TArray<AItem*> OverlappingItemList;
 
 	// 카메라 관련 컴포넌트
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Component|Camera")
@@ -101,8 +103,6 @@ protected:
 	virtual void BeginPlay() override;
 
 public:
-	// 체력 회복
-	void Heal(int32);
 	// 캐릭터 상태 변화
 	void ChangeState(EPlayerStatus);
 
@@ -119,7 +119,7 @@ public:
 	// 아이템 사용
 	void UseItem(EItemType);
 	// 아이템 추가
-	void AddItem(EItemType);
+	void AddItem(AItem*);
 
 	// 무기 장착
 	void EquipWeapon(EGunType);

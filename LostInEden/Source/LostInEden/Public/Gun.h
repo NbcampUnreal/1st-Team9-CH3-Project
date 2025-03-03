@@ -4,6 +4,7 @@
 #include "Item.h"
 #include "Bullet.h"
 #include "IFireable.h"
+#include "GlobalEnum.h"
 #include "Gun.generated.h"
 
 UCLASS()
@@ -16,6 +17,7 @@ public:
 
     int32 GetCurrentAmmo() const;
     int32 GetMaxAmmo() const;
+    EGunType GetGunType() const;
 
     virtual void Fire() override;
     virtual void Reload() override;
@@ -54,5 +56,6 @@ protected:
     UPROPERTY(VisibleAnywhere, Category = "Components")
     USceneComponent* SceneRoot;
 
- 
+    UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Weapon")
+    TEnumAsByte<EGunType> GunType;
 };
