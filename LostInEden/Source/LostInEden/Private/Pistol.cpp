@@ -125,6 +125,7 @@ void APistol::Fire()
 
     bool bHit = World->LineTraceSingleByChannel(
         HitResult, TraceStart, TraceEnd, ECC_Pawn, QueryParams); 
+    DrawDebugLine(World, TraceStart, TraceEnd, FColor::Red, false, 2.0f, 0, 2.0f);
 
     
     if (MuzzleFlash)

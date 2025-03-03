@@ -102,8 +102,10 @@ void AGun::Reload()
     CurrentAmmo = MaxAmmo;
 }
 
-int32 AGun::SetCurrentAmmo()
+void AGun::SetCurrentAmmo(int32 NewAmmo)
 {
-    return int32();
+    CurrentAmmo = FMath::Clamp(NewAmmo, 0, MaxAmmo);
 }
+
+
 

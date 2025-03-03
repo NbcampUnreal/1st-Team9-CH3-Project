@@ -19,7 +19,7 @@ public:
 
     virtual void Fire() override;
     virtual void Reload() override;
-
+    void SetCurrentAmmo(int32 NewAmmo);
 protected:
     UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Weapon")
     int32 Damage;
@@ -46,7 +46,8 @@ protected:
     UPROPERTY(VisibleAnywhere, Category = "Components")
     USceneComponent* MuzzleLocation;
 
-    int32 SetCurrentAmmo();
+    
+
 
 protected:
     // 🔹 새로운 루트 컴포넌트

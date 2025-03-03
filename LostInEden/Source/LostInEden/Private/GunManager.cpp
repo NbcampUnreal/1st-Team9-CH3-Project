@@ -11,7 +11,7 @@ UGunManager::UGunManager()
 	APistol* Pistol = CreateDefaultSubobject<APistol>(TEXT("Pistol"));
 	OwnedGuns.Add({ EGunType::PISTOL, Pistol->GetCurrentAmmo() });
 
-	//ÀÓ½Ã
+	//ï¿½Ó½ï¿½
 	ARifle* Rifle = CreateDefaultSubobject<ARifle>(TEXT("Rifle"));
 	AShotgun* Shotgun = CreateDefaultSubobject<AShotgun>(TEXT("Shotgun"));
 	OwnedGuns.Add({ EGunType::RIFLE, Rifle->GetCurrentAmmo() });
@@ -38,6 +38,6 @@ void UGunManager::SetCurrentGun(TPair<EGunType, AGun*> NextGun)
 	}
 	else
 	{
-		UE_LOG(LogTemp, Warning, TEXT("ÇØ´ç ÃÑÀº ÀÎº¥Åä¸®¿¡ ¾ø½À´Ï´Ù!"));
+		UE_LOG(LogTemp, Warning, TEXT("ï¿½Ø´ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½Îºï¿½ï¿½ä¸®ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ï´ï¿½!"));
 	}
 }
