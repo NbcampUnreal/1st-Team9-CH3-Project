@@ -46,6 +46,8 @@ protected:
     UPROPERTY(VisibleAnywhere, Category = "Components")
     USceneComponent* MuzzleLocation;
 
+    int32 SetCurrentAmmo();
+
 protected:
     // 🔹 새로운 루트 컴포넌트
     UPROPERTY(VisibleAnywhere, Category = "Components")

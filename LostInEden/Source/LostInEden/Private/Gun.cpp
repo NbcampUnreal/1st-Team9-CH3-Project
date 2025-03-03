@@ -102,3 +102,8 @@ void AGun::Reload()
     CurrentAmmo = MaxAmmo;
 }
 
+int32 AGun::SetCurrentAmmo()
+{
+    return int32();
+}
+
