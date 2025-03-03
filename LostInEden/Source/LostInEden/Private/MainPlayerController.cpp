@@ -15,7 +15,8 @@ AMainPlayerController::AMainPlayerController():
 	AttackAction(nullptr),
 	ReloadAction(nullptr),
 	ChangeGunAction(nullptr),
-	PickupAction(nullptr)
+	PickupAction(nullptr),
+	UseItemAction(nullptr)
 {
 }
 

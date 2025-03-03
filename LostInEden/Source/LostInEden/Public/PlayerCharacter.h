@@ -11,6 +11,7 @@ struct FInputActionValue;
 class AGun;
 class AItem;
 class UGunManager;
+class AHealingItem;
 
 UCLASS()
 class LOSTINEDEN_API APlayerCharacter : public AEntity
@@ -25,6 +26,7 @@ public:
 
 	int32 GetShieldGauge() const;
 	int32 GetMaxShieldGauge() const;
+	TMap<EItemType, int32> GetAmmoInventory();
 
 	// 현재 장착하고 있는 무기의 객체를 반환
 	AGun* GetCurrentWeapon();
@@ -58,7 +60,9 @@ protected:
 	float SprintSpeed;
 
 	// 플레이어 인벤토리
-	TMap<EItemType, int32> ItemInventory;
+	TMap<EItemType, int32> AmmoInventory;
+	//힐링 아이템
+	AHealingItem* HealPotion;
 
 	// Gun 매니저
 	UGunManager* GunManager;
@@ -66,6 +70,7 @@ protected:
 	// 현재 장착된 무기 타입과 객체
 	AGun* CurrWeapon;
 
+	// 주울수 있는 아이템 리스트
 	TArray<AItem*> OverlappingItemList;
 
 	// 카메라 관련 컴포넌트
@@ -117,7 +122,7 @@ public:
 	void ReloadAmmo();
 
 	// 아이템 사용
-	void UseItem(EItemType);
+	void UseItem();
 	// 아이템 추가
 	void AddItem(AItem*);
 

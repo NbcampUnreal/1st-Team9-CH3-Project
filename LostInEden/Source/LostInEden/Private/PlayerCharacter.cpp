@@ -77,6 +77,11 @@ int32 APlayerCharacter::GetMaxShieldGauge() const
 	return MaxShieldGauge;
 }
 
+TMap<EItemType, int32> APlayerCharacter::GetAmmoInventory()
+{
+	return AmmoInventory;
+}
+
 AGun* APlayerCharacter::GetCurrentWeapon()
 {
 	if (!CurrWeapon)
@@ -121,6 +126,9 @@ void APlayerCharacter::BeginPlay()
 
 	//기본 무기인 권총 세팅
 	EquipWeapon(EGunType::PISTOL);
+
+	//힐포션 확인용 임시
+	HealPotion = GetWorld()->SpawnActor<AHealingItem>(AHealingItem::StaticClass());
 }
 
 void APlayerCharacter::ChangeState(EPlayerStatus State)
@@ -189,23 +197,53 @@ void APlayerCharacter::ReloadAmmo()
 	}
 }
 
-void APlayerCharacter::UseItem(EItemType ItemType)
+void APlayerCharacter::UseItem()
 {
-	UE_LOG(LogTemp, Warning, TEXT("Use Item!!"));
+	HealPotion->Use();
 }
 
 void APlayerCharacter::AddItem(AItem* Item)
 {
 	if (AGun* Gun = Cast<AGun>(Item))
 	{
+		TArray<EGunType> GunList = GunManager->GetOwnedGunList();
+		if (GunList.Find(Gun->GetGunType()))
+		{
+			UE_LOG(LogTemp, Warning, TEXT("이미 소지한 총입니다!"));
+			return;
+		}
 		EGunType GunType = Gun->GetGunType();
 		GunManager->UpdateGunData(Gun);
 	}
 	else
 	{
 		EItemType ItemType = Item->GetItemType();
-		int32 ItemCnt = *ItemInventory.Find(ItemType);
-		ItemInventory.Add({ ItemType, ++ItemCnt });
+		
+		switch (ItemType)
+		{
+		case SHIELD:
+			Item->Use();
+			break;
+		case HEALINGITEM:
+			//갯수 증가
+			//HealPotion->
+			break;
+		case PISTOL_BULLET:
+			//falls through
+		case RIFLE_BULLET:
+			//falls through
+		case SHOTGUN_BULLET:
+			if(AmmoInventory.Find(ItemType))
+			{
+				int32 ItemCnt = *AmmoInventory.Find(ItemType);
+				AmmoInventory.Add({ ItemType, ++ItemCnt });
+			}
+			break;
+		case NONE:
+			break;
+		default:
+			break;
+		}
 	}
 }
 
@@ -377,6 +415,16 @@ void APlayerCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputCom
 					ETriggerEvent::Triggered,
 					this,
 					&APlayerCharacter::PickupItem
+				);
+			}
+
+			if (PlayerController->UseItemAction)
+			{
+				EnhancedInput->BindAction(
+					PlayerController->UseItemAction,
+					ETriggerEvent::Triggered,
+					this,
+					&APlayerCharacter::UseItem
 				);
 			}
 		}
