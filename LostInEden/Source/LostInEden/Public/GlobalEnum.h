@@ -33,7 +33,10 @@ enum EGunType : int8
 UENUM(BlueprintType)
 enum EItemType : int8
 {
-	SHIELD		UMETA(DisplayName = "Shield"),
-	HEALINGITEM	UMETA(DisplayName = "HealingItem"),
-	NONE		UMETA(DisplayName = "None")
+	SHIELD			UMETA(DisplayName = "Shield"),
+	HEALINGITEM		UMETA(DisplayName = "HealingItem"),
+	PISTOL_BULLET	UMETA(DisplayName = "Pistol_Bullet"),
+	RIFLE_BULLET	UMETA(DisplayName = "Rifle_Bullet"),
+	SHOTGUN_BULLET	UMETA(DisplayName = "Shotgun_Bullet"),
+	NONE			UMETA(DisplayName = "None")
 };
