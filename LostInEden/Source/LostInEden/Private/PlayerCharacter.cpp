@@ -77,7 +77,7 @@ int32 APlayerCharacter::GetMaxShieldGauge() const
 	return MaxShieldGauge;
 }
 
-TMap<EItemType, int32> APlayerCharacter::GetAmmoInventory()
+TMap<EItemType, int32>& APlayerCharacter::GetAmmoInventory()
 {
 	return AmmoInventory;
 }

@@ -3,6 +3,7 @@
 #include "Kismet/GameplayStatics.h"
 #include "Bullet.h"
 #include "Components/SphereComponent.h"
+#include "PlayerCharacter.h"
 #include "GameFramework/ProjectileMovementComponent.h"
 
 AGun::AGun()
@@ -41,6 +42,44 @@ EGunType AGun::GetGunType() const
 {
     return GunType;
 }
+
+EItemType AGun::GetAmmoType() const
+{
+    switch (GunType)
+    {
+    case EGunType::PISTOL:  return EItemType::PISTOL_BULLET;
+    case EGunType::RIFLE:   return EItemType::RIFLE_BULLET;
+    case EGunType::SHOTGUN: return EItemType::SHOTGUN_BULLET;
+    default:                return EItemType::NONE;
+    }
+}
+
+int32 AGun::GetAmmoFromInventory(int32 Amount)
+{
+    APlayerCharacter* Player = Cast<APlayerCharacter>(GetOwner());
+    if (!Player) return 0;
+
+    EItemType AmmoType = GetAmmoType();
+    TMap<EItemType, int32>& Inventory = Player->GetAmmoInventory();
+
+    if (Inventory.Contains(AmmoType) && Inventory[AmmoType] > 0)
+    {
+        int32 AmmoAvailable = Inventory[AmmoType];
+        int32 AmmoToTake = FMath::Min(AmmoAvailable, Amount);
+        Inventory[AmmoType] -= AmmoToTake;
+
+        if (Inventory[AmmoType] <= 0)
+        {
+            Inventory.Remove(AmmoType);
+        }
+
+        return AmmoToTake;
+    }
+
+    return 0;
+}
+
+
 
 void AGun::Fire()
 {
@@ -88,7 +127,6 @@ void AGun::Fire()
                     UE_LOG(LogTemp, Warning, TEXT("총알 스폰 성공!"));
                 }
 
-                // 🔹 라인트레이스를 제거하거나, 총알이 맞았을 때만 트리거
 
             }
         }
@@ -105,8 +143,25 @@ void AGun::Fire()
 
 void AGun::Reload()
 {
-    UE_LOG(LogTemp, Warning, TEXT("재장전!"));
-    CurrentAmmo = MaxAmmo;
+    APlayerCharacter* Player = Cast<APlayerCharacter>(GetOwner());
+    if (!Player)
+    {
+        UE_LOG(LogTemp, Warning, TEXT("총기의 소유자가 없음!"));
+        return;
+    }
+
+    int32 AmmoNeeded = MaxAmmo - CurrentAmmo;
+    int32 AmmoLoaded = GetAmmoFromInventory(AmmoNeeded);
+
+    if (AmmoLoaded > 0)
+    {
+        CurrentAmmo += AmmoLoaded;
+        UE_LOG(LogTemp, Warning, TEXT("재장전 완료! 현재 탄약: %d / %d"), CurrentAmmo, MaxAmmo);
+    }
+    else
+    {
+        UE_LOG(LogTemp, Warning, TEXT("재장전할 %s가 부족합니다!"), *UEnum::GetValueAsString(GetAmmoType()));
+    }
 }
 
 void AGun::SetCurrentAmmo(int32 NewAmmo)

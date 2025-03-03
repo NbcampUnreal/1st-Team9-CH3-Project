@@ -31,15 +31,14 @@ public:
     UParticleSystem* ImpactEffect;
 
 
-
-    
-    UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Weapon")
-    UDataTable* BulletDataTable;
-
-
-    virtual void BeginPlay() override;
+    void Reload() override;
     virtual void Fire() override;
-    virtual void Reload() override;
 
+
+private:
+    bool bCanFire; // 연속 발사 방지
+    FTimerHandle FireCooldownTimer;
+
+    void ResetFireCooldown(); // 발사 가능 상태로 초기화
 
 };
