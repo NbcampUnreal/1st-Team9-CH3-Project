@@ -225,8 +225,7 @@ void APlayerCharacter::AddItem(AItem* Item)
 			Item->Use();
 			break;
 		case HEALINGITEM:
-			//갯수 증가
-			//HealPotion->
+			HealPotion->IncrementCount(1);
 			break;
 		case PISTOL_BULLET:
 			//falls through
