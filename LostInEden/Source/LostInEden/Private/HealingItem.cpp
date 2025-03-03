@@ -18,6 +18,6 @@ void AHealingItem::Use()
         Player->SetHealth(NewHealthValue);
 
 
-        Destroy();9
+        Destroy();
     }
 }
