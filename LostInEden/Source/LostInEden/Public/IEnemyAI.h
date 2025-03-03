@@ -32,5 +32,6 @@ public:
 	virtual void UnequipWeapon() = 0;
 	virtual void GetIdealRange(float& AttackRadius, float& DefendRadius) = 0;
 	virtual void SetMovementSpeed(E_MovementSpeed Speed, float& SpeedValue) = 0;
+	virtual class AActor* GetPatrolRoute() const = 0;
 
 };
