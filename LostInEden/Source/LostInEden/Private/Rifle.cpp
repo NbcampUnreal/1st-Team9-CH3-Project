@@ -146,10 +146,6 @@ void ARifle::Fire()
 }
 
 
-
-
-
-
 void ARifle::StartAutoFire()
 {
     if (CurrentAmmo > 0)
