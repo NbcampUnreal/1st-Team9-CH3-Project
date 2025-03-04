@@ -79,7 +79,7 @@ void APistol::Fire()
         return;
     }
 
-    bCanFire = false;  // 🔹 한 번 발사 후, 다시 발사할 수 없도록 설정
+    bCanFire = false;  
 
     if (!BulletFactory)
     {
@@ -144,13 +144,12 @@ void APistol::Fire()
         }
     }
 
-    // 🔹 탄약 감소
+
     if (CurrentAmmo > 0)
     {
         CurrentAmmo--;
     }
 
-    // 🔹 일정 시간 후 다시 발사 가능하도록 설정
     GetWorld()->GetTimerManager().SetTimer(FireCooldownTimer, this, &APistol::ResetFireCooldown, FireRate, false);
 }
 
