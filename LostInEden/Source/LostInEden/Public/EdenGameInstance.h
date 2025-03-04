@@ -6,13 +6,6 @@
 #include "Engine/GameInstance.h"
 #include "EdenGameInstance.generated.h"
 
-UENUM(BlueprintType)
-enum class EStageIndex : uint8
-{
-	Stage1,
-	Stage2,
-};
-
 UCLASS()
 class LOSTINEDEN_API UEdenGameInstance : public UGameInstance
 {
@@ -21,6 +14,6 @@ class LOSTINEDEN_API UEdenGameInstance : public UGameInstance
 public:
 	UEdenGameInstance();
 
-	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = "Game Data")
-	EStageIndex CurrentStage;
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Level")
+	TArray<FName> LevelMapNames;
 };

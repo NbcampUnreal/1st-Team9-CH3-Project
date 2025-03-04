@@ -1,9 +1,5 @@
 // Fill out your copyright notice in the Description page of Project Settings.
 
 
-#include "EdenGameInstance.h"
+#include "TitleGameState.h"
 
-UEdenGameInstance::UEdenGameInstance()
-{
-	
-}

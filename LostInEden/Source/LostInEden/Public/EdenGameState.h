@@ -4,11 +4,10 @@
 
 #include "CoreMinimal.h"
 #include "GameFramework/GameState.h"
+#include "GlobalEnum.h"
 #include "EdenGameState.generated.h"
 
-/**
- * 
- */
+
 UCLASS()
 class LOSTINEDEN_API AEdenGameState : public AGameState
 {
@@ -19,13 +18,15 @@ public:
 
 	virtual void BeginPlay() override;
 
-	void StartLevel();
-	void EndLevel();
-	void UpdateHUD();
+protected:
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Stage")
+	EEdenStageIndex CurrentStage;
 
 	UFUNCTION(BlueprintCallable, Category = "Level")
 	void OnGameOver();
 
 private:
-
+	void StartLevel();
+	void EndLevel();
+	void UpdateHUD();
 };
