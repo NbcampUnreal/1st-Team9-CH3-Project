@@ -73,11 +73,14 @@ int32 AGun::GetAmmoFromInventory(int32 Amount)
             Inventory.Remove(AmmoType);
         }
 
+        UE_LOG(LogTemp, Warning, TEXT("인벤토리에서 탄약 사용: %d 남은 탄약: %d"), AmmoToTake, Inventory.Contains(AmmoType) ? Inventory[AmmoType] : 0);
+
         return AmmoToTake;
     }
 
     return 0;
 }
+
 
 
 

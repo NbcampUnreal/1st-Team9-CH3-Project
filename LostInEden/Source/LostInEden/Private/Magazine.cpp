@@ -21,6 +21,7 @@ void AMagazine::Use()
     if (Player)
     {
         TMap<EItemType, int32>& Inventory = Player->GetAmmoInventory();
+
         if (Inventory.Contains(AmmoType))
         {
             Inventory[AmmoType] += AmmoAmount;
@@ -30,6 +31,9 @@ void AMagazine::Use()
             Inventory.Add(AmmoType, AmmoAmount);
         }
 
-        Destroy(); 
+        UE_LOG(LogTemp, Warning, TEXT("%d발의 %s 탄약을 획득함! 현재 인벤토리: %d"),
+            AmmoAmount, *UEnum::GetValueAsString(AmmoType), Inventory[AmmoType]);
+
+        Destroy();
     }
 }
