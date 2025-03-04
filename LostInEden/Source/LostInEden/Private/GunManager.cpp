@@ -12,10 +12,10 @@ UGunManager::UGunManager()
 	OwnedGuns.Add({ EGunType::PISTOL, Pistol->GetCurrentAmmo() });
 
 	//�ӽ�
-	ARifle* Rifle = CreateDefaultSubobject<ARifle>(TEXT("Rifle"));
+	/*ARifle* Rifle = CreateDefaultSubobject<ARifle>(TEXT("Rifle"));
 	AShotgun* Shotgun = CreateDefaultSubobject<AShotgun>(TEXT("Shotgun"));
 	OwnedGuns.Add({ EGunType::RIFLE, Rifle->GetCurrentAmmo() });
-	OwnedGuns.Add({ EGunType::SHOTGUN, Shotgun->GetCurrentAmmo() });
+	OwnedGuns.Add({ EGunType::SHOTGUN, Shotgun->GetCurrentAmmo() });*/
 }
 
 TArray<EGunType> UGunManager::GetOwnedGunList() const

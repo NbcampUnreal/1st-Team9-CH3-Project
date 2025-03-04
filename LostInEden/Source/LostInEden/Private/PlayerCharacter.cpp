@@ -204,15 +204,15 @@ void APlayerCharacter::UseItem()
 
 void APlayerCharacter::AddItem(AItem* Item)
 {
-	if (AGun* Gun = Cast<AGun>(Item))
+	AGun* Gun = Cast<AGun>(Item);
+	if (Gun)
 	{
 		TArray<EGunType> GunList = GunManager->GetOwnedGunList();
-		if (GunList.Find(Gun->GetGunType()))
+		if (GunList.Find(Gun->GetGunType()) != INDEX_NONE)
 		{
 			UE_LOG(LogTemp, Warning, TEXT("이미 소지한 총입니다!"));
 			return;
 		}
-		EGunType GunType = Gun->GetGunType();
 		GunManager->UpdateGunData(Gun);
 	}
 	else
@@ -225,8 +225,7 @@ void APlayerCharacter::AddItem(AItem* Item)
 			Item->Use();
 			break;
 		case HEALINGITEM:
-			//갯수 증가
-			//HealPotion->
+			HealPotion->IncrementCount(1);
 			break;
 		case PISTOL_BULLET:
 			//falls through
