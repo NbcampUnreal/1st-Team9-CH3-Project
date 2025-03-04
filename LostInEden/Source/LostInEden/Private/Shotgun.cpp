@@ -22,7 +22,7 @@ AShotgun::AShotgun()
 
     bCanFire = true;
 
-    static ConstructorHelpers::FClassFinder<ABullet> BulletBP(TEXT("/Game/Items/Blueprints/BP_BulletShotgun.BP_BulletShotgun_C"));
+    static ConstructorHelpers::FClassFinder<ABullet> BulletBP(TEXT("/Game/Items/Blueprints/BP_ShotGunBullet.BP_ShotGunBullet_C"));
     if (BulletBP.Succeeded())
     {
         BulletFactory = BulletBP.Class;
