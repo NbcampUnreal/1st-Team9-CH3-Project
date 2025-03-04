@@ -43,3 +43,8 @@ EItemType AMagazine::GetAmmoType() const
 {
     return AmmoType;
 }
+
+int32 AMagazine::GetAmmoAmount() const
+{
+    return AmmoAmount;
+}

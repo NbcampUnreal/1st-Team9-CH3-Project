@@ -25,6 +25,9 @@ public:
     UFUNCTION(BlueprintCallable, Category = "Magazine")
     EItemType GetAmmoType() const;
 
+    UFUNCTION(BlueprintCallable, Category = "Magazine")
+    int32 GetAmmoAmount() const;
+
 
 
     virtual void Use() override; 
