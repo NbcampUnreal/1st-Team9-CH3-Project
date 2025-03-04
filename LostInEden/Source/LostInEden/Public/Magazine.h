@@ -22,5 +22,10 @@ public:
     UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Magazine")
     TEnumAsByte<EItemType> AmmoType;
 
+    UFUNCTION(BlueprintCallable, Category = "Magazine")
+    EItemType GetAmmoType() const;
+
+
+
     virtual void Use() override; 
 };

@@ -37,3 +37,9 @@ void AMagazine::Use()
         Destroy();
     }
 }
+
+
+EItemType AMagazine::GetAmmoType() const
+{
+    return AmmoType;
+}
