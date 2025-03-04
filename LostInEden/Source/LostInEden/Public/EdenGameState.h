@@ -7,6 +7,7 @@
 #include "GlobalEnum.h"
 #include "EdenGameState.generated.h"
 
+// Main ·¹º§ÀÇ GameState
 
 UCLASS()
 class LOSTINEDEN_API AEdenGameState : public AGameState
@@ -15,7 +16,6 @@ class LOSTINEDEN_API AEdenGameState : public AGameState
 
 public:
 	AEdenGameState();
-
 	virtual void BeginPlay() override;
 
 protected:

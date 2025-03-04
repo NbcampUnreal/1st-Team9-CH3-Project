@@ -7,12 +7,18 @@
 #include "GlobalEnum.h"
 #include "EndingGameState.generated.h"
 
-/**
- * 
- */
+// Ending ·¹º§ÀÇ GameState
+
 UCLASS()
 class LOSTINEDEN_API AEndingGameState : public AGameState
 {
 	GENERATED_BODY()
 	
+public:
+	AEndingGameState();
+	virtual void BeginPlay() override;
+
+protected:
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Stage")
+	EEndingStageIndex CurrentStage;
 };

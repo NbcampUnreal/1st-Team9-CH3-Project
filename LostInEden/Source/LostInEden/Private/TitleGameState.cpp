@@ -3,3 +3,13 @@
 
 #include "TitleGameState.h"
 
+ATitleGameState::ATitleGameState()
+{
+
+}
+
+void ATitleGameState::BeginPlay()
+{
+	Super::BeginPlay();
+
+}
