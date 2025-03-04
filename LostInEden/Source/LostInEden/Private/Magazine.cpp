@@ -31,6 +31,6 @@ void AMagazine::Use()
             Inventory.Add(AmmoType, AmmoAmount);
         }
 
-        Destroy(); // 탄창 아이템 사용 후 제거
+        Destroy(); 
     }
 }
