@@ -16,6 +16,7 @@
 #include "Shotgun.h"
 #include "Shield.h"
 #include "HealingItem.h"
+#include "Magazine.h"
 
 APlayerCharacter::APlayerCharacter()
 {
@@ -217,31 +218,32 @@ void APlayerCharacter::AddItem(AItem* Item)
 	}
 	else
 	{
-		EItemType ItemType = Item->GetItemType();
-		
-		switch (ItemType)
+		AMagazine* Magazine = Cast<AMagazine>(Item);
+		EItemType ItemType;
+		if (Magazine)
 		{
-		case SHIELD:
-			Item->Use();
-			break;
-		case HEALINGITEM:
-			HealPotion->IncrementCount(1);
-			break;
-		case PISTOL_BULLET:
-			//falls through
-		case RIFLE_BULLET:
-			//falls through
-		case SHOTGUN_BULLET:
-			if(AmmoInventory.Find(ItemType))
+			ItemType = Magazine->GetAmmoType();
+			int32 ItemCnt = 0;
+			if (AmmoInventory.Find(ItemType))
 			{
-				int32 ItemCnt = *AmmoInventory.Find(ItemType);
-				AmmoInventory.Add({ ItemType, ++ItemCnt });
+				ItemCnt = *AmmoInventory.Find(ItemType);
 			}
-			break;
-		case NONE:
-			break;
-		default:
-			break;
+			AmmoInventory.Add({ ItemType, ItemCnt + Magazine->GetAmmoAmount() });
+		}
+		else
+		{
+			ItemType = Item->GetItemType();
+			switch (ItemType)
+			{
+			case SHIELD:
+				Item->Use();
+				break;
+			case HEALINGITEM:
+				HealPotion->IncrementCount(1);
+				break;
+			default:
+				break;
+			}
 		}
 	}
 }
