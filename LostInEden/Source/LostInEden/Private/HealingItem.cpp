@@ -12,12 +12,12 @@ AHealingItem::AHealingItem()
     HealAmount = 40.0f;
     ItemType = EItemType::HEALINGITEM;
 
-    // HealingMesh 초기화
+
     HealingMesh = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("HealingMesh"));
     RootComponent = HealingMesh;
 
-    // Static Mesh 로드
-    static ConstructorHelpers::FObjectFinder<UStaticMesh> PotionMesh(TEXT("/Game/Items/Scarlet_Elixir_1114043200_fbx/Scarlet_Elixir_1114043200.Scarlet_Elixir_1114043200"));
+ 
+    static ConstructorHelpers::FObjectFinder<UStaticMesh> PotionMesh(TEXT("/Game/Items/future-first-aid-kit/source/Medibox.Medibox"));
     if (PotionMesh.Succeeded())
     {
         HealingMesh->SetStaticMesh(PotionMesh.Object);
