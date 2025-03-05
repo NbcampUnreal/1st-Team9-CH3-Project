@@ -27,6 +27,15 @@ AMagazine::AMagazine()
 void AMagazine::BeginPlay()
 {
     Super::BeginPlay();
+    if (MagazineMesh)
+    {
+        MagazineMesh->SetWorldScale3D(FVector(2.0f, 2.0f, 2.0f));
+    }
+
+    FVector NewLocation = GetActorLocation();
+    NewLocation.Z += 30.0f;  
+    SetActorLocation(NewLocation);
+
     ApplyOutlineMaterial();
 }
 

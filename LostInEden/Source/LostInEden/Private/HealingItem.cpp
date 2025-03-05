@@ -46,6 +46,12 @@ void AHealingItem::Use()
     }
 }
 
+void AHealingItem::IncrementCount(int32 Amount)
+{
+    Count += Amount;
+}
+
+
 EItemType AHealingItem::GetItemType() const
 {
     return ItemType;
