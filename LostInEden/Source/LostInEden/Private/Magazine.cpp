@@ -13,6 +13,21 @@ AMagazine::AMagazine()
     ItemDescription = "A magazine containing ammunition.";
     AmmoAmount = 0; 
     AmmoType = EItemType::NONE;
+
+    static ConstructorHelpers::FObjectFinder<UMaterialInterface> PistolMat(TEXT("/Game/Items/Material/PistolMagazine_Texture.PistolMagazine_Texture"));
+    static ConstructorHelpers::FObjectFinder<UMaterialInterface> RifleMat(TEXT("/Game/Items/Material/RifleMagazine_Material.RifleMagazine_Material"));
+    static ConstructorHelpers::FObjectFinder<UMaterialInterface> ShotgunMat(TEXT("/Game/Items/Material/ShotgunMagazine_Material.ShotgunMagazine_Material"));
+
+    if (PistolMat.Succeeded()) PistolOutlineMaterial = PistolMat.Object;
+    if (RifleMat.Succeeded()) RifleOutlineMaterial = RifleMat.Object;
+    if (ShotgunMat.Succeeded()) ShotgunOutlineMaterial = ShotgunMat.Object;
+
+}
+
+void AMagazine::BeginPlay()
+{
+    Super::BeginPlay();
+    ApplyOutlineMaterial();
 }
 
 void AMagazine::Use()
@@ -47,4 +62,44 @@ EItemType AMagazine::GetAmmoType() const
 int32 AMagazine::GetAmmoAmount() const
 {
     return AmmoAmount;
+}
+
+
+void AMagazine::ApplyOutlineMaterial()
+{
+    if (!MagazineMesh) return;
+
+    UMaterialInterface* SelectedMaterial = nullptr;
+
+    switch (AmmoType)
+    {
+    case EItemType::PISTOL_BULLET:
+        SelectedMaterial = PistolOutlineMaterial;
+        break;
+    case EItemType::RIFLE_BULLET:
+        SelectedMaterial = RifleOutlineMaterial;
+        break;
+    case EItemType::SHOTGUN_BULLET:
+        SelectedMaterial = ShotgunOutlineMaterial;
+        break;
+    default:
+        SelectedMaterial = nullptr;
+        break;
+    }
+
+    if (SelectedMaterial)
+    {
+        
+        UMaterialInstanceDynamic* DynamicMat = UMaterialInstanceDynamic::Create(SelectedMaterial, this);
+        if (DynamicMat)
+        {
+            MagazineMesh->SetOverlayMaterial(DynamicMat);  
+        }
+    }
+
+    UMaterialInterface* OriginalMaterial = MagazineMesh->GetMaterial(0);
+    if (OriginalMaterial)
+    {
+        MagazineMesh->SetMaterial(0, OriginalMaterial);
+    }
 }

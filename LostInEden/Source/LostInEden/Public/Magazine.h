@@ -22,6 +22,18 @@ public:
     UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Magazine")
     TEnumAsByte<EItemType> AmmoType;
 
+    UPROPERTY(EditDefaultsOnly, Category = "Material")
+    UMaterialInterface* PistolOutlineMaterial;
+
+    UPROPERTY(EditDefaultsOnly, Category = "Material")
+    UMaterialInterface* RifleOutlineMaterial;
+
+    UPROPERTY(EditDefaultsOnly, Category = "Material")
+    UMaterialInterface* ShotgunOutlineMaterial;
+
+
+    void ApplyOutlineMaterial();
+
     UFUNCTION(BlueprintCallable, Category = "Magazine")
     EItemType GetAmmoType() const;
 
@@ -29,6 +41,6 @@ public:
     int32 GetAmmoAmount() const;
 
 
-
+    virtual void BeginPlay() override;
     virtual void Use() override; 
 };
