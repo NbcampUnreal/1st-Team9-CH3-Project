@@ -16,7 +16,7 @@ AHealingItem::AHealingItem()
     RootComponent = HealingMesh;
 
     // Static Mesh 로드
-    static ConstructorHelpers::FObjectFinder<UStaticMesh> PotionMesh(TEXT("/Game/Scarlet_Elixir_1114043200_fbx/Scarlet_Elixir_1114043200.Scarlet_Elixir_1114043200"));
+    static ConstructorHelpers::FObjectFinder<UStaticMesh> PotionMesh(TEXT("/Game/Items/Scarlet_Elixir_1114043200_fbx/Scarlet_Elixir_1114043200.Scarlet_Elixir_1114043200"));
     if (PotionMesh.Succeeded())
     {
         HealingMesh->SetStaticMesh(PotionMesh.Object);
@@ -35,6 +35,8 @@ void AHealingItem::BeginPlay()
     FVector NewLocation = GetActorLocation();
     NewLocation.Z += 30.0f;
     SetActorLocation(NewLocation);
+
+    ApplyOutlineMaterial();
 }
 
 void AHealingItem::Use()

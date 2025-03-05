@@ -19,7 +19,7 @@ AShield::AShield()
     }
 
 
-    static ConstructorHelpers::FObjectFinder<UMaterialInterface> OutlineMat(TEXT("/Game/Items/Material/Shield.Shield"));
+    static ConstructorHelpers::FObjectFinder<UMaterialInterface> OutlineMat(TEXT("/Game/Items/Material/SheildTexture.SheildTexture"));
     if (OutlineMat.Succeeded())
     {
         OutlineMaterial = OutlineMat.Object;
@@ -48,6 +48,7 @@ void AShield::BeginPlay()
     FVector NewLocation = GetActorLocation();
     NewLocation.Z += 30.0f;
     SetActorLocation(NewLocation);
+
     ApplyOutlineMaterial();
 }
 
