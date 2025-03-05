@@ -3,6 +3,7 @@
 
 AShield::AShield()
 {
+    PrimaryActorTick.bCanEverTick = true;
     ItemName = EItemType::SHIELD;
     ItemDescription = "Increases player's defense.";
     ShieldAmount = 25.0f; 
@@ -42,6 +43,19 @@ void AShield::Use()
         }
     }
 }
+
+void AShield::Tick(float DeltaTime)
+{
+    Super::Tick(DeltaTime);
+
+    FRotator NewRotation = GetActorRotation();
+    NewRotation.Yaw += 100.0f * DeltaTime;
+
+
+    SetActorRotation(NewRotation);
+}
+
+
 void AShield::BeginPlay()
 {
     Super::BeginPlay();

@@ -43,4 +43,5 @@ public:
 
     virtual void BeginPlay() override;
     virtual void Use() override; 
+    virtual void Tick(float DeltaTime) override;
 };

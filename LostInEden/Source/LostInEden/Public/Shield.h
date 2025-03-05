@@ -19,8 +19,7 @@ public:
     int32 Count;
 
     virtual void Use() override; 
-
-protected:
+    virtual void Tick(float DeltaTime) override;
     virtual void BeginPlay() override;
 
 private:

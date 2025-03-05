@@ -25,6 +25,7 @@ public:
 
     virtual void Use() override; 
     virtual void BeginPlay() override;
+    virtual void Tick(float DeltaTime) override;
     void ApplyOutlineMaterial();
 
     UPROPERTY(VisibleAnywhere, Category = "Components")

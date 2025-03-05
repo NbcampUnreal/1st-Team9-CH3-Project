@@ -3,7 +3,7 @@
 
 AMagazine::AMagazine()
 {
-
+    PrimaryActorTick.bCanEverTick = true;
     RootComponent = CreateDefaultSubobject<USceneComponent>(TEXT("Root"));
 
     MagazineMesh = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("MagazineMesh"));
@@ -60,6 +60,16 @@ void AMagazine::Use()
 
         Destroy();
     }
+}
+
+void AMagazine::Tick(float DeltaTime)
+{
+    Super::Tick(DeltaTime);
+
+    FRotator NewRotation = GetActorRotation();
+    NewRotation.Yaw += 100.0f * DeltaTime;
+
+    SetActorRotation(NewRotation);
 }
 
 

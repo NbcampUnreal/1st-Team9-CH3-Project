@@ -6,6 +6,7 @@
 
 AHealingItem::AHealingItem()
 {
+    PrimaryActorTick.bCanEverTick = true;
     ItemName = EItemType::HEALINGITEM;
     ItemDescription = "Restores health when used.";
     HealAmount = 40.0f;
@@ -37,6 +38,17 @@ void AHealingItem::BeginPlay()
     SetActorLocation(NewLocation);
 
     ApplyOutlineMaterial();
+}
+
+void AHealingItem::Tick(float DeltaTime)
+{
+    Super::Tick(DeltaTime);
+
+    FRotator NewRotation = GetActorRotation();
+    NewRotation.Yaw += 100.0f * DeltaTime;  
+
+
+    SetActorRotation(NewRotation);
 }
 
 void AHealingItem::Use()
