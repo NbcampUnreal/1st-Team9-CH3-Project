@@ -20,5 +20,16 @@ public:
 
     void IncrementCount(int32 Amount = 1); // 기본값 1로 설정
 
+    EItemType GetItemType() const;
+    int32 GetHealAmount() const;
+
     virtual void Use() override; 
+    virtual void BeginPlay() override;
+    void ApplyOutlineMaterial();
+
+    UPROPERTY(VisibleAnywhere, Category = "Components")
+    UStaticMeshComponent* HealingMesh;
+
+    UPROPERTY(EditDefaultsOnly, Category = "Healing|Material")
+    UMaterialInterface* OutlineMaterial;
 };

@@ -19,4 +19,16 @@ public:
     int32 Count;
 
     virtual void Use() override; 
+
+protected:
+    virtual void BeginPlay() override;
+
+private:
+    UPROPERTY(VisibleAnywhere, Category = "Components")
+    UStaticMeshComponent* ShieldMesh;
+
+    UPROPERTY(EditDefaultsOnly, Category = "Materials")
+    UMaterialInterface* OutlineMaterial;
+
+    void ApplyOutlineMaterial();
 };
