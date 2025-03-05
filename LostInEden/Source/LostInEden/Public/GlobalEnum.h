@@ -3,25 +3,40 @@
 #pragma once
 
 #include "CoreMinimal.h"
-#include "UObject/NoExportTypes.h"
-#include "GlobalEnum.generated.h"
 
-// GlobalÇÏ°Ô »ç¿ëµÇ´Â enum class
+// Globalï¿½Ï°ï¿½ ï¿½ï¿½ï¿½Ç´ï¿½ enum class
 
 /* 
 e.g.
 UENUM(BlueprintType)
 enum class EStageIndex : uint8
 {
-	Stage1	UMETA(DisplayName = "Áö»ó"),
-	Stage2	UMETA(DisplayName = "ÁöÇÏ"),
+	Stage1	UMETA(DisplayName = "ï¿½ï¿½ï¿½ï¿½"),
+	Stage2	UMETA(DisplayName = "ï¿½ï¿½ï¿½ï¿½"),
 };
 */
 
-
-UCLASS()
-class LOSTINEDEN_API UGlobalEnum : public UObject
+enum class EPlayerStatus
 {
-	GENERATED_BODY()
-	
+
+};
+
+UENUM(BlueprintType)
+enum EGunType : int8
+{
+	PISTOL		UMETA(DisplayName = "Pistol"),
+	RIFLE		UMETA(DisplayName = "Rifle"),
+	SHOTGUN		UMETA(DisplayName = "Shotgun"),
+	GUN			UMETA(DisplayName = "DefaultGun")
+};
+
+UENUM(BlueprintType)
+enum EItemType : int8
+{
+	SHIELD			UMETA(DisplayName = "Shield"),
+	HEALINGITEM		UMETA(DisplayName = "HealingItem"),
+	PISTOL_BULLET	UMETA(DisplayName = "Pistol_Bullet"),
+	RIFLE_BULLET	UMETA(DisplayName = "Rifle_Bullet"),
+	SHOTGUN_BULLET	UMETA(DisplayName = "Shotgun_Bullet"),
+	NONE			UMETA(DisplayName = "None")
 };

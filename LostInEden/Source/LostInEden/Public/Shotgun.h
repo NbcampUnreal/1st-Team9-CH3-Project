@@ -1,11 +1,12 @@
 #pragma once
 
 #include "CoreMinimal.h"
-#include "Gun.h"  // ✅ AGun을 상속받기 위해 추가
+#include "Gun.h"  
+#include "PlayerCharacter.h"
 #include "Shotgun.generated.h"
 
 UCLASS()
-class AShotgun : public AGun  // ✅ AActor → AGun으로 변경
+class AShotgun : public AGun  
 {
     GENERATED_BODY()
 
@@ -32,7 +33,16 @@ protected:
     bool bCanFire; 
 
     FTimerHandle FireDelayTimer; 
-    FTimerHandle ReloadTimer; 
-private:
-    void AutoAssignBulletFactory();
+    FTimerHandle ReloadTimer;
+
+    UPROPERTY(EditAnywhere, Category = "Effects")
+    class USoundBase* bulletSound;
+
+    UPROPERTY(EditAnywhere, Category = "Effects")
+    UParticleSystem* MuzzleFlash;
+
+    UPROPERTY(EditAnywhere, Category = "Effects")
+    UParticleSystem* ImpactEffect;
+
+
 };

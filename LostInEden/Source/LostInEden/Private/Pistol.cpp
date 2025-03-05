@@ -4,17 +4,21 @@
 #include "Bullet.h"
 #include "DrawDebugHelpers.h"
 #include "PlayerCharacter.h"
+#include "Particles/ParticleSystem.h"
 #include "Camera/CameraComponent.h"
 
 APistol::APistol()
 {
     Damage = 15.0f;
-    FireRate = 0.3f;
+    FireRate = 0.7f;  
     MaxAmmo = 12;
     CurrentAmmo = MaxAmmo;
     Range = 2000.0f;
     bIsAutomatic = false;
     BulletSpread = 1.0f;
+
+    GunType = EGunType::PISTOL;
+    bCanFire = true;  // 🔹 처음에는 발사가 가능해야 함.
 
     static ConstructorHelpers::FClassFinder<ABullet> BulletBP(TEXT("/Game/Items/Blueprints/BP_Bullet.BP_Bullet_C"));
     if (BulletBP.Succeeded())
@@ -26,40 +30,56 @@ APistol::APistol()
     {
         UE_LOG(LogTemp, Error, TEXT(" Bullet Factory 자동 설정 실패! 블루프린트 경로 확인 필요."));
     }
-
-    ConstructorHelpers::FObjectFinder<USoundBase> tempSound(TEXT("/Game/Items/Sci-Fi_Shots_Pack2_Game_Of_Weapons/Wave/SciFi_Shot_P2__147_.SciFi_Shot_P2__147_"));
-    if (tempSound.Succeeded()) {
-       bulletSound = tempSound.Object;
-   }
-}
-void APistol::BeginPlay()
-{
-    Super::BeginPlay();
-
-    /*APlayerCharacter* PlayerCharacter = Cast<APlayerCharacter>(UGameplayStatics::GetPlayerCharacter(GetWorld(), 0));
-    if (!PlayerCharacter)
+    bulletSound = LoadObject<USoundBase>(GetTransientPackage(), TEXT("/Game/Items/Sci-Fi_Shots_Pack2_Game_Of_Weapons/Wave/SciFi_Shot_P2__147_.SciFi_Shot_P2__147_"));
+    if (bulletSound)
     {
-        UE_LOG(LogTemp, Error, TEXT("Pistol: 플레이어 캐릭터를 찾을 수 없습니다!"));
-        return;
-    }*/
+        UE_LOG(LogTemp, Warning, TEXT("총소리 로드 완료!"));
+    }
+    else
+    {
+        UE_LOG(LogTemp, Error, TEXT("총소리 로드 실패! 경로 확인 필요"));
+    }
 
-    // 🔹 총을 캐릭터 손에 부착
-    /*FName WeaponSocket = "GunSocket_R";
-    AttachToComponent(PlayerCharacter->GetMesh(), FAttachmentTransformRules::SnapToTargetNotIncludingScale, WeaponSocket);*/
 
-    // 🔹 총 회전값을 보정 (Yaw 180도 회전)
-    //FRotator NewRotation = GetActorRotation();
-    //NewRotation.Yaw += 180.0f;
-    //SetActorRotation(NewRotation);
+    MuzzleFlash = LoadObject<UParticleSystem>(nullptr, TEXT("/Game/Items/Particles/P_Gunshot.P_Gunshot"));
+    if (MuzzleFlash)
+    {
+        UE_LOG(LogTemp, Warning, TEXT("머즐 플래시 로드 완료!"));
+    }
+    else
+    {
+        UE_LOG(LogTemp, Error, TEXT("머즐 플래시 로드 실패! 경로 확인 필요"));
+    }
 
-    //UE_LOG(LogTemp, Warning, TEXT("%s가 플레이어 손에 올바르게 장착됨!"), *GetName());
+    ImpactEffect = LoadObject<UParticleSystem>(GetTransientPackage(), TEXT("/Game/Items/Effects/ParticleSystems/Weapons/AssaultRifle/Impacts/P_AssaultRifle_IH.P_AssaultRifle_IH"));
+    if (ImpactEffect)
+    {
+        UE_LOG(LogTemp, Warning, TEXT("피격 이펙트 로드 완료!"));
+    }
+    else
+    {
+        UE_LOG(LogTemp, Error, TEXT("피격 이펙트 로드 실패! 경로 확인 필요"));
+    }
+
+
+
+
 }
 
-
+void APistol::Reload()
+{
+    Super::Reload();
+}
 
 void APistol::Fire()
 {
+    if (!bCanFire || CurrentAmmo <= 0)
+    {
+        UE_LOG(LogTemp, Warning, TEXT("발사 대기 중..."));
+        return;
+    }
 
+    bCanFire = false;  
 
     if (!BulletFactory)
     {
@@ -76,8 +96,6 @@ void APistol::Fire()
 
     if (!MuzzleLocation)
     {
-        UE_LOG(LogTemp, Error, TEXT("Gun: MuzzleLocation이 nullptr입니다! GunStaticMesh를 사용합니다."));
-
         MuzzleLocation = GunStaticMesh;
     }
 
@@ -91,21 +109,31 @@ void APistol::Fire()
     FHitResult HitResult;
     FCollisionQueryParams QueryParams;
     QueryParams.AddIgnoredActor(this);
+    QueryParams.AddIgnoredActor(GetOwner());
 
     bool bHit = World->LineTraceSingleByChannel(
         HitResult, TraceStart, TraceEnd, ECC_Pawn, QueryParams);
 
-    DrawDebugLine(World, TraceStart, TraceEnd, FColor::Green, false, 5.0f, 0, 5.0f);
-    UGameplayStatics::PlaySound2D(GetWorld(), bulletSound);
-    if (bHit)
-    { 
+    if (MuzzleFlash)
+    {
+        UGameplayStatics::SpawnEmitterAtLocation(World, MuzzleFlash, MuzzlePos, MuzzleRot);
+    }
 
+    if (bHit)
+    {
         AActor* HitActor = HitResult.GetActor();
         if (HitActor)
         {
-            UE_LOG(LogTemp, Warning, TEXT("트레이스 명중! 맞은 대상: %s"), *HitActor->GetName());
+            if (bulletSound)
+            {
+                UGameplayStatics::PlaySoundAtLocation(this, bulletSound, HitResult.Location);
+            }
 
-            // 🔹 ApplyDamage 실행 (한 번만 실행)
+            if (ImpactEffect)
+            {
+                UGameplayStatics::SpawnEmitterAtLocation(World, ImpactEffect, HitResult.Location, FRotator::ZeroRotator);
+            }
+
             float AppliedDamage = UGameplayStatics::ApplyDamage(
                 HitActor,
                 Damage,
@@ -113,44 +141,21 @@ void APistol::Fire()
                 this,
                 nullptr
             );
-
-            UE_LOG(LogTemp, Warning, TEXT("권총이 %s에 명중! 피해량: %f"), *HitActor->GetName(), AppliedDamage);
         }
     }
-    else
+
+
+    if (CurrentAmmo > 0)
     {
-        UE_LOG(LogTemp, Warning, TEXT("트레이스 미적중!"));
+        CurrentAmmo--;
     }
 
-    // 🔹 총알 스폰
-    ABullet* SpawnedBullet = World->SpawnActor<ABullet>(BulletFactory, MuzzlePos, ShotDirection.Rotation());
-    if (SpawnedBullet)
-    {
-        UE_LOG(LogTemp, Warning, TEXT("총알 스폰 성공!"));
-    }
+    GetWorld()->GetTimerManager().SetTimer(FireCooldownTimer, this, &APistol::ResetFireCooldown, FireRate, false);
 }
 
-
-
-void APistol::Reload()
+void APistol::ResetFireCooldown()
 {
-    UE_LOG(LogTemp, Warning, TEXT("권총은 무한 탄창이므로 재장전이 필요 없음!"));
+    bCanFire = true;
 }
 
-void APistol::AutoAssignBulletFactory()
-{
-    if (BulletFactory) return;
 
-    FString BulletPath = TEXT("/Game/Items/Blueprints/BP_Bullet.BP_Bullet'");
-    UClass* BulletClass = LoadObject<UClass>(nullptr, *BulletPath);
-
-    if (BulletClass)
-    {
-        BulletFactory = BulletClass;
-        UE_LOG(LogTemp, Warning, TEXT("Pistol: Bullet Factory 자동 설정 완료!"));
-    }
-    else
-    {
-        UE_LOG(LogTemp, Error, TEXT("Pistol: Bullet Factory 자동 설정 실패! 블루프린트 경로 확인 필요."));
-    }
-}

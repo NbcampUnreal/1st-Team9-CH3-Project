@@ -2,6 +2,7 @@
 
 #include "CoreMinimal.h"
 #include "Gun.h"
+#include "PlayerCharacter.h"
 #include "Rifle.generated.h"
 
 UCLASS()
@@ -31,14 +32,20 @@ public:
 
     UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Weapon")
     float BurstFireRate;
-protected:
 
+    UPROPERTY(EditAnywhere, Category = "Effects")
+    class USoundBase* bulletSound;
+
+    UPROPERTY(EditAnywhere, Category = "Effects")
+    UParticleSystem* MuzzleFlash;
+
+    UPROPERTY(EditAnywhere, Category = "Effects")
+    UParticleSystem* ImpactEffect;
 
 public:
     FTimerHandle AutoFireHandle;
     void StartAutoFire();
     void StopAutoFire();
     void BurstFire();
-private:
-    void AutoAssignBulletFactory();
+
 };

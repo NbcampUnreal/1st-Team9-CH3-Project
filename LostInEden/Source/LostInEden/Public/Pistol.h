@@ -2,6 +2,9 @@
 
 #include "CoreMinimal.h"
 #include "Gun.h"
+#include "Engine/DataTable.h"
+#include "BulletData.h"
+#include "PlayerCharacter.h"
 #include "Pistol.generated.h"
 
 UCLASS()
@@ -18,14 +21,24 @@ public:
     UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Weapon")
     float BulletSpread;
 
+    UPROPERTY(EditAnywhere, Category = "Effects")
     class USoundBase* bulletSound;
- 
 
-    virtual void BeginPlay() override;
+    UPROPERTY(EditAnywhere, Category = "Effects")
+    UParticleSystem* MuzzleFlash;  
+
+    UPROPERTY(EditAnywhere, Category = "Effects")
+    UParticleSystem* ImpactEffect;
+
+
+    void Reload() override;
     virtual void Fire() override;
-    virtual void Reload() override;
+
 
 private:
-    void AutoAssignBulletFactory();
+    bool bCanFire; // 연속 발사 방지
+    FTimerHandle FireCooldownTimer;
+
+    void ResetFireCooldown(); // 발사 가능 상태로 초기화
 
 };

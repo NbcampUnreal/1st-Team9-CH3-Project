@@ -13,7 +13,21 @@ public:
     AShield();
 
     UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Shield")
-    float ShieldAmount; // ✅ 쉴드량
+    float ShieldAmount; 
 
-    virtual void Use() override; // ✅ 아이템 사용 오버라이드
+    UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Shield")
+    int32 Count;
+
+    virtual void Use() override; 
+    virtual void Tick(float DeltaTime) override;
+    virtual void BeginPlay() override;
+
+private:
+    UPROPERTY(VisibleAnywhere, Category = "Components")
+    UStaticMeshComponent* ShieldMesh;
+
+    UPROPERTY(EditDefaultsOnly, Category = "Materials")
+    UMaterialInterface* OutlineMaterial;
+
+    void ApplyOutlineMaterial();
 };

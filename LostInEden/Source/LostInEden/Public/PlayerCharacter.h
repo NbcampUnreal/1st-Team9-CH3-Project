@@ -3,33 +3,15 @@
 #pragma once
 
 #include "CoreMinimal.h"
+#include "GlobalEnum.h"
 #include "Entity.h"
 #include "PlayerCharacter.generated.h"
 
 struct FInputActionValue;
 class AGun;
 class AItem;
-
-enum class EPlayerStatus
-{
-
-};
-
-UENUM(BlueprintType)
-enum EGunType : int8
-{
-	PISTOL		UMETA(DisplayName = "Pistol"),
-	RIFLE		UMETA(DisplayName = "Rifle"),
-	SHOTGUN		UMETA(DisplayName = "Shotgun")
-};
-
-UENUM(BlueprintType)
-enum EItemType : int8
-{
-	SHIELD		UMETA(DisplayName = "Shield"),
-	HEALINGITEM	UMETA(DisplayName = "HealingItem"),
-	NONE		UMETA(DisplayName = "None")
-};
+class UGunManager;
+class AHealingItem;
 
 UCLASS()
 class LOSTINEDEN_API APlayerCharacter : public AEntity
@@ -39,8 +21,12 @@ class LOSTINEDEN_API APlayerCharacter : public AEntity
 public:
 	APlayerCharacter();
 
+	void SetHealth(int32);
+	void SetShieldGauge(int32);
+
 	int32 GetShieldGauge() const;
 	int32 GetMaxShieldGauge() const;
+	TMap<EItemType, int32>& GetAmmoInventory();
 
 	// 현재 장착하고 있는 무기의 객체를 반환
 	AGun* GetCurrentWeapon();
@@ -74,17 +60,18 @@ protected:
 	float SprintSpeed;
 
 	// 플레이어 인벤토리
-	TMap<EGunType, AGun*> EquipInventory;
-	TMap<EItemType, int32> ItemInventory;
+	TMap<EItemType, int32> AmmoInventory;
+	//힐링 아이템
+	AHealingItem* HealPotion;
 
-	// 현재 장착된 무기 타입
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Weapon")
-	TEnumAsByte<EGunType> CurrentWeapon;
-	// 현재 장착된 무기 블루프린트 객체
-	AGun* BP_Weapon;
+	// Gun 매니저
+	UGunManager* GunManager;
 
-	// 오버랩된 드롭 아이템
-	AItem* OverlappingItem;
+	// 현재 장착된 무기 타입과 객체
+	AGun* CurrWeapon;
+
+	// 주울수 있는 아이템 리스트
+	TArray<AItem*> OverlappingItemList;
 
 	// 카메라 관련 컴포넌트
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Component|Camera")
@@ -121,8 +108,6 @@ protected:
 	virtual void BeginPlay() override;
 
 public:
-	// 체력 회복
-	void Heal(int32);
 	// 캐릭터 상태 변화
 	void ChangeState(EPlayerStatus);
 
@@ -137,12 +122,10 @@ public:
 	void ReloadAmmo();
 
 	// 아이템 사용
-	void UseItem(EItemType);
+	void UseItem();
 	// 아이템 추가
-	void AddItem(EItemType);
+	void AddItem(AItem*);
 
 	// 무기 장착
 	void EquipWeapon(EGunType);
-	// 무기 추가
-	void AddWeapon(EGunType);
 };
