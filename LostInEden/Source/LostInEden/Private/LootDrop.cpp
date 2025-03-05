@@ -17,7 +17,7 @@ void ALootDrop::BeginPlay()
 	Super::BeginPlay();
 	// 난수가 LootChance 보다 크면 아이템 가챠
 	int CanLoot = FMath::RandRange(0, 100);
-	if (CanLoot > LootChance)
+	if (CanLoot < LootChance)
 	{
 		SpawnRandomItem();
 
