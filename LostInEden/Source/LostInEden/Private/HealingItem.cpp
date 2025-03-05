@@ -22,11 +22,19 @@ AHealingItem::AHealingItem()
         HealingMesh->SetStaticMesh(PotionMesh.Object);
     }
 
+    static ConstructorHelpers::FObjectFinder<UMaterialInterface> OutlineMat(TEXT("/Game/Items/Material/POTION.POTION"));
+    if (OutlineMat.Succeeded())
+    {
+        OutlineMaterial = OutlineMat.Object;
+    }
 }
 
 void AHealingItem::BeginPlay()
 {
     Super::BeginPlay();
+    FVector NewLocation = GetActorLocation();
+    NewLocation.Z += 30.0f;
+    SetActorLocation(NewLocation);
 }
 
 void AHealingItem::Use()
@@ -60,4 +68,23 @@ EItemType AHealingItem::GetItemType() const
 int32 AHealingItem::GetHealAmount() const
 {
     return HealAmount;
+}
+
+void AHealingItem::ApplyOutlineMaterial()
+{
+    if (!HealingMesh)
+    {
+        UE_LOG(LogTemp, Error, TEXT("ShieldMesh가 없음!"));
+        return;
+    }
+
+    if (OutlineMaterial)
+    {
+        UMaterialInstanceDynamic* DynamicMat = UMaterialInstanceDynamic::Create(OutlineMaterial, this);
+        if (DynamicMat)
+        {
+            HealingMesh->SetOverlayMaterial(DynamicMat);
+
+        }
+    }
 }

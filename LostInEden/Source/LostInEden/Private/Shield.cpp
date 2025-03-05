@@ -19,7 +19,7 @@ AShield::AShield()
     }
 
 
-    static ConstructorHelpers::FObjectFinder<UMaterialInterface> OutlineMat(TEXT("/Game/Items/Material/ShotgunMagazine_Material.ShotgunMagazine_Material"));
+    static ConstructorHelpers::FObjectFinder<UMaterialInterface> OutlineMat(TEXT("/Game/Items/Material/Shield.Shield"));
     if (OutlineMat.Succeeded())
     {
         OutlineMaterial = OutlineMat.Object;
@@ -45,6 +45,9 @@ void AShield::Use()
 void AShield::BeginPlay()
 {
     Super::BeginPlay();
+    FVector NewLocation = GetActorLocation();
+    NewLocation.Z += 30.0f;
+    SetActorLocation(NewLocation);
     ApplyOutlineMaterial();
 }
 
@@ -62,16 +65,8 @@ void AShield::ApplyOutlineMaterial()
         if (DynamicMat)
         {
             ShieldMesh->SetOverlayMaterial(DynamicMat);
-            UE_LOG(LogTemp, Warning, TEXT("Outline Material 적용됨!"));
+            
         }
-        else
-        {
-            UE_LOG(LogTemp, Error, TEXT("Dynamic Material 생성 실패!"));
-        }
-    }
-    else
-    {
-        UE_LOG(LogTemp, Error, TEXT("OutlineMaterial이 NULL임!"));
     }
 }
 
