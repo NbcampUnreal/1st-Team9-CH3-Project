@@ -139,10 +139,6 @@ void ARifle::Fire()
 
         }
     }
-    else
-    {
-
-    }
 }
 
 
