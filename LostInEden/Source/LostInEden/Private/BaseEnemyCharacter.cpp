@@ -6,7 +6,14 @@
 #include "Components/WidgetComponent.h"
 #include "NiagaraSystem.h"
 #include "NiagaraComponent.h"
+#include "AIController.h"
+#include "BaseAIController.h"
+#include "BrainComponent.h"
+#include "Components/CapsuleComponent.h"
+#include "TimerManager.h"
+#include "Materials/MaterialInstanceDynamic.h"
 
+class UWBP_HealthBar;
 
 ABaseEnemyCharacter::ABaseEnemyCharacter()
 {
@@ -36,6 +43,7 @@ ABaseEnemyCharacter::ABaseEnemyCharacter()
 
 	NiagaraComponent = CreateDefaultSubobject<UNiagaraComponent>(TEXT("OnDeadVFX"));
 	NiagaraComponent->SetupAttachment(RootComponent);
+
 }
 
 void ABaseEnemyCharacter::BeginPlay()
@@ -58,19 +66,54 @@ float ABaseEnemyCharacter::TakeDamage(float AmountDamage, struct FDamageEvent co
 	return Damage;
 	// 체력 검사를 해서 죽으면 ondead 호출
 }
-void ABaseEnemyCharacter::UpdateHealth()
-{
-	if (IsValid(HealthBarWidget))
-	{
-		GetUserwi
-	}
-}
+//void ABaseEnemyCharacter::UpdateHealth()
+//{
+//	if (!HealthBarWidget) return;
+//	
+//	UUserWidget* HealthBarWidgetInstance = HealthBarWidget->GetUserWidgetObject();
+//	if (!HealthBarWidgetInstance) return;
+//
+//	UWBP_HealthBar* HealthBar = Cast<UWBP_HealthBar>(HealthBarWidgetInstance);
+//	if (HealthBar)
+//	{
+//		
+//	}
+//
+//}
 void ABaseEnemyCharacter::OnDead()
 {
-	// ai 컨트롤러 브레인 컴포넌트 정지
-	// 물리 시뮬레이션, 충돌 비활성화
-	// 상태를 dead로 변경
-	// 인
+	// 1.ai 컨트롤러 브레인 컴포넌트 정지
+	// 2.물리 시뮬레이션, 충돌 비활성화
+	// 3.상태를 dead로 변경
+	// 4.소멸 애니메이션 재생 후 destroy
+	AAIController* AIController = Cast<AAIController>(GetController());
+	if (AIController)
+	{
+		ABaseAIController* BaseAIController = Cast<ABaseAIController>(AIController);
+		if(BaseAIController)
+		{
+			// 1. 브레인 컴포넌트 정지
+			UBrainComponent* BrainComponent = BaseAIController->GetBrainComponent();
+			if (BrainComponent)
+			{
+				BrainComponent->StopLogic("Character is Dead.");
+			}
+
+			// 2. 물리 시뮬레이션 활성화, 충돌 비활성화
+			GetMesh()->SetSimulatePhysics(true);
+			GetCapsuleComponent()->SetCollisionEnabled(ECollisionEnabled::QueryAndPhysics);
+
+			// 3. 상태 변경
+			BaseAIController->SetStateAsDead();
+
+			// 4. 소멸 애니메이션 재생 후 destroy
+			GetWorldTimerManager().SetTimer(PlayDeadAnimTimerHandle, this, &ABaseEnemyCharacter::PlayDeadAnim, 1, false);
+		}
+	}
+}
+void ABaseEnemyCharacter::PlayDeadAnim()
+{
+	
 }
 void ABaseEnemyCharacter::OnStunned()
 {

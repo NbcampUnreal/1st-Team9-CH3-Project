@@ -22,7 +22,7 @@ class LOSTINEDEN_API ABaseEnemyCharacter : public AEntity, public IIEnemyAI
 public:
 	ABaseEnemyCharacter();
 
-	//----인터페이스 상속 기능----//
+	//----인터페이스 상속 메서드----//
 	UFUNCTION(BlueprintCallable)
 	virtual void Heal(float HealPercentage) override;
 	UFUNCTION(BlueprintCallable)
@@ -58,17 +58,20 @@ protected:
 	UNiagaraSystem* NiagaraSystem;
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "AI Properties|Appearance")
 	UNiagaraComponent* NiagaraComponent;
+	FTimerHandle PlayDeadAnimTimerHandle;
 
 public:	
 	
 	UFUNCTION(BlueprintCallable)
 	float TakeDamage(float AmountDamage, struct FDamageEvent const& DamageEvent, AController* EventInstigator, AActor* DamageCauser) override;
 	// 실제 플레이시 체력바는 안보일 예정
-	UFUNCTION(BlueprintCallable)
-	void UpdateHealth();
+	//UFUNCTION(BlueprintCallable)
+	//void UpdateHealth();
 	// 적 사망시 호출
 	UFUNCTION(BlueprintCallable)
 	void OnDead();
+	UFUNCTION(BlueprintCallable)
+	void PlayDeadAnim();
 	// 피격시 호출
 	UFUNCTION(BlueprintCallable)
 	void OnStunned();
