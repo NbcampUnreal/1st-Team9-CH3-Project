@@ -108,7 +108,6 @@ void APistol::Fire()
     }
 
     bCanFire = false;
-    //CurrentAmmo--;
 
     UWorld* World = GetWorld();
     if (!World)
