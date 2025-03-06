@@ -597,7 +597,7 @@ void APlayerCharacter::SelectWeapon(const FInputActionValue& Value)
 
 	EquipWeapon(GunList[GunListIdx]);
 	bCanChangeGun = false;
-	GetWorldTimerManager().SetTimer(InputDelayTimerHandle, this, &APlayerCharacter::ResetInput, 0.5f, false);
+	GetWorldTimerManager().SetTimer(InputDelayTimerHandle, this, &APlayerCharacter::ResetInput, 2.0f, false);
 }
 
 void APlayerCharacter::PickupItem(const FInputActionValue& Value)
