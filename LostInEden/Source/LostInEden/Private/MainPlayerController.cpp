@@ -73,12 +73,12 @@ void AMainPlayerController::UpdateHUD()
 		int32 MaxShield = PlayerCharacter->GetMaxShieldGauge();
 
 		// 회복 포션 개수 가져오기
-		//int32 PotionCount = MyPlayerCharacter->GetHealPotionCnt();
+		int32 PotionCount = MyPlayerCharacter->GetHealPotionCnt();
 
 		// HUD 업데이트
 		Widget->UpdateHealth(CurrentHealth, MaxHealth);
 		Widget->UpdateShield(CurrentShield, MaxShield);
-		//Widget->UpdatePotionCount(PotionCount);
+		Widget->UpdatePotionCount(PotionCount);
 
 		// 현재 장착한 무기 가져오기
 		AGun* CurrentWeapon = MyPlayerCharacter->GetCurrentWeapon();
@@ -87,7 +87,7 @@ void AMainPlayerController::UpdateHUD()
 			int32 CurrentAmmo = CurrentWeapon->GetCurrentAmmo();
 			int32 MaxAmmo = CurrentWeapon->GetMaxAmmo();
 
-			// 탄약 정보를 UI에 업데이트 (GunType 제외 가능)
+			// 탄약 정보를 UI에 업데이트 
 			Widget->UpdateAmmo(CurrentAmmo, MaxAmmo);
 		}
 		else

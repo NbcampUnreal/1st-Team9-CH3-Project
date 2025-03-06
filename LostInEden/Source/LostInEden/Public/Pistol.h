@@ -44,5 +44,8 @@ private:
 
     FTimerHandle FireDelayTimer; 
 
+    UPROPERTY(EditDefaultsOnly, Category = "Sound")
+    USoundBase* EmptyMagSound; 
+
 
 };

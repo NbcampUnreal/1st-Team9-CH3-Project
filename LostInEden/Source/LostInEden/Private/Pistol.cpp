@@ -11,8 +11,8 @@ APistol::APistol()
 {
     Damage = 15.0f;
     FireRate = 0.7f;
-    MaxAmmo = 12;
-    CurrentAmmo = MaxAmmo;
+    MaxAmmo = 500;
+    CurrentAmmo = 500;
     Range = 2000.0f;
     bIsAutomatic = false;
     BulletSpread = 1.0f;
@@ -62,7 +62,15 @@ APistol::APistol()
         UE_LOG(LogTemp, Error, TEXT("피격 이펙트 로드 실패! 경로 확인 필요"));
     }
 
-
+    EmptyMagSound = LoadObject<USoundBase>(GetTransientPackage(), TEXT("/Game/Items/Sci-Fi_Shots_Pack2_Game_Of_Weapons/Wave/SciFi_Shot_P2__96_.SciFi_Shot_P2__96_"));
+    if (EmptyMagSound)
+    {
+        UE_LOG(LogTemp, Warning, TEXT("빈 탄창 사운드 로드 완료!"));
+    }
+    else
+    {
+        UE_LOG(LogTemp, Error, TEXT("빈 탄창 사운드 로드 실패! 경로 확인 필요"));
+    }
 
 
 }
@@ -92,12 +100,14 @@ void APistol::Fire()
 
     if (CurrentAmmo <= 0)
     {
-        UE_LOG(LogTemp, Warning, TEXT("탄약 없음! 현재 탄약: %d"), CurrentAmmo);
+        if (EmptyMagSound)
+        {
+            UGameplayStatics::PlaySoundAtLocation(this, EmptyMagSound, GetActorLocation());
+        }
         return;
     }
 
     bCanFire = false;
-    CurrentAmmo--;
 
     UWorld* World = GetWorld();
     if (!World)

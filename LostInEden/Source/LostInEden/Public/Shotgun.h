@@ -44,5 +44,6 @@ protected:
     UPROPERTY(EditAnywhere, Category = "Effects")
     UParticleSystem* ImpactEffect;
 
-
+    UPROPERTY(EditDefaultsOnly, Category = "Sound")
+    USoundBase* EmptyMagSound;
 };
