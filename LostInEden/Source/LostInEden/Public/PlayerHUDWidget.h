@@ -24,6 +24,12 @@ public:
     UFUNCTION(BlueprintCallable, Category = "HUD")
     void UpdateShield(int32 Shield, int32 MaxShield);
 
+	UFUNCTION(BlueprintCallable, Category = "HUD")
+	void UpdateAmmo(int32 Ammo, int32 MaxAmmo);
+
+    UFUNCTION(BlueprintCallable, Category = "HUD")
+    void UpdatePotionCount(int32 PotionCount);
+
 protected:
     // ¿ß¡¨ √ ±‚»≠
     virtual void NativeConstruct() override;
@@ -38,5 +44,11 @@ private:
 
     UPROPERTY(meta = (BindWidget))
     UTextBlock* HealthText;
+
+    UPROPERTY(meta = (BindWidget))
+    UTextBlock* AmmoText;
+
+	UPROPERTY(meta = (BindWidget))
+	UTextBlock* PotionText;
 	
 };

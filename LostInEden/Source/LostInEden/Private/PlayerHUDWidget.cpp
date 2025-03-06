@@ -19,7 +19,7 @@ void UPlayerHUDWidget::UpdateHealth(int32 Health, int32 MaxHealth)
         HealthBar->SetPercent(HealthPercent);
 
         // 체력 Text Block 업데이트
-        FString HealthString = FString::Printf(TEXT("%d / %d"), Health, MaxHealth);
+        FString HealthString = FString::Printf(TEXT("%d"), Health);
         HealthText->SetText(FText::FromString(HealthString));
     }
 }
@@ -31,5 +31,25 @@ void UPlayerHUDWidget::UpdateShield(int32 Shield, int32 MaxShield)
         // 쉴드 Progress Bar 업데이트
         float ShieldPercent = static_cast<float>(Shield) / static_cast<float>(MaxShield);
         ShieldBar->SetPercent(ShieldPercent);
+    }
+}
+
+void UPlayerHUDWidget::UpdatePotionCount(int32 PotionCount)
+{
+    if (PotionText)
+    {
+        FString PotionString = FString::Printf(TEXT("%d"), PotionCount);
+        PotionText->SetText(FText::FromString(PotionString));
+    }
+}
+
+void UPlayerHUDWidget::UpdateAmmo(int32 Ammo, int32 MaxAmmo)
+{
+    if (AmmoText)
+    {
+  
+        //  탄약 Text Block 업데이트
+        FString AmmoString = FString::Printf(TEXT("%d / %d"), Ammo, MaxAmmo);
+        AmmoText->SetText(FText::FromString(AmmoString));
     }
 }

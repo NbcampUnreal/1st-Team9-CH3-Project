@@ -6,6 +6,7 @@
 #include "Blueprint/UserWidget.h"
 #include "PlayerCharacter.h" // 캐릭터 헤더 포함
 #include "PlayerHUDWidget.h" // HUD 위젯 헤더 포함
+#include "Gun.h" // 무기 헤더 포함
 
 AMainPlayerController::AMainPlayerController():
 	InputMappingContext(nullptr),
@@ -71,8 +72,28 @@ void AMainPlayerController::UpdateHUD()
 		int32 CurrentShield = PlayerCharacter->GetShieldGauge();
 		int32 MaxShield = PlayerCharacter->GetMaxShieldGauge();
 
+		// 회복 포션 개수 가져오기
+		//int32 PotionCount = MyPlayerCharacter->GetHealPotionCnt();
+
 		// HUD 업데이트
 		Widget->UpdateHealth(CurrentHealth, MaxHealth);
 		Widget->UpdateShield(CurrentShield, MaxShield);
+		//Widget->UpdatePotionCount(PotionCount);
+
+		// 현재 장착한 무기 가져오기
+		AGun* CurrentWeapon = MyPlayerCharacter->GetCurrentWeapon();
+		if (CurrentWeapon)
+		{
+			int32 CurrentAmmo = CurrentWeapon->GetCurrentAmmo();
+			int32 MaxAmmo = CurrentWeapon->GetMaxAmmo();
+
+			// 탄약 정보를 UI에 업데이트 (GunType 제외 가능)
+			Widget->UpdateAmmo(CurrentAmmo, MaxAmmo);
+		}
+		else
+		{
+			// 무기가 없을 경우 탄약 0으로 설정
+			Widget->UpdateAmmo(0, 0);
+		}
 	}
 }
