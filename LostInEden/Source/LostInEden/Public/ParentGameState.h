@@ -24,6 +24,9 @@ public:
 	void UpdateStateData();
 	UFUNCTION(BlueprintCallable, Category = "GameData")
 	void UpdateInstanceData();
+	
+	UFUNCTION(BlueprintCallable, Category = "GameData")
+	virtual void SetStage(int32 _Index);
 
 protected:
 	// Level, Stage Information

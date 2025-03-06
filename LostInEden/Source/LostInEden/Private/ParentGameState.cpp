@@ -55,3 +55,8 @@ void AParentGameState::OnGameOver()
 {
 
 }
+
+void AParentGameState::SetStage(int32 _Index)
+{
+
+}

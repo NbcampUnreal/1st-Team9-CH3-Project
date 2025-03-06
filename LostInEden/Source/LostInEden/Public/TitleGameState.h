@@ -18,9 +18,16 @@ public:
 
 	virtual void BeginPlay() override;
 
+	// Getter, Setter
+	void SetStage(int32 _Index) override;
+
 protected:
 	// Level, Stage Information
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Stage")
 	ETitleStageIndex CurStageIndex;
+
+	void StartLevel() override;
+	void EndLevel() override;
+	void OnGameOver() override;
 
 };
