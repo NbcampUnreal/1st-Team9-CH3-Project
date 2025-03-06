@@ -58,6 +58,17 @@ APlayerCharacter::APlayerCharacter()
 	CurrWeapon = nullptr;
 }
 
+void APlayerCharacter::BeginPlay()
+{
+	Super::BeginPlay();
+
+	//기본 무기인 권총 세팅
+	EquipWeapon(EGunType::PISTOL);
+
+	//힐포션 확인용 임시
+	HealPotion = GetWorld()->SpawnActor<AHealingItem>(AHealingItem::StaticClass());
+}
+
 void APlayerCharacter::SetHealth(int32 HealthAmount)
 {
 	Health = HealthAmount;
@@ -119,17 +130,6 @@ void APlayerCharacter::OnOverlapEnd(UPrimitiveComponent* OverlappedComponent, AA
 			}
 		}
 	}
-}
-
-void APlayerCharacter::BeginPlay()
-{
-	Super::BeginPlay();
-
-	//기본 무기인 권총 세팅
-	EquipWeapon(EGunType::PISTOL);
-
-	//힐포션 확인용 임시
-	HealPotion = GetWorld()->SpawnActor<AHealingItem>(AHealingItem::StaticClass());
 }
 
 void APlayerCharacter::ChangeState(EPlayerStatus State)
@@ -277,11 +277,27 @@ void APlayerCharacter::EquipWeapon(EGunType GunType)
 	if(GetWorld()&&GunClass)
 	{
 		CurrWeapon = GetWorld()->SpawnActor<AGun>(GunClass);
+		CurrWeapon->SetActorEnableCollision(false);
 	}
 
 	if (CurrWeapon)
 	{
-		FName GunSocketName = "GunSocket_R";
+		FName GunSocketName;
+		switch (GunType)
+		{
+		case PISTOL:
+			GunSocketName = "Pistol_Socket";
+			break;
+		case RIFLE:
+			GunSocketName = "Rifle_Socket";
+			break;
+		case SHOTGUN:
+			GunSocketName = "Shotgun_Socket";
+			break;
+		default:
+			break;
+		}
+
 		if (GetMesh()->DoesSocketExist(GunSocketName))
 		{
 			CurrWeapon->AttachToComponent(GetMesh(),
