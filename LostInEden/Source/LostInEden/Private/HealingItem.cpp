@@ -11,6 +11,7 @@ AHealingItem::AHealingItem()
     ItemDescription = "Restores health when used.";
     HealAmount = 40.0f;
     ItemType = EItemType::HEALINGITEM;
+    Count = 0;
 
 
     HealingMesh = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("HealingMesh"));
