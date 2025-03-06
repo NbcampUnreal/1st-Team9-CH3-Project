@@ -83,17 +83,45 @@ void AShotgun::Fire()
     int32 NumShots = FMath::Min(CurrentAmmo, PelletCount);
     CurrentAmmo -= NumShots;
 
-    if (!BulletFactory)
-    {
-        UE_LOG(LogTemp, Error, TEXT("Bullet Factory가 설정되지 않음! 블루프린트에서 확인하세요."));
-        return;
-    }
-
     UWorld* World = GetWorld();
     if (!World)
     {
         UE_LOG(LogTemp, Error, TEXT("World 없음!"));
         return;
+    }
+
+    APlayerController* PlayerController = Cast<APlayerController>(GetOwner()->GetInstigatorController());
+    if (!PlayerController)
+    {
+        UE_LOG(LogTemp, Error, TEXT("플레이어 컨트롤러 없음!"));
+        return;
+    }
+
+
+    FVector CameraLocation;
+    FRotator CameraRotation;
+    PlayerController->GetPlayerViewPoint(CameraLocation, CameraRotation);
+
+    FVector TraceStart = CameraLocation;
+    FVector ShotDirection = CameraRotation.Vector();
+    FVector TraceEnd = TraceStart + (ShotDirection * 1000.0f); 
+
+    FHitResult CrosshairHit;
+    FCollisionQueryParams QueryParams;
+    QueryParams.AddIgnoredActor(this);
+    QueryParams.AddIgnoredActor(GetOwner());
+    QueryParams.bTraceComplex = true;
+
+    bool bHitCrosshair = World->LineTraceSingleByChannel(CrosshairHit, TraceStart, TraceEnd, ECC_Pawn, QueryParams);
+
+    FVector FinalTarget;
+    if (bHitCrosshair)
+    {
+        FinalTarget = CrosshairHit.ImpactPoint;
+    }
+    else
+    {
+        FinalTarget = TraceEnd;
     }
 
     if (!MuzzleLocation)
@@ -103,11 +131,11 @@ void AShotgun::Fire()
     }
 
     FVector MuzzlePos = MuzzleLocation->GetComponentLocation();
-    FRotator MuzzleRot = MuzzleLocation->GetComponentRotation();
+    FVector BaseDirection = (FinalTarget - MuzzlePos).GetSafeNormal(); 
 
     if (MuzzleFlash)
     {
-        UGameplayStatics::SpawnEmitterAtLocation(World, MuzzleFlash, MuzzlePos, MuzzleRot);
+        UGameplayStatics::SpawnEmitterAtLocation(World, MuzzleFlash, MuzzlePos, CameraRotation);
     }
 
     TSet<AActor*> DamagedActors;
@@ -117,38 +145,28 @@ void AShotgun::Fire()
         float SpreadYaw = FMath::RandRange(-PelletSpread * 0.5f, PelletSpread * 0.5f);
         float SpreadPitch = FMath::RandRange(-PelletSpread * 0.5f, PelletSpread * 0.5f);
 
-        FRotator AdjustedRot = MuzzleRot;
+        FRotator AdjustedRot = BaseDirection.Rotation();
         AdjustedRot.Yaw += SpreadYaw;
         AdjustedRot.Pitch += SpreadPitch;
 
-        FVector ShotDirection = AdjustedRot.Vector();
-        FVector TraceStart = MuzzlePos;
-        FVector TraceEnd = TraceStart + (ShotDirection * Range);
+        FVector AdjustedDirection = AdjustedRot.Vector();
+        FVector MuzzleTraceEnd = MuzzlePos + (AdjustedDirection * Range);
 
         TArray<FHitResult> HitResults;
-        FCollisionQueryParams QueryParams;
-        QueryParams.AddIgnoredActor(this);
-        QueryParams.AddIgnoredActor(GetOwner());
-        QueryParams.bTraceComplex = true;
-
-        bool bHit = World->LineTraceMultiByChannel(
-            HitResults, TraceStart, TraceEnd, ECC_Pawn, QueryParams);
+        bool bHit = World->LineTraceMultiByChannel(HitResults, MuzzlePos, MuzzleTraceEnd, ECC_Pawn, QueryParams);
 
         if (bHit)
         {
-           
             for (const FHitResult& HitResult : HitResults)
             {
                 AActor* HitActor = HitResult.GetActor();
                 if (HitActor && !DamagedActors.Contains(HitActor))
                 {
-                    
-
                     float Distance = FVector::Dist(MuzzlePos, HitResult.ImpactPoint);
                     float DamageMultiplier = 1.0f - FMath::Clamp((Distance - 100.0f) / (Range - 100.0f), 0.0f, 1.0f);
                     float FinalDamage = Damage * DamageMultiplier;
 
-                    float AppliedDamage = UGameplayStatics::ApplyDamage(
+                    UGameplayStatics::ApplyDamage(
                         HitActor,
                         FinalDamage,
                         GetOwner()->GetInstigatorController(),
@@ -156,9 +174,6 @@ void AShotgun::Fire()
                         nullptr
                     );
 
-                    ;
-
-                    
                     DamagedActors.Add(HitActor);
 
                     if (ImpactEffect)
@@ -172,10 +187,6 @@ void AShotgun::Fire()
                     }
                 }
             }
-        }
-        else
-        {
-            
         }
     }
 
