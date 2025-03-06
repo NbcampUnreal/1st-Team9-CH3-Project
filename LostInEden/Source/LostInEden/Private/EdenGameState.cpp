@@ -21,25 +21,39 @@ void AEdenGameState::StartLevel()
 	// Initializing
 
 	UpdateStateData();
-	SetStage(0);
+	SetStageIndex(0);
 }
 
 void AEdenGameState::EndLevel()
 {
-	/*
-	정상적인 클리어 => Ending 레벨(다음 레벨)로 이동
-	게임오버 => 게임오버스크린 띄우고 Title 레벨로 이동
+	// 게임 클리어 => n초 뒤 TitleLevel로 이동
 	
-	강제종료 => 
-	*/
+	
+
+}
+
+void AEdenGameState::RestartLevel()
+{
+	// 게임오버 => Title 레벨로 이동
+
+
+
+}
+
+void AEdenGameState::OnGameClear()
+{
+	// 게임 클리어 = > 클리어 UI 띄우기
+
+
 
 }
 
 void AEdenGameState::OnGameOver()
 {
-	UE_LOG(LogTemp, Warning, TEXT("Game Over!!"));
+	// 게임오버 => 게임오버스크린 띄우기
+	
 
-	// Title 레벨로 이동
+
 }
 
 void AEdenGameState::UpdateHUD()
@@ -48,7 +62,7 @@ void AEdenGameState::UpdateHUD()
 	// Stage 관련 출력
 }
 
-void AEdenGameState::SetStage(int32 _Index)
+void AEdenGameState::SetStageIndex(int32 _Index)
 {
 	CurStageIndex = static_cast<EEdenStageIndex>(_Index);
 }

@@ -19,26 +19,39 @@ public:
 
 	virtual void BeginPlay() override;
 
+	// Getter, Setter
+	UFUNCTION(BlueprintCallable, Category = "GameData")
+	virtual void SetStageIndex(int32 _Index);
+
 	// Update Methods
 	UFUNCTION(BlueprintCallable, Category = "GameData")
 	void UpdateStateData();
 	UFUNCTION(BlueprintCallable, Category = "GameData")
 	void UpdateInstanceData();
-	
+
+	// Setting Methods
 	UFUNCTION(BlueprintCallable, Category = "GameData")
-	virtual void SetStage(int32 _Index);
+	virtual void SettingStage(int32 _Index);
 
 protected:
-	// Level, Stage Information
+	// Level
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Level")
 	int32 LevelIndex;
-	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "GameData")
-	int32 Score;
 
 	UFUNCTION(BlueprintCallable, Category = "Level")
 	virtual void StartLevel();
 	UFUNCTION(BlueprintCallable, Category = "Level")
 	virtual void EndLevel();
 	UFUNCTION(BlueprintCallable, Category = "Level")
+	virtual void RestartLevel();
+	UFUNCTION(BlueprintCallable, Category = "Level")
+	virtual void OnGameClear();
+	UFUNCTION(BlueprintCallable, Category = "Level")
 	virtual void OnGameOver();
+
+	// Game Data
+	class UEdenGameInstance* GameInstance = nullptr;
+
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "GameData")
+	int32 Score;
 };

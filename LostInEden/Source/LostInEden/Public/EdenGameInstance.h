@@ -19,6 +19,8 @@ public:
 	// Getter, Setter
 	UFUNCTION(BlueprintCallable, Category = "Level")
 	int32 GetLevelIndex();
+	UFUNCTION(BlueprintCallable, Category = "Level")
+	int32 GetLevelIndexByName(FName _Name);
 	UFUNCTION(BlueprintCallable, Category = "GameData")
 	int32 GetTotalScore();
 	UFUNCTION(BlueprintCallable, Category = "Level")

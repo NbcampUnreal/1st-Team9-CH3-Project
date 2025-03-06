@@ -14,13 +14,12 @@ void AParentGameState::BeginPlay()
 {
 	Super::BeginPlay();
 
+	GameInstance = Cast<UEdenGameInstance>(UGameplayStatics::GetGameInstance(GetWorld()));
 }
 
 void AParentGameState::UpdateStateData()
 {
 	// Update GameData from GameInstance to GameState
-
-	UEdenGameInstance* GameInstance = Cast<UEdenGameInstance>(UGameplayStatics::GetGameInstance(GetWorld()));
 
 	if (GameInstance)
 	{
@@ -32,8 +31,6 @@ void AParentGameState::UpdateStateData()
 void AParentGameState::UpdateInstanceData()
 {
 	// Update GameData from GameState to GameInstance
-
-	UEdenGameInstance* GameInstance = Cast<UEdenGameInstance>(UGameplayStatics::GetGameInstance(GetWorld()));
 
 	if (GameInstance)
 	{
@@ -51,12 +48,27 @@ void AParentGameState::EndLevel()
 
 }
 
+void AParentGameState::RestartLevel()
+{
+
+}
+
+void AParentGameState::OnGameClear()
+{
+
+}
+
 void AParentGameState::OnGameOver()
 {
 
 }
 
-void AParentGameState::SetStage(int32 _Index)
+void AParentGameState::SetStageIndex(int32 _Index)
+{
+
+}
+
+void AParentGameState::SettingStage(int32 _Index)
 {
 
 }

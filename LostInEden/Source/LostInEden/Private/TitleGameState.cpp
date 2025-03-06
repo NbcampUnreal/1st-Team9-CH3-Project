@@ -2,6 +2,8 @@
 
 
 #include "TitleGameState.h"
+#include "Kismet/GameplayStatics.h"
+#include "EdenGameInstance.h"
 
 ATitleGameState::ATitleGameState()
 {
@@ -20,25 +22,24 @@ void ATitleGameState::StartLevel()
 	// Initializing
 
 	UpdateStateData();
-	SetStage(0);
+	SetStageIndex(0);
 }
 
 void ATitleGameState::EndLevel()
 {
-	// 정상적인 클리어 => Ending 레벨(다음 레벨)로 이동
-	// 게임오버 => 게임오버스크린 띄우고 Title 레벨로 이동
+	// 시네마틱 종료 후 호출, MainLevel로 넘어가기
 
-	// 강제종료 => 
+	FName NextLevelName = FName("MenuLevel");
+	int32 NextLevelIndex = GameInstance->GetLevelIndexByName(NextLevelName);
+	FString NextGameMode = "GameMode=/Game/Blueprints/BP_TitleGameMode";
+
+	LevelIndex = NextLevelIndex;
+	UpdateInstanceData();
+
+	UGameplayStatics::OpenLevel(GetWorld(), NextLevelName, true, NextGameMode);
 }
 
-void ATitleGameState::OnGameOver()
-{
-	UE_LOG(LogTemp, Warning, TEXT("Game Over!!"));
-
-	// Title 레벨로 이동
-}
-
-void ATitleGameState::SetStage(int32 _Index)
+void ATitleGameState::SetStageIndex(int32 _Index)
 {
 	CurStageIndex = static_cast<ETitleStageIndex>(_Index);
 }

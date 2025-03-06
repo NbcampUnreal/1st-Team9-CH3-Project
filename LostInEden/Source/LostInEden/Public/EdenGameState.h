@@ -20,7 +20,7 @@ public:
 	virtual void BeginPlay() override;
 
 	// Getter, Setter
-	void SetStage(int32 _Index) override;
+	void SetStageIndex(int32 _Index) override;
 
 protected:
 	// Level, Stage Information
@@ -29,6 +29,8 @@ protected:
 
 	void StartLevel() override;
 	void EndLevel() override;
+	void RestartLevel() override;
+	void OnGameClear() override;
 	void OnGameOver() override;
 
 	// Stage : Boss
