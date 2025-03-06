@@ -89,6 +89,11 @@ int32 APlayerCharacter::GetMaxShieldGauge() const
 	return MaxShieldGauge;
 }
 
+int32 APlayerCharacter::GetHealPotionCnt() const
+{
+	return HealPotion->GetCount();
+}
+
 TMap<EItemType, int32>& APlayerCharacter::GetAmmoInventory()
 {
 	return AmmoInventory;
