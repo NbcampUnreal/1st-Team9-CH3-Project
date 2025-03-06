@@ -31,6 +31,7 @@ int32 UEdenGameInstance::GetLevelIndex()
 int32 UEdenGameInstance::GetLevelIndexByName(FName _Name)
 {
 	int32 FoundIndex = LevelNames.Find(_Name);
+	int a = 0;
 	
 	return FoundIndex;
 }
