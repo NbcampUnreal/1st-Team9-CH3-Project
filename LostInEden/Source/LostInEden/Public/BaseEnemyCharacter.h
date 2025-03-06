@@ -13,6 +13,7 @@
 class UWidgetComponent;
 class UNiagaraComponent;
 class UNiagaraSystem;
+class UAnimMontage;
 
 UCLASS()
 class LOSTINEDEN_API ABaseEnemyCharacter : public AEntity, public IIEnemyAI
@@ -38,6 +39,7 @@ public:
 
 protected:
 	virtual void BeginPlay() override;
+	virtual void Tick(float DeltaTime) override;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "AI Properties")
 	bool IsWieldingWeapon;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "AI Properties")
@@ -51,14 +53,22 @@ protected:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "AI Properties|Appearance")
 	UAnimMontage* HitReactionMontage;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "AI Properties|Appearance")
-	UMaterialInstance* MaterialInstance0;
+	UMaterialInstanceDynamic* MaterialInstance0;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "AI Properties|Appearance")
-	UMaterialInstance* MaterialInstance1;
+	UMaterialInstanceDynamic* MaterialInstance1;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "AI Properties|Appearance")
 	UNiagaraSystem* NiagaraSystem;
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "AI Properties|Appearance")
 	UNiagaraComponent* NiagaraComponent;
 	FTimerHandle PlayDeadAnimTimerHandle;
+	
+
+	bool bIsLerping;	// 보간 플래그
+	float CurrentAlpha;	
+	float Lerp_A;
+	float Lerp_B;
+	float LerpDuration;	// 보간 시간
+	float ElapsedTime;	// 경과 시간
 
 public:	
 	
@@ -75,5 +85,7 @@ public:
 	// 피격시 호출
 	UFUNCTION(BlueprintCallable)
 	void OnStunned();
-
+	UFUNCTION(BlueprintCallable, Category = "Lerp")
+	void StartLerp(float InStartValue, float InEndValue, float InDuration);
+	void UpdateLerpedValues(float LerpedValue);
 };

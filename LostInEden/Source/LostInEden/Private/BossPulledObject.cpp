@@ -16,6 +16,7 @@ ABossPulledObject::ABossPulledObject()
 	SetRootComponent(CollisionSphere);
 	CollisionSphere->SetEnableGravity(false);
 	CollisionSphere->SetSimulatePhysics(false);
+	CollisionSphere->SetCollisionProfileName(TEXT("BlockAllDynamic"));
 
 	Niagara = CreateDefaultSubobject<UNiagaraComponent>(TEXT("Effect"));
 	Niagara->SetupAttachment(RootComponent);
@@ -40,7 +41,7 @@ void ABossPulledObject::OnHit(UPrimitiveComponent* HitComp,
 	FVector NormalImpulse,
 	const FHitResult& Hit)
 {
-	if (OtherActor && OtherActor->ActorHasTag("Player"))
+	if (OtherActor) //&& OtherActor->ActorHasTag("Player"))
 	{
 		UGameplayStatics::ApplyDamage(
 			OtherActor, 
@@ -48,7 +49,7 @@ void ABossPulledObject::OnHit(UPrimitiveComponent* HitComp,
 			nullptr, 
 			this, 
 			UDamageType::StaticClass());
-
+		
 		// 이펙트 재생 추가
 	}
 	UGameplayStatics::PlaySound2D(GetWorld(), Sound);
@@ -73,6 +74,7 @@ void ABossPulledObject::OnPulled()
 {
 	if (ObjectPool)
 	{
+		AddActorWorldOffset(GetActorForwardVector() * 600.0f);
 		ProjectileMovement->Velocity = GetActorForwardVector() * 600.0f;
 	}
 }
@@ -88,6 +90,7 @@ void ABossPulledObject::ActivateMovement()
 void ABossPulledObject::DeactivateMovement()
 {
 	ProjectileMovement->Deactivate();
+
 	Niagara->DeactivateImmediate();
 }
 
