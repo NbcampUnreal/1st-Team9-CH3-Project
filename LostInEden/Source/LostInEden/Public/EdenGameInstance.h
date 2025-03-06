@@ -18,26 +18,24 @@ public:
 
 	// Getter, Setter
 	UFUNCTION(BlueprintCallable, Category = "Level")
-	int32 GetLevelIndex();
-	UFUNCTION(BlueprintCallable, Category = "Level")
-	int32 GetLevelIndexByName(FName _Name);
+	FName GetCurLevelName();
 	UFUNCTION(BlueprintCallable, Category = "GameData")
 	int32 GetTotalScore();
 	UFUNCTION(BlueprintCallable, Category = "Level")
-	void SetLevelIndex(int32 _Index);
+	void SetCurLevelName(FName _Name);
 	UFUNCTION(BlueprintCallable, Category = "GameData")
 	void SetTotalScore(int32 _Score);
 
 	// Update Data
 	UFUNCTION(BlueprintCallable, Category = "GameData")
-	void UpdateData(int32 _LevelIndex, int32 _Score);
+	void UpdateData(FName _Name, int32 _Score);
 
 protected:
 	// Level
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Level")
 	TArray<FName> LevelNames;
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Level")
-	int32 CurLevelIndex;
+	FName CurLevelName;
 
 	// Score
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "GameData")

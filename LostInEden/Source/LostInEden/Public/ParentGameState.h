@@ -36,7 +36,7 @@ public:
 protected:
 	// Level
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Level")
-	int32 LevelIndex;
+	FName LevelName;
 
 	UFUNCTION(BlueprintCallable, Category = "Level")
 	virtual void StartLevel();

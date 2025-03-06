@@ -26,9 +26,7 @@ protected:
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Stage")
 	ETitleStageIndex CurStageIndex;
 
-	UFUNCTION(BlueprintCallable, Category = "Level")
 	void StartLevel() override;
-	UFUNCTION(BlueprintCallable, Category = "Level")
 	void EndLevel() override;
 
 };

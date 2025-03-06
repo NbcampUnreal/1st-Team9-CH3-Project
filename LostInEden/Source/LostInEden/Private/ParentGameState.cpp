@@ -23,7 +23,6 @@ void AParentGameState::UpdateStateData()
 
 	if (GameInstance)
 	{
-		LevelIndex = GameInstance->GetLevelIndex();
 		Score = GameInstance->GetTotalScore();
 	}
 }
@@ -34,7 +33,7 @@ void AParentGameState::UpdateInstanceData()
 
 	if (GameInstance)
 	{
-		GameInstance->UpdateData(LevelIndex, Score);
+		GameInstance->UpdateData(LevelName, Score);
 	}
 }
 
