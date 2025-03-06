@@ -47,9 +47,17 @@ void UPlayerHUDWidget::UpdateAmmo(int32 Ammo, int32 MaxAmmo)
 {
     if (AmmoText)
     {
-  
-        //  탄약 Text Block 업데이트
-        FString AmmoString = FString::Printf(TEXT("%d / %d"), Ammo, MaxAmmo);
+        FString AmmoString;
+
+        if (Ammo == INT32_MAX)
+        {
+            AmmoString = FString::Printf(TEXT("MAX"));  // 무한 탄약 표시
+        }
+        else
+        {
+            AmmoString = FString::Printf(TEXT("%d / %d"), Ammo, MaxAmmo);
+        }
+
         AmmoText->SetText(FText::FromString(AmmoString));
     }
 }

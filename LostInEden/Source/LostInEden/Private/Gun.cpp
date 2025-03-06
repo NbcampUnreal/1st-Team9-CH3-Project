@@ -5,6 +5,10 @@
 #include "Components/SphereComponent.h"
 #include "PlayerCharacter.h"
 #include "GameFramework/ProjectileMovementComponent.h"
+#include "MainPlayerController.h"
+#include "GameFramework/Controller.h"
+#include "GameFramework/PlayerController.h"
+
 
 AGun::AGun()
 {
@@ -142,6 +146,17 @@ void AGun::Fire()
     {
         UE_LOG(LogTemp, Warning, TEXT("탄약 없음!"));
     }
+
+    APlayerCharacter* PlayerCharacter = Cast<APlayerCharacter>(GetOwner());
+    if (PlayerCharacter)
+    {
+        AMainPlayerController* PC = Cast<AMainPlayerController>(PlayerCharacter->GetController());
+        if (PC)
+        {
+            PC->UpdateHUD();
+        }
+    }
+
 }
 
 void AGun::Reload()
@@ -164,6 +179,16 @@ void AGun::Reload()
     else
     {
         UE_LOG(LogTemp, Warning, TEXT("재장전할 %s가 부족합니다!"), *UEnum::GetValueAsString(GetAmmoType()));
+    }
+
+    APlayerCharacter* PlayerCharacter = Cast<APlayerCharacter>(GetOwner());
+    if (PlayerCharacter)
+    {
+        AMainPlayerController* PC = Cast<AMainPlayerController>(PlayerCharacter->GetController());
+        if (PC)
+        {
+            PC->UpdateHUD();
+        }
     }
 }
 

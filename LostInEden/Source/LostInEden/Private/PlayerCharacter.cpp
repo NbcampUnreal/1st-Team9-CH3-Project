@@ -91,6 +91,11 @@ int32 APlayerCharacter::GetMaxShieldGauge() const
 
 int32 APlayerCharacter::GetHealPotionCnt() const
 {
+	if (!HealPotion)
+	{
+		UE_LOG(LogTemp, Warning, TEXT("힐링 아이템이 없습니다!"));
+		return 0;
+	}
 	return HealPotion->GetCount();
 }
 
@@ -186,6 +191,11 @@ void APlayerCharacter::StartAttack()
 			break;
 		}
 	}
+	AMainPlayerController* PC = Cast<AMainPlayerController>(GetController());
+	if (PC)
+	{
+		PC->UpdateHUD();
+	}
 }
 
 void APlayerCharacter::StopAttack()
@@ -197,6 +207,11 @@ void APlayerCharacter::StopAttack()
 		{
 			Rifle->StopAutoFire();
 		}
+	}
+	AMainPlayerController* PC = Cast<AMainPlayerController>(GetController());
+	if (PC)
+	{
+		PC->UpdateHUD();
 	}
 }
 
@@ -572,5 +587,12 @@ void APlayerCharacter::PickupItem(const FInputActionValue& Value)
 		UE_LOG(LogTemp, Warning, TEXT("%s 획득!"), *OverlappingItem->GetName());
 		OverlappingItem->Destroy();
 	}
+
+	AMainPlayerController* PC = Cast<AMainPlayerController>(GetController());
+	if (PC)
+	{
+		PC->UpdateHUD();
+	}
+
 }
 
