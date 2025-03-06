@@ -49,7 +49,7 @@ void UPlayerHUDWidget::UpdateAmmo(int32 Ammo, int32 MaxAmmo)
     {
         FString AmmoString;
 
-        if (Ammo == INT32_MAX)
+        if (Ammo == 500)
         {
             AmmoString = FString::Printf(TEXT("MAX"));  // 무한 탄약 표시
         }
