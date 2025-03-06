@@ -11,8 +11,8 @@ APistol::APistol()
 {
     Damage = 15.0f;
     FireRate = 0.7f;
-    MaxAmmo = INT32_MAX;
-    CurrentAmmo = INT32_MAX;
+    MaxAmmo = 500;
+    CurrentAmmo = 500;
     Range = 2000.0f;
     bIsAutomatic = false;
     BulletSpread = 1.0f;
