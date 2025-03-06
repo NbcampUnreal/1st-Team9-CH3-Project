@@ -10,15 +10,16 @@
 APistol::APistol()
 {
     Damage = 15.0f;
-    FireRate = 0.7f;  
+    FireRate = 0.7f;
     MaxAmmo = 12;
     CurrentAmmo = MaxAmmo;
     Range = 2000.0f;
     bIsAutomatic = false;
     BulletSpread = 1.0f;
-
     GunType = EGunType::PISTOL;
-    bCanFire = true;  // 🔹 처음에는 발사가 가능해야 함.
+    bCanFire = true;
+
+    bInfiniteAmmo = true; 
 
     static ConstructorHelpers::FClassFinder<ABullet> BulletBP(TEXT("/Game/Items/Blueprints/BP_Bullet.BP_Bullet_C"));
     if (BulletBP.Succeeded())
@@ -68,8 +69,18 @@ APistol::APistol()
 
 void APistol::Reload()
 {
-    Super::Reload();
+    if (bInfiniteAmmo)
+    {
+        CurrentAmmo = INT32_MAX; 
+    }
+    else
+    {
+        CurrentAmmo = MaxAmmo;  
+    }
+
+    UE_LOG(LogTemp, Warning, TEXT("탄약 리로드 완료! 현재 탄약: %d"), CurrentAmmo);
 }
+
 
 void APistol::Fire()
 {

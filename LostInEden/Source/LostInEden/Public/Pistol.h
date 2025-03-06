@@ -36,12 +36,13 @@ public:
 
 
 private:
-    bool bCanFire; // 연속 발사 방지
+    bool bCanFire; 
+    bool bInfiniteAmmo;
     FTimerHandle FireCooldownTimer;
 
-    void ResetFireCooldown(); // 발사 가능 상태로 초기화
+    void ResetFireCooldown(); 
 
-    FTimerHandle FireDelayTimer;  // 🔹 이 변수를 추가
+    FTimerHandle FireDelayTimer; 
 
 
 };
