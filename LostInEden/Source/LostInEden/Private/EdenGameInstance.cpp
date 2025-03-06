@@ -12,3 +12,13 @@ void UEdenGameInstance::Init()
 {
 	// 레벨 목록 초기화
 }
+
+void UEdenGameInstance::UpdateLevelIndex(int32 _Index)
+{
+
+}
+
+void UEdenGameInstance::AddScore(int32 _Score)
+{
+
+}

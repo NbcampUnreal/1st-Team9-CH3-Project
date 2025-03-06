@@ -6,9 +6,8 @@
 #include "GameFramework/GameMode.h"
 #include "EdenGameMode.generated.h"
 
-/**
- * 
- */
+// Main ·¹º§ÀÇ GameMode
+
 UCLASS()
 class LOSTINEDEN_API AEdenGameMode : public AGameMode
 {

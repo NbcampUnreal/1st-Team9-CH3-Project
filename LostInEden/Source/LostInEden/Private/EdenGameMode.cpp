@@ -7,7 +7,7 @@
 
 AEdenGameMode::AEdenGameMode()
 {
-    // GameMode 流立 备己
+    // GameMode 备己 夸家 流立 瘤沥
     {
         static ConstructorHelpers::FClassFinder<APawn> PlayerPawnBP(TEXT("/Game/Character/Player/BP_PlayerCharacter"));
         if (PlayerPawnBP.Succeeded())

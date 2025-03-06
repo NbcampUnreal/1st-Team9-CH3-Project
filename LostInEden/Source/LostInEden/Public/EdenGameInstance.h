@@ -16,7 +16,20 @@ public:
 
 	void Init() override;
 
+	// Updating Methods
+	UFUNCTION(BlueprintCallable, Category = "Level")
+	void UpdateLevelIndex(int32 _Index);
+	UFUNCTION(BlueprintCallable, Category = "GameData")
+	void AddScore(int32 _Score);
+
 protected:
-	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Level")
-	TArray<FName> LevelMapNames;
+	// Level
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Level")
+	TArray<FName> LevelNames;
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Level")
+	int32 LevelIndex;
+	
+	// Score
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "GameData")
+	int32 TotalScore;
 };

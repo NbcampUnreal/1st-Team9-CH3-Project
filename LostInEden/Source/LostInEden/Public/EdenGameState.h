@@ -16,17 +16,29 @@ class LOSTINEDEN_API AEdenGameState : public AGameState
 
 public:
 	AEdenGameState();
+
 	virtual void BeginPlay() override;
 
 protected:
+	// Level, Stage Information
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Level")
+	FName CurrentLevel;
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Stage")
 	EEdenStageIndex CurrentStage;
 
 	UFUNCTION(BlueprintCallable, Category = "Level")
+	void StartLevel();
+	UFUNCTION(BlueprintCallable, Category = "Level")
+	void EndLevel();
+	UFUNCTION(BlueprintCallable, Category = "Level")
 	void OnGameOver();
 
-private:
-	void StartLevel();
-	void EndLevel();
+
+
+	// Stage : Boss
+	FTimerHandle BossTimerHandle;
+
+	// HUD
+	UFUNCTION(BlueprintCallable, Category = "HUD")
 	void UpdateHUD();
 };

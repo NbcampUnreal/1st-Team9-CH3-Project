@@ -16,6 +16,7 @@ class LOSTINEDEN_API ATitleGameState : public AGameState
 
 public:
 	ATitleGameState();
+
 	virtual void BeginPlay() override;
 
 protected:

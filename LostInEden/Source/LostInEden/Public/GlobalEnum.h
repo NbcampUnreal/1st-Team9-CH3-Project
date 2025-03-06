@@ -17,6 +17,7 @@ UENUM(BlueprintType)
 enum class ETitleStageIndex : uint8
 {
 	Title		UMETA(DisplayName = "타이틀"),
+	Scenematic	UMETA(DisplayName = "시네마틱영상")
 };
 
 /// <summary>
@@ -25,11 +26,11 @@ enum class ETitleStageIndex : uint8
 UENUM(BlueprintType)
 enum class EEdenStageIndex : uint8
 {
-	Basement1	UMETA(DisplayName = "지하통로1"),
+	Aisle1		UMETA(DisplayName = "통로1"),
 	Wave1		UMETA(DisplayName = "웨이브1"),
-	Basement2	UMETA(DisplayName = "지하통로2"),
+	Aisle2		UMETA(DisplayName = "통로2"),
 	Wave2		UMETA(DisplayName = "웨이브2"),
-	Basement3	UMETA(DisplayName = "지하통로3"),
+	Aisle3		UMETA(DisplayName = "통로3"),
 	Boss		UMETA(DisplayName = "보스"),
 };
 
@@ -42,16 +43,6 @@ enum class EEndingStageIndex : uint8
 	Ending		UMETA(DisplayName = "엔딩"),
 };
 
-
-/*
-e.g.
-UENUM(BlueprintType)
-enum class EGlobalEnum : uint8
-{
-	Stage1	UMETA(DisplayName = "지상"),
-	Stage2	UMETA(DisplayName = "지하"),
-};
-*/
 
 /*
 UCLASS()
