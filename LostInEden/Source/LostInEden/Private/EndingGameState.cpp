@@ -3,3 +3,12 @@
 
 #include "EndingGameState.h"
 
+AEndingGameState::AEndingGameState()
+{
+
+}
+
+void AEndingGameState::BeginPlay()
+{
+
+}

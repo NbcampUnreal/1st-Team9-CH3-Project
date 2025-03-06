@@ -13,6 +13,9 @@ UCLASS()
 class LOSTINEDEN_API AEdenGameMode : public AGameMode
 {
 	GENERATED_BODY()
+
+public:
+	AEdenGameMode();
 	
 protected:
 	void BeginPlay() override;

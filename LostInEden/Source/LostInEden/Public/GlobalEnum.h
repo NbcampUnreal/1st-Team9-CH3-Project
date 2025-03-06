@@ -25,7 +25,6 @@ enum class ETitleStageIndex : uint8
 UENUM(BlueprintType)
 enum class EEdenStageIndex : uint8
 {
-	Ground		UMETA(DisplayName = "지상통로"),
 	Basement1	UMETA(DisplayName = "지하통로1"),
 	Wave1		UMETA(DisplayName = "웨이브1"),
 	Basement2	UMETA(DisplayName = "지하통로2"),

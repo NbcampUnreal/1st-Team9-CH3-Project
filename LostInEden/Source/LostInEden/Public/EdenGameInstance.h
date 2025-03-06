@@ -14,6 +14,9 @@ class LOSTINEDEN_API UEdenGameInstance : public UGameInstance
 public:
 	UEdenGameInstance();
 
+	void Init() override;
+
+protected:
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Level")
 	TArray<FName> LevelMapNames;
 };

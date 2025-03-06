@@ -7,3 +7,8 @@ UEdenGameInstance::UEdenGameInstance()
 {
 	
 }
+
+void UEdenGameInstance::Init()
+{
+	// 레벨 목록 초기화
+}
