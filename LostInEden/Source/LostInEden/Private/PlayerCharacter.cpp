@@ -32,8 +32,6 @@ APlayerCharacter::APlayerCharacter()
 	// 드롭된 아이템을 인식하기 위한 충돌 박스
 	BoxCollisionComp = CreateDefaultSubobject<UBoxComponent>(TEXT("BoxCollision"));
 	BoxCollisionComp->SetupAttachment(RootComponent);
-	BoxCollisionComp->SetBoxExtent(FVector(30.0f, 30.f, 30.f));
-	BoxCollisionComp->AddLocalOffset(FVector(50.f, 0.f, -55.f));
 
 	// 오버랩 이벤트 바인딩
 	BoxCollisionComp->OnComponentBeginOverlap.AddDynamic(this, &APlayerCharacter::OnOverlapBegin);
@@ -56,6 +54,9 @@ APlayerCharacter::APlayerCharacter()
 	// 건 매니저 생성
 	GunManager = CreateDefaultSubobject<UGunManager>(TEXT("GunManager"));
 	CurrWeapon = nullptr;
+
+	bIsDead = false;
+	bCanChangeGun = true;
 }
 
 void APlayerCharacter::BeginPlay()
@@ -164,13 +165,13 @@ float APlayerCharacter::TakeDamage(float DamageAmount, FDamageEvent const& Damag
 
 	Super::TakeDamage(Damage, DamageEvent, EventInstigator, DamageCauser);
 
-	// UI 업데이트
+	UpdateUI();
 
-	// 컨트롤러의 HUD 업데이트 함수 호출
-	AMainPlayerController* PC = Cast<AMainPlayerController>(GetController());
-	if (PC)
+	if (Health == 0)
 	{
-		PC->UpdateHUD();
+		bIsDead = true;
+		DisableInput(Cast<APlayerController>(GetController()));
+		//OnGameOver();
 	}
 
 	return Damage;
@@ -191,11 +192,8 @@ void APlayerCharacter::StartAttack()
 			break;
 		}
 	}
-	AMainPlayerController* PC = Cast<AMainPlayerController>(GetController());
-	if (PC)
-	{
-		PC->UpdateHUD();
-	}
+	
+	UpdateUI();
 }
 
 void APlayerCharacter::StopAttack()
@@ -208,11 +206,8 @@ void APlayerCharacter::StopAttack()
 			Rifle->StopAutoFire();
 		}
 	}
-	AMainPlayerController* PC = Cast<AMainPlayerController>(GetController());
-	if (PC)
-	{
-		PC->UpdateHUD();
-	}
+	
+	UpdateUI();
 }
 
 void APlayerCharacter::ReloadAmmo()
@@ -333,6 +328,24 @@ void APlayerCharacter::EquipWeapon(EGunType GunType)
 		}
 		CurrWeapon->SetOwner(this);
 		GunManager->SetCurrentGun(CurrWeapon);
+		UpdateUI();
+	}
+}
+
+void APlayerCharacter::ResetInput()
+{
+	bCanChangeGun = true;
+}
+
+void APlayerCharacter::UpdateUI()
+{
+	// UI 업데이트
+
+	// 컨트롤러의 HUD 업데이트 함수 호출
+	AMainPlayerController* PC = Cast<AMainPlayerController>(GetController());
+	if (PC)
+	{
+		PC->UpdateHUD();
 	}
 }
 
@@ -450,6 +463,8 @@ void APlayerCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputCom
 					this,
 					&APlayerCharacter::SelectWeapon
 				);
+
+
 			}
 
 			if (PlayerController->PickupAction)
@@ -549,6 +564,12 @@ void APlayerCharacter::DoCrouch(const FInputActionValue& Value)
 
 void APlayerCharacter::SelectWeapon(const FInputActionValue& Value)
 {
+	if (!bCanChangeGun)
+	{
+		UE_LOG(LogTemp, Warning, TEXT("can't change gun!!"));
+		return;
+	}
+
 	int32 SelectInput = Value.Get<float>();
 	TArray<EGunType> GunList = GunManager->GetOwnedGunList();
 
@@ -575,6 +596,8 @@ void APlayerCharacter::SelectWeapon(const FInputActionValue& Value)
 	}
 
 	EquipWeapon(GunList[GunListIdx]);
+	bCanChangeGun = false;
+	GetWorldTimerManager().SetTimer(InputDelayTimerHandle, this, &APlayerCharacter::ResetInput, 2.0f, false);
 }
 
 void APlayerCharacter::PickupItem(const FInputActionValue& Value)
@@ -588,11 +611,6 @@ void APlayerCharacter::PickupItem(const FInputActionValue& Value)
 		OverlappingItem->Destroy();
 	}
 
-	AMainPlayerController* PC = Cast<AMainPlayerController>(GetController());
-	if (PC)
-	{
-		PC->UpdateHUD();
-	}
-
+	UpdateUI();
 }
 
