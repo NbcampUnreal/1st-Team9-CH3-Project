@@ -3,14 +3,14 @@
 #pragma once
 
 #include "CoreMinimal.h"
-#include "UObject/NoExportTypes.h"
-#include "GlobalStruct.generated.h"
+#include "GameFramework/GameMode.h"
+#include "EndingGameMode.generated.h"
 
 /**
  * 
  */
 UCLASS()
-class LOSTINEDEN_API UGlobalStruct : public UObject
+class LOSTINEDEN_API AEndingGameMode : public AGameMode
 {
 	GENERATED_BODY()
 	
