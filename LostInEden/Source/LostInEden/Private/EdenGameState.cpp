@@ -2,8 +2,6 @@
 
 
 #include "EdenGameState.h"
-#include "Kismet/GameplayStatics.h"
-#include "EdenGameInstance.h"
 
 
 AEdenGameState::AEdenGameState()
@@ -39,31 +37,6 @@ void AEdenGameState::OnGameOver()
 	UE_LOG(LogTemp, Warning, TEXT("Game Over!!"));
 
 	// Title 레벨로 이동
-}
-
-void AEdenGameState::UpdateStateData()
-{
-	// Update GameData from GameInstance to GameState
-
-	UEdenGameInstance* GameInstance = Cast<UEdenGameInstance>(UGameplayStatics::GetGameInstance(GetWorld()));
-
-	if (GameInstance)
-	{
-		LevelIndex = GameInstance->GetLevelIndex();
-		Score = GameInstance->GetTotalScore();
-	}
-}
-
-void AEdenGameState::UpdateInstanceData()
-{
-	// Update GameData from GameState to GameInstance
-
-	UEdenGameInstance* GameInstance = Cast<UEdenGameInstance>(UGameplayStatics::GetGameInstance(GetWorld()));
-
-	if (GameInstance)
-	{
-		GameInstance->UpdateData(LevelIndex, Score);
-	}
 }
 
 void AEdenGameState::UpdateHUD()

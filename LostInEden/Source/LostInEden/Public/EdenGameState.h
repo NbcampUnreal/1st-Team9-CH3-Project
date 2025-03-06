@@ -3,14 +3,14 @@
 #pragma once
 
 #include "CoreMinimal.h"
-#include "GameFramework/GameState.h"
+#include "ParentGameState.h"
 #include "GlobalEnum.h"
 #include "EdenGameState.generated.h"
 
 // Main ·¹º§ÀÇ GameState
 
 UCLASS()
-class LOSTINEDEN_API AEdenGameState : public AGameState
+class LOSTINEDEN_API AEdenGameState : public AParentGameState
 {
 	GENERATED_BODY()
 
@@ -19,27 +19,14 @@ public:
 
 	virtual void BeginPlay() override;
 
-	// Update Methods
-	UFUNCTION(BlueprintCallable, Category = "GameData")
-	void UpdateStateData();
-	UFUNCTION(BlueprintCallable, Category = "GameData")
-	void UpdateInstanceData();
-
 protected:
 	// Level, Stage Information
-	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Level")
-	int32 LevelIndex;
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Stage")
 	EEdenStageIndex CurStageIndex;
-	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "GameData")
-	int32 Score;
 
-	UFUNCTION(BlueprintCallable, Category = "Level")
-	void StartLevel();
-	UFUNCTION(BlueprintCallable, Category = "Level")
-	void EndLevel();
-	UFUNCTION(BlueprintCallable, Category = "Level")
-	void OnGameOver();
+	void StartLevel() override;
+	void EndLevel() override;
+	void OnGameOver() override;
 
 	// Stage : Boss
 	FTimerHandle BossTimerHandle;

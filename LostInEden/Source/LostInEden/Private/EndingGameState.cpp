@@ -10,5 +10,6 @@ AEndingGameState::AEndingGameState()
 
 void AEndingGameState::BeginPlay()
 {
+	Super::BeginPlay();
 
 }
