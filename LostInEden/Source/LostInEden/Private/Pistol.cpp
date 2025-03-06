@@ -73,19 +73,20 @@ void APistol::Reload()
 
 void APistol::Fire()
 {
-    if (!bCanFire || CurrentAmmo <= 0)
+    if (!bCanFire)
     {
-        UE_LOG(LogTemp, Warning, TEXT("발사 대기 중..."));
+        UE_LOG(LogTemp, Warning, TEXT("피스톨 재사용 대기 중..."));
         return;
     }
 
-    bCanFire = false;  
-
-    if (!BulletFactory)
+    if (CurrentAmmo <= 0)
     {
-        UE_LOG(LogTemp, Error, TEXT("Bullet Factory가 설정되지 않음! 블루프린트에서 확인하세요."));
+        UE_LOG(LogTemp, Warning, TEXT("탄약 없음! 현재 탄약: %d"), CurrentAmmo);
         return;
     }
+
+    bCanFire = false;
+    CurrentAmmo--;
 
     UWorld* World = GetWorld();
     if (!World)
@@ -94,64 +95,82 @@ void APistol::Fire()
         return;
     }
 
-    if (!MuzzleLocation)
+    APlayerController* PlayerController = Cast<APlayerController>(GetOwner()->GetInstigatorController());
+    if (!PlayerController)
     {
-        MuzzleLocation = GunStaticMesh;
+        UE_LOG(LogTemp, Error, TEXT("플레이어 컨트롤러 없음!"));
+        return;
     }
 
-    FVector MuzzlePos = MuzzleLocation->GetComponentLocation();
-    FRotator MuzzleRot = MuzzleLocation->GetComponentRotation();
-    FVector ShotDirection = MuzzleRot.Vector();
 
-    FVector TraceStart = MuzzlePos;
-    FVector TraceEnd = TraceStart + (ShotDirection * Range);
+    FVector CameraLocation;
+    FRotator CameraRotation;
+    PlayerController->GetPlayerViewPoint(CameraLocation, CameraRotation);
 
-    FHitResult HitResult;
+    FVector TraceStart = CameraLocation;
+    FVector ShotDirection = CameraRotation.Vector();
+    FVector TraceEnd = TraceStart + (ShotDirection * 10000.0f); 
+
+    FHitResult CrosshairHit;
     FCollisionQueryParams QueryParams;
     QueryParams.AddIgnoredActor(this);
     QueryParams.AddIgnoredActor(GetOwner());
+    QueryParams.bTraceComplex = true;
 
-    bool bHit = World->LineTraceSingleByChannel(
-        HitResult, TraceStart, TraceEnd, ECC_Pawn, QueryParams);
+    bool bHitCrosshair = World->LineTraceSingleByChannel(CrosshairHit, TraceStart, TraceEnd, ECC_Pawn, QueryParams);
+
+    FVector FinalTarget;
+    if (bHitCrosshair)
+    {
+        FinalTarget = CrosshairHit.ImpactPoint;
+    }
+    else
+    {
+        FinalTarget = TraceEnd;
+    }
+
+
+    FVector MuzzlePos = MuzzleLocation ? MuzzleLocation->GetComponentLocation() : GetActorLocation();
+    FVector AdjustedDirection = (FinalTarget - MuzzlePos).GetSafeNormal();
+    FVector MuzzleTraceEnd = MuzzlePos + (AdjustedDirection * Range);
+
+    FHitResult BulletHit;
+    bool bHit = World->LineTraceSingleByChannel(BulletHit, MuzzlePos, MuzzleTraceEnd, ECC_Pawn, QueryParams);
 
     if (MuzzleFlash)
     {
-        UGameplayStatics::SpawnEmitterAtLocation(World, MuzzleFlash, MuzzlePos, MuzzleRot);
+        UGameplayStatics::SpawnEmitterAtLocation(World, MuzzleFlash, MuzzlePos, CameraRotation);
+    }
+    if (bulletSound)
+    {
+        UGameplayStatics::PlaySoundAtLocation(this, bulletSound, BulletHit.ImpactPoint);
     }
 
     if (bHit)
     {
-        AActor* HitActor = HitResult.GetActor();
+        AActor* HitActor = BulletHit.GetActor();
         if (HitActor)
         {
-            if (bulletSound)
-            {
-                UGameplayStatics::PlaySoundAtLocation(this, bulletSound, HitResult.Location);
-            }
-
-            if (ImpactEffect)
-            {
-                UGameplayStatics::SpawnEmitterAtLocation(World, ImpactEffect, HitResult.Location, FRotator::ZeroRotator);
-            }
-
-            float AppliedDamage = UGameplayStatics::ApplyDamage(
+            UGameplayStatics::ApplyDamage(
                 HitActor,
                 Damage,
                 GetOwner()->GetInstigatorController(),
                 this,
                 nullptr
             );
+
+            if (ImpactEffect)
+            {
+                UGameplayStatics::SpawnEmitterAtLocation(World, ImpactEffect, BulletHit.ImpactPoint, FRotator::ZeroRotator);
+            }
         }
     }
 
 
-    if (CurrentAmmo > 0)
-    {
-        CurrentAmmo--;
-    }
+    GetWorld()->GetTimerManager().SetTimer(FireDelayTimer, this, &APistol::ResetFireCooldown, FireRate, false);
 
-    GetWorld()->GetTimerManager().SetTimer(FireCooldownTimer, this, &APistol::ResetFireCooldown, FireRate, false);
 }
+
 
 void APistol::ResetFireCooldown()
 {

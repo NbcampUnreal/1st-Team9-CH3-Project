@@ -68,6 +68,7 @@ protected:
 	UGunManager* GunManager;
 
 	// 현재 장착된 무기 타입과 객체
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Weapon")
 	AGun* CurrWeapon;
 
 	// 주울수 있는 아이템 리스트

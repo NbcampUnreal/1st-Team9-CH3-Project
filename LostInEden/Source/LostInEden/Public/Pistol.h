@@ -41,4 +41,7 @@ private:
 
     void ResetFireCooldown(); // 발사 가능 상태로 초기화
 
+    FTimerHandle FireDelayTimer;  // 🔹 이 변수를 추가
+
+
 };

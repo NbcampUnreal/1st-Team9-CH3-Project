@@ -75,15 +75,41 @@ void ARifle::Fire()
 
     CurrentAmmo--;
 
-    if (!BulletFactory)
-    {
-        return;
-    }
-
     UWorld* World = GetWorld();
     if (!World)
     {
         return;
+    }
+
+    APlayerController* PlayerController = Cast<APlayerController>(GetOwner()->GetInstigatorController());
+    if (!PlayerController)
+    {
+        return;
+    }
+
+    FVector CameraLocation;
+    FRotator CameraRotation;
+    PlayerController->GetPlayerViewPoint(CameraLocation, CameraRotation);
+
+    FVector TraceStart = CameraLocation;
+    FVector ShotDirection = CameraRotation.Vector();
+    FVector TraceEnd = TraceStart + (ShotDirection * 20000.0f); 
+    FHitResult CrosshairHit;
+    FCollisionQueryParams QueryParams;
+    QueryParams.AddIgnoredActor(this);
+    QueryParams.AddIgnoredActor(GetOwner());
+    QueryParams.bTraceComplex = true;
+
+    bool bHitCrosshair = World->LineTraceSingleByChannel(CrosshairHit, TraceStart, TraceEnd, ECC_Pawn, QueryParams);
+
+    FVector FinalTarget;
+    if (bHitCrosshair)
+    {
+        FinalTarget = CrosshairHit.ImpactPoint;
+    }
+    else
+    {
+        FinalTarget = TraceEnd;
     }
 
     if (!MuzzleLocation)
@@ -92,56 +118,41 @@ void ARifle::Fire()
     }
 
     FVector MuzzlePos = MuzzleLocation->GetComponentLocation();
-    FRotator MuzzleRot = MuzzleLocation->GetComponentRotation();
-    FVector ShotDirection = MuzzleRot.Vector();
+    FVector AdjustedDirection = (FinalTarget - MuzzlePos).GetSafeNormal();
+    FVector MuzzleTraceEnd = MuzzlePos + (AdjustedDirection * Range);
 
-    FVector TraceStart = MuzzlePos;
-    FVector TraceEnd = TraceStart + (ShotDirection * Range);
+    FHitResult BulletHit;
+    bool bHit = World->LineTraceSingleByChannel(BulletHit, MuzzlePos, MuzzleTraceEnd, ECC_Pawn, QueryParams);
 
-    FHitResult HitResult;
-    FCollisionQueryParams QueryParams;
-    QueryParams.AddIgnoredActor(this);
-    QueryParams.AddIgnoredActor(GetOwner());  
-
-    bool bHit = World->LineTraceSingleByChannel(
-        HitResult, TraceStart, TraceEnd, ECC_Pawn, QueryParams);
-
-    
     if (MuzzleFlash)
     {
-        UGameplayStatics::SpawnEmitterAtLocation(World, MuzzleFlash, MuzzlePos, MuzzleRot);
+        UGameplayStatics::SpawnEmitterAtLocation(World, MuzzleFlash, MuzzlePos, CameraRotation);
+    }
+    if (bulletSound)
+    {
+        UGameplayStatics::PlaySoundAtLocation(this, bulletSound, BulletHit.Location);
     }
 
-    
+
     if (bHit)
     {
-        AActor* HitActor = HitResult.GetActor();
+        AActor* HitActor = BulletHit.GetActor();
         if (HitActor)
         {
-            if (bulletSound)
-            {
-                UGameplayStatics::PlaySoundAtLocation(this, bulletSound, HitResult.Location);
-            }
 
             if (ImpactEffect)
             {
-                UGameplayStatics::SpawnEmitterAtLocation(World, ImpactEffect, HitResult.Location, FRotator::ZeroRotator);
+                UGameplayStatics::SpawnEmitterAtLocation(World, ImpactEffect, BulletHit.Location, FRotator::ZeroRotator);
             }
 
-            
-            float AppliedDamage = UGameplayStatics::ApplyDamage(
+            UGameplayStatics::ApplyDamage(
                 HitActor,
                 Damage,
                 GetOwner()->GetInstigatorController(),
                 this,
                 nullptr
             );
-
         }
-    }
-    else
-    {
-
     }
 }
 
