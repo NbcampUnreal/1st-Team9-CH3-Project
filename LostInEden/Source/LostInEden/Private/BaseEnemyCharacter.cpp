@@ -12,12 +12,14 @@
 #include "Components/CapsuleComponent.h"
 #include "TimerManager.h"
 #include "Materials/MaterialInstanceDynamic.h"
+#include "GameFramework/CharacterMovementComponent.h"
+#include "Animation/AnimMontage.h"
 
 class UWBP_HealthBar;
 
 ABaseEnemyCharacter::ABaseEnemyCharacter()
 {
-	PrimaryActorTick.bCanEverTick = false;
+	PrimaryActorTick.bCanEverTick = true;
 	
 	MaxHealth = 100;
 	Health = MaxHealth;
@@ -59,12 +61,40 @@ void ABaseEnemyCharacter::BeginPlay()
 
 }
 
+void ABaseEnemyCharacter::Tick(float DeltaTime)
+{
+	Super::Tick(DeltaTime);
+
+	if (bIsLerping)
+	{
+		ElapsedTime += DeltaTime;
+		CurrentAlpha = FMath::Clamp((LerpDuration -ElapsedTime) / LerpDuration, 0.0f, 1.0f);
+		const float LerpedValue = FMath::Clamp(Lerp_A, Lerp_B, CurrentAlpha);
+		UpdateLerpedValues(LerpedValue);
+
+		if (CurrentAlpha >= 1.0f)
+		{
+			bIsLerping = false;
+		}
+	}
+
+}
 float ABaseEnemyCharacter::TakeDamage(float AmountDamage, struct FDamageEvent const& DamageEvent, AController* EventInstigator, AActor* DamageCauser)
 {
 	float Damage = AEntity::TakeDamage(AmountDamage, DamageEvent, EventInstigator, DamageCauser);
 
-	return Damage;
 	// 체력 검사를 해서 죽으면 ondead 호출
+	if (Health <= 0)
+	{
+		IsDead = true;
+		UE_LOG(LogTemp, Warning, TEXT("Enemy died"));
+		OnDead();
+	}
+	else
+	{
+		OnStunned();
+	}
+	return Damage;
 }
 //void ABaseEnemyCharacter::UpdateHealth()
 //{
@@ -82,26 +112,33 @@ float ABaseEnemyCharacter::TakeDamage(float AmountDamage, struct FDamageEvent co
 //}
 void ABaseEnemyCharacter::OnDead()
 {
+	
 	// 1.ai 컨트롤러 브레인 컴포넌트 정지
-	// 2.물리 시뮬레이션, 충돌 비활성화
+	// 2.물리 시뮬레이션, 이동 중지, 충돌 비활성화, 캡슐 컴포넌트 최소화
 	// 3.상태를 dead로 변경
 	// 4.소멸 애니메이션 재생 후 destroy
 	AAIController* AIController = Cast<AAIController>(GetController());
+	if(!AIController) UE_LOG(LogTemp, Warning, TEXT("Contoller Failed"));
 	if (AIController)
 	{
 		ABaseAIController* BaseAIController = Cast<ABaseAIController>(AIController);
+		if (!BaseAIController) UE_LOG(LogTemp, Warning, TEXT("Cast Failed"));
 		if(BaseAIController)
 		{
 			// 1. 브레인 컴포넌트 정지
 			UBrainComponent* BrainComponent = BaseAIController->GetBrainComponent();
+			if (!BrainComponent) UE_LOG(LogTemp, Warning, TEXT("Component Failed"));
 			if (BrainComponent)
 			{
 				BrainComponent->StopLogic("Character is Dead.");
 			}
-
-			// 2. 물리 시뮬레이션 활성화, 충돌 비활성화
+			UE_LOG(LogTemp, Warning, TEXT("On dead"));
+			// 2. 물리 시뮬레이션 활성화, 이동 중지, 충돌 비활성화, 캡슐 컴포넌트 최소화
 			GetMesh()->SetSimulatePhysics(true);
+			GetCharacterMovement()->StopMovementImmediately();
 			GetCapsuleComponent()->SetCollisionEnabled(ECollisionEnabled::QueryAndPhysics);
+			GetCapsuleComponent()->SetCapsuleSize(0.0f, 0.0f);
+			
 
 			// 3. 상태 변경
 			BaseAIController->SetStateAsDead();
@@ -113,11 +150,20 @@ void ABaseEnemyCharacter::OnDead()
 }
 void ABaseEnemyCharacter::PlayDeadAnim()
 {
-	
+	StartLerp(0.0f, 1.0f, 5.0f);
 }
 void ABaseEnemyCharacter::OnStunned()
 {
-
+	GetCharacterMovement()->StopMovementImmediately();
+	AAIController* AIController = Cast<AAIController>(GetController());
+	if (AIController)
+	{
+		ABaseAIController* BaseAIController = Cast<ABaseAIController>(AIController);
+		if (BaseAIController)
+		{
+			BaseAIController->SetStateAsStunned();
+		}
+	}
 }
 
 void ABaseEnemyCharacter::Heal(float HealPercentage)
@@ -148,4 +194,35 @@ class AActor* ABaseEnemyCharacter::GetPatrolRoute() const
 {
 	//순찰 태스크에서 쓰이는 순찰루트의 getter
 	return PatrolRoute;
+}
+
+void ABaseEnemyCharacter::StartLerp(float InStartValue, float InEndValue, float InDuration)
+{
+	if (InDuration <= 0.0f) return;
+
+	bIsLerping = true;
+	Lerp_A = InStartValue;
+	Lerp_B = InEndValue;
+	LerpDuration = InDuration;
+	ElapsedTime = 0.0f;
+	CurrentAlpha = 0.0f;
+}
+
+void ABaseEnemyCharacter::UpdateLerpedValues(float LerpedValue)
+{
+	// 머티리얼 파라미터 업데이트
+	if (MaterialInstance0)
+	{
+		MaterialInstance0->SetScalarParameterValue(TEXT("Amount"), LerpedValue);
+	}
+	if (MaterialInstance1)
+	{
+		MaterialInstance1->SetScalarParameterValue(TEXT("Amount"), LerpedValue);
+	}
+
+	// 나이아가라 변수 업데이트
+	if (NiagaraComponent)
+	{
+		NiagaraComponent->SetNiagaraVariableFloat(TEXT("User.Amount"), LerpedValue);
+	}
 }

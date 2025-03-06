@@ -7,7 +7,7 @@
 AEdenObjectPool::AEdenObjectPool()
 {
 	PrimaryActorTick.bCanEverTick = false;
-	PoolSize = 300;
+	PoolSize = 540;
 }
 
 void AEdenObjectPool::BeginPlay()
