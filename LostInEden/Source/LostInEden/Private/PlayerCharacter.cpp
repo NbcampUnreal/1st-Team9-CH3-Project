@@ -9,6 +9,7 @@
 #include "Components/BoxComponent.h"
 #include "GameFramework/SpringArmComponent.h"
 #include "GameFramework/CharacterMovementComponent.h"
+#include "Kismet/GameplayStatics.h"
 #include "GunManager.h"
 #include "Gun.h"
 #include "Pistol.h"
@@ -17,6 +18,7 @@
 #include "Shield.h"
 #include "HealingItem.h"
 #include "Magazine.h"
+#include "EdenGameState.h"
 
 APlayerCharacter::APlayerCharacter()
 {
@@ -171,7 +173,7 @@ float APlayerCharacter::TakeDamage(float DamageAmount, FDamageEvent const& Damag
 	{
 		bIsDead = true;
 		DisableInput(Cast<APlayerController>(GetController()));
-		//OnGameOver();
+		Die();
 	}
 
 	return Damage;
@@ -335,6 +337,16 @@ void APlayerCharacter::EquipWeapon(EGunType GunType)
 void APlayerCharacter::ResetInput()
 {
 	bCanChangeGun = true;
+}
+
+void APlayerCharacter::Die()
+{
+    // 현재 게임의 GameState 가져오기
+    AEdenGameState* GameState = Cast<AEdenGameState>(UGameplayStatics::GetGameState(this));
+    if (GameState)
+    {
+        GameState->OnGameOver();  // GameState에 사망 알리기
+    }
 }
 
 void APlayerCharacter::UpdateUI()
