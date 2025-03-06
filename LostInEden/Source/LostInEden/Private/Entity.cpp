@@ -3,6 +3,7 @@
 
 
 #include "Entity.h"
+#include "EdenGameState.h"
 
 // Sets default values
 AEntity::AEntity()

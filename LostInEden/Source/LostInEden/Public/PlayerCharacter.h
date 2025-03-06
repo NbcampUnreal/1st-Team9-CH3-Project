@@ -75,6 +75,13 @@ protected:
 	// 주울수 있는 아이템 리스트
 	TArray<AItem*> OverlappingItemList;
 
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "State")
+	bool bIsDead;
+
+	bool bCanChangeGun;
+
+	FTimerHandle InputDelayTimerHandle;
+
 	// 카메라 관련 컴포넌트
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Component|Camera")
 	class USpringArmComponent* SpringArm;
@@ -130,4 +137,8 @@ public:
 
 	// 무기 장착
 	void EquipWeapon(EGunType);
+
+	void ResetInput();
+
+	void UpdateUI();
 };
