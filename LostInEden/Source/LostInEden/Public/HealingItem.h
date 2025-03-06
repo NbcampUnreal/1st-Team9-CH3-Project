@@ -22,6 +22,7 @@ public:
 
     EItemType GetItemType() const;
     int32 GetHealAmount() const;
+    int32 GetCount() const;
 
     virtual void Use() override; 
     virtual void BeginPlay() override;

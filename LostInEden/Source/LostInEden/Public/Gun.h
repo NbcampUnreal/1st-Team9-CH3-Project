@@ -24,7 +24,7 @@ public:
     int32 GetAmmoFromInventory(int32 Amount);
     void SetCurrentAmmo(int32 NewAmmo);
 
-
+    UFUNCTION(BlueprintCallable)
     virtual void Fire() override;
     virtual void Reload() override;
 

@@ -26,6 +26,7 @@ public:
 
 	int32 GetShieldGauge() const;
 	int32 GetMaxShieldGauge() const;
+	int32 GetHealPotionCnt() const;
 	TMap<EItemType, int32>& GetAmmoInventory();
 
 	// 현재 장착하고 있는 무기의 객체를 반환

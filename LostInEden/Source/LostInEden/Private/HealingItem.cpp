@@ -84,6 +84,11 @@ int32 AHealingItem::GetHealAmount() const
     return HealAmount;
 }
 
+int32 AHealingItem::GetCount() const
+{
+    return Count;
+}
+
 void AHealingItem::ApplyOutlineMaterial()
 {
     if (!HealingMesh)
