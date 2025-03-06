@@ -22,7 +22,6 @@ void ATitleGameState::StartLevel()
 	// Initializing
 
 	UpdateStateData();
-	SetStageIndex(0);
 }
 
 void ATitleGameState::EndLevel()

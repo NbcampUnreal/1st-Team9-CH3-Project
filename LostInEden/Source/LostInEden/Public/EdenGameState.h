@@ -22,13 +22,15 @@ public:
 	// Getter, Setter
 	void SetStageIndex(EEdenStageIndex _Index);
 
+	// Level
+	void OnGameClear() override;
+	void OnGameOver() override;
+
 protected:
 	// Level
 	void StartLevel() override;
 	void EndLevel() override;
 	void RestartLevel() override;
-	void OnGameClear() override;
-	void OnGameOver() override;
 
 	// Stage
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Stage")

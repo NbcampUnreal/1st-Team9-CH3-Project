@@ -18,9 +18,6 @@ public:
 
 	virtual void BeginPlay() override;
 
-	// Getter, Setter
-	void SetStageIndex(int32 _Index) override;
-
 protected:
 	// Level
 	void StartLevel() override;
