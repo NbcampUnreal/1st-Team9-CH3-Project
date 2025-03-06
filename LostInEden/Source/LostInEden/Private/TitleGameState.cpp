@@ -31,7 +31,7 @@ void ATitleGameState::EndLevel()
 
 	FName NextLevelName = FName("Demo_Map");
 	int32 NextLevelIndex = GameInstance->GetLevelIndexByName(NextLevelName);
-	FString NextGameMode = "GameMode=/Game/Blueprints/BP_TitleGameMode";
+	FString NextGameMode = "GameMode=/Game/Blueprints/BP_EdenGameMode";
 
 	LevelIndex = NextLevelIndex;
 	UpdateInstanceData();
