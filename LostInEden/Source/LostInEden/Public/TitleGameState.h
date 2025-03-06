@@ -19,7 +19,19 @@ public:
 
 	virtual void BeginPlay() override;
 
+	// Update Methods
+	UFUNCTION(BlueprintCallable, Category = "GameData")
+	void UpdateStateData();
+	UFUNCTION(BlueprintCallable, Category = "GameData")
+	void UpdateInstanceData();
+
 protected:
+	// Level, Stage Information
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Level")
+	int32 LevelIndex;
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Stage")
-	ETitleStageIndex CurrentStage;
+	ETitleStageIndex CurStageIndex;
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "GameData")
+	int32 Score;
+
 };

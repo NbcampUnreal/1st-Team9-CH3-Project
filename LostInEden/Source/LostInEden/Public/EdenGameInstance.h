@@ -16,18 +16,26 @@ public:
 
 	void Init() override;
 
-	// Updating Methods
+	// Getter, Setter
 	UFUNCTION(BlueprintCallable, Category = "Level")
-	void UpdateLevelIndex(int32 _Index);
+	int32 GetLevelIndex();
 	UFUNCTION(BlueprintCallable, Category = "GameData")
-	void AddScore(int32 _Score);
+	int32 GetTotalScore();
+	UFUNCTION(BlueprintCallable, Category = "Level")
+	void SetLevelIndex(int32 _Index);
+	UFUNCTION(BlueprintCallable, Category = "GameData")
+	void SetTotalScore(int32 _Score);
+
+	// Update Data
+	UFUNCTION(BlueprintCallable, Category = "GameData")
+	void UpdateData(int32 _LevelIndex, int32 _Score);
 
 protected:
 	// Level
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Level")
 	TArray<FName> LevelNames;
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Level")
-	int32 LevelIndex;
+	int32 CurLevelIndex;
 	
 	// Score
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "GameData")

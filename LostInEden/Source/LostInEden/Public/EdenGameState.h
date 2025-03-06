@@ -19,12 +19,20 @@ public:
 
 	virtual void BeginPlay() override;
 
+	// Update Methods
+	UFUNCTION(BlueprintCallable, Category = "GameData")
+	void UpdateStateData();
+	UFUNCTION(BlueprintCallable, Category = "GameData")
+	void UpdateInstanceData();
+
 protected:
 	// Level, Stage Information
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Level")
-	FName CurrentLevel;
+	int32 LevelIndex;
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Stage")
-	EEdenStageIndex CurrentStage;
+	EEdenStageIndex CurStageIndex;
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "GameData")
+	int32 Score;
 
 	UFUNCTION(BlueprintCallable, Category = "Level")
 	void StartLevel();
@@ -32,8 +40,6 @@ protected:
 	void EndLevel();
 	UFUNCTION(BlueprintCallable, Category = "Level")
 	void OnGameOver();
-
-
 
 	// Stage : Boss
 	FTimerHandle BossTimerHandle;

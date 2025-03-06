@@ -13,4 +13,7 @@ class LOSTINEDEN_API ATitleGameMode : public AGameMode
 {
 	GENERATED_BODY()
 	
+public:
+	ATitleGameMode();
+
 };

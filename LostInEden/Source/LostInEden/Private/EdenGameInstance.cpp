@@ -10,15 +10,34 @@ UEdenGameInstance::UEdenGameInstance()
 
 void UEdenGameInstance::Init()
 {
-	// 레벨 목록 초기화
+	CurLevelIndex = 0;
+	TotalScore = 0;
+
+	// TODO : 레벨 목록 초기화
 }
 
-void UEdenGameInstance::UpdateLevelIndex(int32 _Index)
+void UEdenGameInstance::UpdateData(int32 _Index, int32 _Score)
 {
-
+	SetLevelIndex(_Index);
+	SetTotalScore(_Score);
 }
 
-void UEdenGameInstance::AddScore(int32 _Score)
+int32 UEdenGameInstance::GetLevelIndex()
 {
+	return CurLevelIndex;
+}
 
+int32 UEdenGameInstance::GetTotalScore()
+{
+	return TotalScore;
+}
+
+void UEdenGameInstance::SetLevelIndex(int32 _Index)
+{
+	CurLevelIndex = _Index;
+}
+
+void UEdenGameInstance::SetTotalScore(int32 _Score)
+{
+	TotalScore = _Score;
 }
