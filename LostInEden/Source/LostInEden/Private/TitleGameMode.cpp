@@ -7,9 +7,9 @@
 
 ATitleGameMode::ATitleGameMode()
 {
-    // GameMode 구성 요소 직접 지정 -> TODO : 타이틀레벨에서만 사용되는 컨트롤러와 스테이트로 변경 필요
-    /*{
-        static ConstructorHelpers::FClassFinder<APlayerController> PlayerControllerBP(TEXT("/Game/Blueprints/BP_MainPlayerController"));
+    // GameMode 구성 요소 직접 지정
+    {
+        static ConstructorHelpers::FClassFinder<APlayerController> PlayerControllerBP(TEXT("/Game/Young/BP_MenuGamecontroller"));
         if (PlayerControllerBP.Succeeded())
         {
             PlayerControllerClass = PlayerControllerBP.Class;
@@ -20,5 +20,5 @@ ATitleGameMode::ATitleGameMode()
         {
             GameStateClass = GameStateBP.Class;
         }
-    }*/
+    }
 }
