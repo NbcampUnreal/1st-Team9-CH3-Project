@@ -21,7 +21,7 @@ void AEdenGameState::StartLevel()
 	// Initializing
 
 	UpdateStateData();
-	SetStageIndex(0);
+	SetStageIndex(EEdenStageIndex::Aisle1);
 }
 
 void AEdenGameState::EndLevel()
@@ -62,7 +62,12 @@ void AEdenGameState::UpdateHUD()
 	// Stage 관련 출력
 }
 
-void AEdenGameState::SetStageIndex(int32 _Index)
+void AEdenGameState::SetStageIndex(EEdenStageIndex _Index)
 {
-	CurStageIndex = static_cast<EEdenStageIndex>(_Index);
+	CurStageIndex = _Index;
+}
+
+void AEdenGameState::SettingStage(EEdenStageIndex _Index)
+{
+
 }

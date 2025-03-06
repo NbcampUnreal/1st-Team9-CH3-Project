@@ -22,10 +22,7 @@ public:
 	void SetStageIndex(int32 _Index) override;
 
 protected:
-	// Stage
-	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Stage")
-	ETitleStageIndex CurStageIndex;
-
+	// Level
 	void StartLevel() override;
 	void EndLevel() override;
 

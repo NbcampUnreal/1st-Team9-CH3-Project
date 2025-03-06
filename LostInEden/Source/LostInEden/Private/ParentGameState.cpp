@@ -62,13 +62,3 @@ void AParentGameState::OnGameOver()
 {
 
 }
-
-void AParentGameState::SetStageIndex(int32 _Index)
-{
-
-}
-
-void AParentGameState::SettingStage(int32 _Index)
-{
-
-}

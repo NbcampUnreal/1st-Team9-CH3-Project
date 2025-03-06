@@ -37,8 +37,3 @@ void ATitleGameState::EndLevel()
 
 	UGameplayStatics::OpenLevel(GetWorld(), NextLevelName, true, NextGameMode);
 }
-
-void ATitleGameState::SetStageIndex(int32 _Index)
-{
-	CurStageIndex = static_cast<ETitleStageIndex>(_Index);
-}

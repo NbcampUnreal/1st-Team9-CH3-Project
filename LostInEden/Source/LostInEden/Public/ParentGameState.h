@@ -19,19 +19,11 @@ public:
 
 	virtual void BeginPlay() override;
 
-	// Getter, Setter
-	UFUNCTION(BlueprintCallable, Category = "GameData")
-	virtual void SetStageIndex(int32 _Index);
-
 	// Update Methods
 	UFUNCTION(BlueprintCallable, Category = "GameData")
 	void UpdateStateData();
 	UFUNCTION(BlueprintCallable, Category = "GameData")
 	void UpdateInstanceData();
-
-	// Setting Methods
-	UFUNCTION(BlueprintCallable, Category = "GameData")
-	virtual void SettingStage(int32 _Index);
 
 protected:
 	// Level

@@ -20,18 +20,22 @@ public:
 	virtual void BeginPlay() override;
 
 	// Getter, Setter
-	void SetStageIndex(int32 _Index) override;
+	void SetStageIndex(EEdenStageIndex _Index);
 
 protected:
-	// Level, Stage Information
-	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Stage")
-	EEdenStageIndex CurStageIndex;
-
+	// Level
 	void StartLevel() override;
 	void EndLevel() override;
 	void RestartLevel() override;
 	void OnGameClear() override;
 	void OnGameOver() override;
+
+	// Stage
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Stage")
+	EEdenStageIndex CurStageIndex;
+
+	UFUNCTION(BlueprintCallable, Category = "Stage")
+	void SettingStage(EEdenStageIndex _Index);
 
 	// Stage : Boss
 	FTimerHandle BossTimerHandle;
