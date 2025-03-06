@@ -63,6 +63,16 @@ AShotgun::AShotgun()
     {
         UE_LOG(LogTemp, Error, TEXT("피격 이펙트 로드 실패! 경로 확인 필요"));
     }
+
+    EmptyMagSound = LoadObject<USoundBase>(GetTransientPackage(), TEXT("/Game/Items/Sci-Fi_Shots_Pack2_Game_Of_Weapons/Wave/SciFi_Shot_P2__96_.SciFi_Shot_P2__96_"));
+    if (EmptyMagSound)
+    {
+        UE_LOG(LogTemp, Warning, TEXT("빈 탄창 사운드 로드 완료!"));
+    }
+    else
+    {
+        UE_LOG(LogTemp, Error, TEXT("빈 탄창 사운드 로드 실패! 경로 확인 필요"));
+    }
 }
 
 void AShotgun::Fire()
@@ -75,7 +85,10 @@ void AShotgun::Fire()
 
     if (CurrentAmmo < PelletCount)
     {
-        UE_LOG(LogTemp, Warning, TEXT("샷건 탄약 없음! 현재 탄약: %d"), CurrentAmmo);
+        if (EmptyMagSound)
+        {
+            UGameplayStatics::PlaySoundAtLocation(this, EmptyMagSound, GetActorLocation());
+        }
         return;
     }
 

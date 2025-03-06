@@ -63,6 +63,16 @@ ARifle::ARifle()
     {
         UE_LOG(LogTemp, Error, TEXT("피격 이펙트 로드 실패! 경로 확인 필요"));
     }
+
+    EmptyMagSound = LoadObject<USoundBase>(GetTransientPackage(), TEXT("/Game/Items/Sci-Fi_Shots_Pack2_Game_Of_Weapons/Wave/SciFi_Shot_P2__96_.SciFi_Shot_P2__96_"));
+    if (EmptyMagSound)
+    {
+        UE_LOG(LogTemp, Warning, TEXT("빈 탄창 사운드 로드 완료!"));
+    }
+    else
+    {
+        UE_LOG(LogTemp, Error, TEXT("빈 탄창 사운드 로드 실패! 경로 확인 필요"));
+    }
 }
 
 
@@ -70,6 +80,10 @@ void ARifle::Fire()
 {
     if (CurrentAmmo <= 0)
     {
+        if (EmptyMagSound)
+        {
+            UGameplayStatics::PlaySoundAtLocation(this, EmptyMagSound, GetActorLocation());
+        }
         return;
     }
 
@@ -93,7 +107,7 @@ void ARifle::Fire()
 
     FVector TraceStart = CameraLocation;
     FVector ShotDirection = CameraRotation.Vector();
-    FVector TraceEnd = TraceStart + (ShotDirection * 20000.0f); 
+    FVector TraceEnd = TraceStart + (ShotDirection * 20000.0f);
     FHitResult CrosshairHit;
     FCollisionQueryParams QueryParams;
     QueryParams.AddIgnoredActor(this);
@@ -161,14 +175,18 @@ void ARifle::StartAutoFire()
 {
     if (CurrentAmmo > 0)
     {
-        Fire();  
+        Fire();
 
         GetWorld()->GetTimerManager().SetTimer(AutoFireHandle, this, &ARifle::StartAutoFire, FireRate, true);
         bIsAutomatic = true;
     }
     else
     {
-        StopAutoFire(); 
+        if (EmptyMagSound)
+        {
+            UGameplayStatics::PlaySoundAtLocation(this, EmptyMagSound, GetActorLocation());
+        }
+        StopAutoFire();
     }
 }
 
@@ -189,19 +207,24 @@ void ARifle::BurstFire()
     {
         if (CurrentAmmo > 0)
         {
-            Fire();  
+            Fire();
         }
         else
         {
+            if (EmptyMagSound)
+            {
+                UGameplayStatics::PlaySoundAtLocation(this, EmptyMagSound, GetActorLocation());
+            }
             break;
         }
     }
 }
 
 
+
 void ARifle::Reload()
 {
-    
+
     Super::Reload();
 }
 

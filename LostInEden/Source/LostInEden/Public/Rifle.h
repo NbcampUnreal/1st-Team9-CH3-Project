@@ -20,6 +20,9 @@ private:
     
     AActor* EquippedGun;
 
+    UPROPERTY(EditDefaultsOnly, Category = "Sound")
+    USoundBase* EmptyMagSound;
+
 public:
     UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Weapon")
     bool bIsAutomatic;
