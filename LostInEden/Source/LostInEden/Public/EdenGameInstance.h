@@ -26,18 +26,16 @@ public:
 	UFUNCTION(BlueprintCallable, Category = "GameData")
 	void SetTotalScore(int32 _Score);
 
-	// Update Data
+	// Update
 	UFUNCTION(BlueprintCallable, Category = "GameData")
 	void UpdateData(FName _Name, int32 _Score);
 
 protected:
-	// Level
-	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Level")
-	TArray<FName> LevelNames;
+	// Game Data
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Level")
 	FName CurLevelName;
-
-	// Score
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "GameData")
 	int32 TotalScore;
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Level")
+	TArray<FName> LevelNames;
 };

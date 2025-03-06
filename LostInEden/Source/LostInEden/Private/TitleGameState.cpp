@@ -30,10 +30,9 @@ void ATitleGameState::EndLevel()
 	// 시네마틱 종료 후 호출, MainLevel로 넘어가기
 
 	FName NextLevelName = FName(TEXT("Demo_Map"));
-	//int32 NextLevelIndex = GameInstance->GetLevelIndexByName(NextLevelName);
 	FString NextGameMode = "GameMode=/Game/Blueprints/BP_EdenGameMode";
 
-	//LevelIndex = NextLevelIndex;
+	LevelName = NextLevelName;
 	UpdateInstanceData();
 
 	UGameplayStatics::OpenLevel(GetWorld(), NextLevelName, true, NextGameMode);

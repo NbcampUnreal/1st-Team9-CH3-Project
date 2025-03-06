@@ -35,9 +35,6 @@ public:
 
 protected:
 	// Level
-	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Level")
-	FName LevelName;
-
 	UFUNCTION(BlueprintCallable, Category = "Level")
 	virtual void StartLevel();
 	UFUNCTION(BlueprintCallable, Category = "Level")
@@ -52,6 +49,8 @@ protected:
 	// Game Data
 	class UEdenGameInstance* GameInstance = nullptr;
 
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Level")
+	FName LevelName;
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "GameData")
 	int32 Score;
 };

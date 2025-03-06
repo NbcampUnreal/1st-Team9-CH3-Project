@@ -23,6 +23,7 @@ void AParentGameState::UpdateStateData()
 
 	if (GameInstance)
 	{
+		LevelName = GameInstance->GetCurLevelName();
 		Score = GameInstance->GetTotalScore();
 	}
 }

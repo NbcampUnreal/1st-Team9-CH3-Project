@@ -10,16 +10,15 @@ UEdenGameInstance::UEdenGameInstance()
 
 void UEdenGameInstance::Init()
 {
-	LevelNames = { FName("MenuLevel"), FName("Demo_Map") };
-	//CurLevelIndex = 0;
-	TotalScore = 0;
+	// Initializing
 
-	// TODO : 레벨 목록 초기화
+	LevelNames = { FName(TEXT("MenuLevel")), FName(TEXT("Demo_Map")) };
+	UpdateData(FName(TEXT("MenuLevel")), 0);
 }
 
 void UEdenGameInstance::UpdateData(FName _Name, int32 _Score)
 {
-	//SetLevelIndex(_Index);
+	SetCurLevelName(_Name);
 	SetTotalScore(_Score);
 }
 
