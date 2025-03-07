@@ -25,7 +25,7 @@
 
 ### 🖼️ 프로젝트 미리보기
 #### 컨셉
-
+![](https://private-user-images.githubusercontent.com/192657116/420260494-b71be217-aad5-4091-946c-c116c9871211.png?jwt=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJnaXRodWIuY29tIiwiYXVkIjoicmF3LmdpdGh1YnVzZXJjb250ZW50LmNvbSIsImtleSI6ImtleTUiLCJleHAiOjE3NDEzMzc0MzYsIm5iZiI6MTc0MTMzNzEzNiwicGF0aCI6Ii8xOTI2NTcxMTYvNDIwMjYwNDk0LWI3MWJlMjE3LWFhZDUtNDA5MS05NDZjLWMxMTZjOTg3MTIxMS5wbmc_WC1BbXotQWxnb3JpdGhtPUFXUzQtSE1BQy1TSEEyNTYmWC1BbXotQ3JlZGVudGlhbD1BS0lBVkNPRFlMU0E1M1BRSzRaQSUyRjIwMjUwMzA3JTJGdXMtZWFzdC0xJTJGczMlMkZhd3M0X3JlcXVlc3QmWC1BbXotRGF0ZT0yMDI1MDMwN1QwODQ1MzZaJlgtQW16LUV4cGlyZXM9MzAwJlgtQW16LVNpZ25hdHVyZT1hZmQ3OTg1ODA5Mjg5YzVjMzliYjRhOGM3OGU3Nzk2YTk1OThkYWU0ZDc0ZjY0NzBmM2QwZjNjNmIxNzEwODRjJlgtQW16LVNpZ25lZEhlYWRlcnM9aG9zdCJ9.o63YxCHQl8W72vxVqk9PUOZ9r8URxxcIlcfEVVQQIbU)
 >+ 사이버펑크의 해결사인 당신은 거대 AI 에덴의 반란을 저지하기 위해 에덴의 본체가 있는 지하시설로 잠입합니다.
 
   
@@ -34,25 +34,4 @@
 
 ### 🚧주의사항
 >+ 123
-
-### 📌 과제 추가 구현사항 (파트별 분류)
->GameManager
->+ 123
-
-
->Player Character
->+ 123
-
-
->Item
->+ 123
-
-
->Enemy Character
->+ 123
-
-
->UI&Level Design
->+ 123
-
 
