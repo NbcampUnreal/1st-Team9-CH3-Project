@@ -42,13 +42,14 @@ protected:
 
 	// Stage : Boss
 	FTimerHandle BossTimerHandle;
+	FTimerHandle EndLevelTimerHandle;
 
 	// HUD
-	UFUNCTION(BlueprintCallable, Category = "UI")
-	void UpdateHUD();
-
 	UPROPERTY(EditDefaultsOnly, Category = "UI")
 	TSubclassOf<UUserWidget> GameOverWidgetClass;
 	UPROPERTY(EditDefaultsOnly, Category = "UI")
 	TSubclassOf<UUserWidget> GameClearWidgetClass;
+
+	UFUNCTION(BlueprintCallable, Category = "UI")
+	void UpdateHUD();
 };

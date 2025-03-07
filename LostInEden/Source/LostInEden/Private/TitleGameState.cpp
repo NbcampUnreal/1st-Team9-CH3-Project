@@ -26,7 +26,7 @@ void ATitleGameState::StartLevel()
 
 void ATitleGameState::EndLevel()
 {
-	// 시네마틱 종료 후 호출, MainLevel로 넘어가기
+	// 시네마틱 종료 후 호출, Main 레벨로 이동
 
 	FName NextLevelName = FName(TEXT("Demo_Map"));
 	FString NextGameMode = "GameMode=/Game/Blueprints/BP_EdenGameMode";

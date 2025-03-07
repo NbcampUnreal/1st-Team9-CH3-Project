@@ -2,6 +2,8 @@
 
 
 #include "EdenGameState.h"
+#include "TimerManager.h"
+#include "Kismet/GameplayStatics.h"
 
 
 AEdenGameState::AEdenGameState()
@@ -26,23 +28,33 @@ void AEdenGameState::StartLevel()
 
 void AEdenGameState::EndLevel()
 {
-	// 게임클리어 => n초 뒤 TitleLevel로 이동
+	// 게임클리어 => 게임 클리어 10초 뒤 호출, Title레벨로 이동
 	
-	
+	FName NextLevelName = FName(TEXT("MenuLevel"));
+	FString NextGameMode = "GameMode=/Game/Blueprints/BP_TitleGameMode";
 
+	LevelName = NextLevelName;
+	UpdateInstanceData();
+
+	UGameplayStatics::OpenLevel(GetWorld(), NextLevelName, true, NextGameMode);
 }
 
 void AEdenGameState::RestartLevel()
 {
-	// 게임오버 => 버튼 누르면 Main레벨 다시 시작
+	// 게임오버 => 재시작 버튼 누르면 호출, Main레벨 다시 시작
 
+	FName NextLevelName = FName(TEXT("Demo_Map"));
+	FString NextGameMode = "GameMode=/Game/Blueprints/BP_EdenGameMode";
 
+	LevelName = NextLevelName;
+	UpdateInstanceData();
 
+	UGameplayStatics::OpenLevel(GetWorld(), NextLevelName, true, NextGameMode);
 }
 
 void AEdenGameState::OnGameClear()
 {
-	// 게임클리어 => 클리어 UI 띄우기
+	// 게임클리어 => 보스 사망 시 호출, 클리어 UI 띄우기
 
 	APlayerController* PC = GetWorld()->GetFirstPlayerController();
 	if (PC && GameClearWidgetClass)
@@ -55,11 +67,13 @@ void AEdenGameState::OnGameClear()
 			//PC->SetInputMode(FInputModeUIOnly());
 		}
 	}
+
+	GetWorldTimerManager().SetTimer(EndLevelTimerHandle, this, &AEdenGameState::EndLevel, 10.0f, false);
 }
 
 void AEdenGameState::OnGameOver()
 {
-	// 게임오버 => 게임오버 UI 띄우기
+	// 게임오버 => 플레이어 사망 시 호출, 게임오버 UI 띄우기
 	
 	APlayerController* PC = GetWorld()->GetFirstPlayerController();
 	if (PC && GameOverWidgetClass)
