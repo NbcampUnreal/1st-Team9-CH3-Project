@@ -14,6 +14,9 @@ class LOSTINEDEN_API ASpawnVolume : public AActor
 public:	
 	ASpawnVolume();
 
+    UFUNCTION(BlueprintCallable, Category = "Spawning")
+    AActor* SpawnActorFromSpawnVolume(TSubclassOf<AActor> ActorClass);
+
 protected:
 	virtual void BeginPlay() override;
     virtual void Tick(float DeltaTime) override;
@@ -25,8 +28,4 @@ protected:
 
     UFUNCTION(BlueprintCallable, Category = "Spawning")
     FVector GetRandomPointInVolume() const;
-    UFUNCTION(BlueprintCallable, Category = "Spawning")
-    AActor* SpawnItem(TSubclassOf<AActor> ItemClass);
-    UFUNCTION(BlueprintCallable, Category = "Spawning")
-    AActor* SpawnEnemy(TSubclassOf<AActor> EnemyClass);
 };

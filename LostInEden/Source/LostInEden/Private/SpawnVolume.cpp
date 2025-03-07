@@ -43,25 +43,12 @@ FVector ASpawnVolume::GetRandomPointInVolume() const
 	);
 }
 
-AActor* ASpawnVolume::SpawnItem(TSubclassOf<AActor> ItemClass)
+AActor* ASpawnVolume::SpawnActorFromSpawnVolume(TSubclassOf<AActor> ActorClass)
 {
-	if (!ItemClass) return nullptr;
+	if (!ActorClass) return nullptr;
 
 	AActor* SpawnedActor = GetWorld()->SpawnActor<AActor>(
-		ItemClass,
-		GetRandomPointInVolume(),
-		FRotator::ZeroRotator
-	);
-
-	return SpawnedActor;
-}
-
-AActor* ASpawnVolume::SpawnEnemy(TSubclassOf<AActor> EnemyClass)
-{
-	if (!EnemyClass) return nullptr;
-
-	AActor* SpawnedActor = GetWorld()->SpawnActor<AActor>(
-		EnemyClass,
+		ActorClass,
 		GetRandomPointInVolume(),
 		FRotator::ZeroRotator
 	);

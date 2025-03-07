@@ -56,4 +56,8 @@ protected:
 
 	// PlayerState
 	EPlayerState PlayerState;
+
+	// SpawnActor
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Spawning")
+	TSubclassOf<AActor> SpawningClass;
 };

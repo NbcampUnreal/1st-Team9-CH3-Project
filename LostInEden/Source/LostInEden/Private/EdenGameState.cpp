@@ -2,8 +2,10 @@
 
 
 #include "EdenGameState.h"
-#include "TimerManager.h"
 #include "Kismet/GameplayStatics.h"
+#include "TimerManager.h"
+#include "SpawnVolume.h"
+#include "EnemyCharacter.h"
 
 
 AEdenGameState::AEdenGameState()
@@ -25,6 +27,8 @@ void AEdenGameState::StartLevel()
 	UpdateStateData();
 	SetStageIndex(EEdenStageIndex::Aisle1);
 	SetPlayerState(EPlayerState::Playing);
+
+	SettingStage(EEdenStageIndex::Wave1);
 }
 
 void AEdenGameState::EndLevel()
@@ -128,5 +132,27 @@ void AEdenGameState::SetPlayerState(EPlayerState _State)
 
 void AEdenGameState::SettingStage(EEdenStageIndex _Index)
 {
+	TArray<AActor*> FoundVolumes;
+	UGameplayStatics::GetAllActorsOfClass(GetWorld(), ASpawnVolume::StaticClass(), FoundVolumes);
 
+	const int32 NumberToSpawn = 4;
+
+	for (int32 i = 0; i < NumberToSpawn; i++)
+	{
+		if (FoundVolumes.Num() > 0)
+		{
+			ASpawnVolume* SpawnVolume = Cast<ASpawnVolume>(FoundVolumes[0]);
+			//UClass* LoadedClass = StaticLoadClass(AActor::StaticClass(), nullptr, TEXT("/Game/AI/BP_EnemyCharacter_Ranged.BP_EnemyCharacter_Ranged_C"));
+
+			if (SpawnVolume && SpawningClass)
+			{
+				AActor* SpawnedActor = SpawnVolume->SpawnActorFromSpawnVolume(SpawningClass);
+
+				if (SpawnedActor && SpawnedActor->IsA(AEnemyCharacter::StaticClass()))
+				{
+					int a = 0;
+				}
+			}
+		}
+	}
 }
