@@ -65,7 +65,7 @@
 3. Item(Firable/Consumable)
 기능: 플레이어가 획득할 수 있는 아이템을 관리합니다.
 
-클래스: ItemBase.cpp, ItemBase.h
+클래스:
 
 핵심 로직:
 
@@ -76,7 +76,7 @@
 4. GameMode
 기능: 게임의 규칙과 상태를 관리합니다.
 
-클래스: MainGameMode.cpp, MainGameMode.h
+클래스: 
 
 핵심 로직:
 
