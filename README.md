@@ -67,12 +67,113 @@
 기능: 플레이어가 획득할 수 있는 아이템을 관리합니다.
 
 클래스:
+AGun - 총기 기본 클래스. 탄약 관리, 발사, 재장전 기능 포함
+APistol - 권총 클래스. 단발 사격 및 특정 효과 포함
+ARifle - 라이플 클래스. 연사 기능과 버스트 모드 포함
+AShotgun - 샷건 클래스. 산탄 효과 및 탄 퍼짐 구현
 
 핵심 로직:
 
-소비형 아이템: 체력 회복
+소비형 아이템: 체력 회복 (AHealingItem), 방어력 증가 (AShield).
 
-발사형 아이템: 적을 공격할 수 있는 무기.
+발사형 아이템: 적을 공격할 수 있는 무기 (AGun, APistol, ARifle, AShotgun).
+
+---
+
+AGun 클래스
+```cpp
+class AGun : public AItem, public IIFireable
+{
+protected:
+    UPROPERTY(EditAnywhere, Category = "Weapon")
+    int32 Damage;
+    UPROPERTY(EditAnywhere, Category = "Weapon")
+    float FireRate;
+    UPROPERTY(EditAnywhere, Category = "Weapon")
+    int32 MaxAmmo;
+    UPROPERTY(EditAnywhere, Category = "Weapon")
+    int32 CurrentAmmo;
+    UPROPERTY(EditAnywhere, Category = "Weapon")
+    float Range;
+    UPROPERTY(EditDefaultsOnly, Category = "Weapon")
+    TSubclassOf<class ABullet> BulletFactory;
+
+public:
+    AGun();
+    virtual void Fire() override;
+    virtual void Reload() override;
+    int32 GetAmmoFromInventory(int32 Amount);
+};
+```
+총기별 기능
+>+APistol** (권총)**: 단발 사격, 탄약 절약 모드.
+>+ARifle** (라이플)**: 연사 기능, 버스트 모드, 조준 기능.
+>+AShotgun** (샷건)**: 산탄 효과, 다중 타겟 공격.
+
+---
+
+🎒ITEM SYSTEM
+
+주요 클래스
+>+AItem - 모든 아이템의 기본 클래스. 아이템 획득, 사용 기능 포함.
+>+AShield - 쉴드 아이템. 사용 시 플레이어의 방어력을 증가.
+>+AHealingItem - 힐링 아이템. 사용 시 플레이어의 체력을 회복.
+>+AMagazine - 탄약 아이템. 무기의 탄창을 보충.
+
+AItem 클래스
+```cpp
+class AItem : public AActor, public IIUsable
+{
+public:
+    virtual void Use(class APlayerCharacter*) override;
+};
+```
+AShield (쉴드 아이템)
+```cpp
+class AShield : public AItem
+{
+protected:
+    UPROPERTY(EditAnywhere, Category = "Shield")
+    float ShieldAmount; // 쉴드 증가량
+
+public:
+    virtual void Use(APlayerCharacter* Player) override;
+};
+```
+AHealingItem (힐링 아이템)
+```cpp
+class AHealingItem : public AItem
+{
+protected:
+    UPROPERTY(EditAnywhere, Category = "Healing")
+    float HealAmount;
+    UPROPERTY(EditAnywhere, Category = "Healing")
+    int32 Count;
+
+public:
+    virtual void Use(APlayerCharacter* Player) override;
+    void IncrementCount(int32 Amount = 1);
+};
+```
+AMagazine (탄약 아이템)
+```cpp
+class AMagazine : public AItem
+{
+protected:
+    UPROPERTY(EditAnywhere, Category = "Ammo")
+    int32 AmmoAmount;
+    UPROPERTY(EditAnywhere, Category = "Ammo")
+    EItemType AmmoType;
+
+public:
+    virtual void Use(APlayerCharacter* Player) override;
+    EItemType GetAmmoType() const;
+    int32 GetAmmoAmount() const;
+};
+```
+아이템 사용 (Use()********): 아이템 타입에 따라 쉴드 증가, 체력 회복, 탄약 보충.
+
+탄약 획득 (AMagazine********): 특정 탄약 타입을 보충하여 무기에 장전.
 
 4. GameMode
 기능: 게임의 규칙과 상태를 관리합니다.
