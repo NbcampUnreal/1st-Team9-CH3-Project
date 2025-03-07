@@ -74,13 +74,13 @@ AShotgun - 샷건 클래스. 산탄 효과 및 탄 퍼짐 구현
 
 핵심 로직:
 
-소비형 아이템: 체력 회복 (AHealingItem), 방어력 증가 (AShield).
+💊소비형 아이템: 체력 회복 (AHealingItem), 방어력 증가 (AShield).
 
-발사형 아이템: 적을 공격할 수 있는 무기 (AGun, APistol, ARifle, AShotgun).
+🔫발사형 아이템: 적을 공격할 수 있는 무기 (AGun, APistol, ARifle, AShotgun).
 
 ---
 
-AGun 클래스
+🔫AGun 클래스
 ```cpp
 class AGun : public AItem, public IIFireable
 {
@@ -171,8 +171,8 @@ public:
     int32 GetAmmoAmount() const;
 };
 ```
->아이템 사용 (Use()********): 아이템 타입에 따라 쉴드 증가, 체력 회복, 탄약 보충.\
->탄약 획득 (AMagazine********): 특정 탄약 타입을 보충하여 무기에 장전.
+>아이템 사용 (Use()): 아이템 타입에 따라 쉴드 증가, 체력 회복, 탄약 보충.\
+>탄약 획득 (AMagazine): 특정 탄약 타입을 보충하여 무기에 장전.
 
 4. GameMode
 기능: 게임의 규칙과 상태를 관리합니다.
