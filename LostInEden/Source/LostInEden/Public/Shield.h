@@ -18,7 +18,7 @@ public:
     UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Shield")
     int32 Count;
 
-    virtual void Use() override; 
+    virtual void Use(class APlayerCharacter*) override;
     virtual void Tick(float DeltaTime) override;
     virtual void BeginPlay() override;
 

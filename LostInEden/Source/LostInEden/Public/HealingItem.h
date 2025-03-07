@@ -24,7 +24,7 @@ public:
     int32 GetHealAmount() const;
     int32 GetCount() const;
 
-    virtual void Use() override; 
+    virtual void Use(class APlayerCharacter*) override;
     virtual void BeginPlay() override;
     virtual void Tick(float DeltaTime) override;
     void ApplyOutlineMaterial();

@@ -52,20 +52,16 @@ void AHealingItem::Tick(float DeltaTime)
     SetActorRotation(NewRotation);
 }
 
-void AHealingItem::Use()
+void AHealingItem::Use(APlayerCharacter* Player)
 {
-    APlayerCharacter* Player = Cast<APlayerCharacter>(GetOwner());
     if (Player && Count > 0)
     {
         int32 NewHealth = Player->GetHealth() + HealAmount;
+        NewHealth = FMath::Clamp(NewHealth, 0, Player->GetMaxHealth());
         Player->SetHealth(NewHealth);
+        UE_LOG(LogTemp, Display, TEXT("체력 게이지 %d"), Player->GetMaxHealth());
 
         Count--;
-
-        if (Count <= 0)
-        {
-            Destroy();
-        }
     }
 }
 

@@ -68,8 +68,8 @@ void APlayerCharacter::BeginPlay()
 	//기본 무기인 권총 세팅
 	EquipWeapon(EGunType::PISTOL);
 
-	//힐포션 확인용 임시
 	HealPotion = GetWorld()->SpawnActor<AHealingItem>(AHealingItem::StaticClass());
+	Shield = GetWorld()->SpawnActor<AShield>(AShield::StaticClass());
 }
 
 void APlayerCharacter::SetHealth(int32 HealthAmount)
@@ -224,7 +224,8 @@ void APlayerCharacter::ReloadAmmo()
 
 void APlayerCharacter::UseItem()
 {
-	HealPotion->Use();
+	HealPotion->Use(this);
+	UpdateUI();
 }
 
 void APlayerCharacter::AddItem(AItem* Item)
@@ -260,7 +261,7 @@ void APlayerCharacter::AddItem(AItem* Item)
 			switch (ItemType)
 			{
 			case SHIELD:
-				Item->Use();
+				Shield->Use(this);
 				break;
 			case HEALINGITEM:
 				HealPotion->IncrementCount(1);

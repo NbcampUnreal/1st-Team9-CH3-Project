@@ -39,9 +39,8 @@ void AMagazine::BeginPlay()
     ApplyOutlineMaterial();
 }
 
-void AMagazine::Use()
+void AMagazine::Use(APlayerCharacter* Player)
 {
-    APlayerCharacter* Player = Cast<APlayerCharacter>(GetOwner());
     if (Player)
     {
         TMap<EItemType, int32>& Inventory = Player->GetAmmoInventory();

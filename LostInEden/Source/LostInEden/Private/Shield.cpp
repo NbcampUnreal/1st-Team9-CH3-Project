@@ -27,20 +27,14 @@ AShield::AShield()
     }
 }
 
-void AShield::Use()
+void AShield::Use(APlayerCharacter* Player)
 {
-    APlayerCharacter* Player = Cast<APlayerCharacter>(GetOwner());
-    if (Player && Count > 0) 
+    if (Player) 
     {
         int32 NewShieldValue = Player->GetShieldGauge() + ShieldAmount;
+        NewShieldValue = FMath::Clamp(NewShieldValue, 0, Player->GetMaxShieldGauge());
         Player->SetShieldGauge(NewShieldValue);
-
-        Count--; 
-
-        if (Count <= 0)
-        {
-            Destroy(); 
-        }
+        UE_LOG(LogTemp, Display, TEXT("쉴드 게이지 %d"), Player->GetMaxShieldGauge());
     }
 }
 

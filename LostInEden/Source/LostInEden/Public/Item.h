@@ -27,5 +27,5 @@ public:
     UFUNCTION(BlueprintCallable, Category = "Item")
     EItemType GetItemType() const;
 
-    virtual void Use() override;
+    virtual void Use(class APlayerCharacter*) override;
 };

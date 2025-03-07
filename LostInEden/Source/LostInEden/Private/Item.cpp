@@ -7,7 +7,7 @@ AItem::AItem()
     PrimaryActorTick.bCanEverTick = false;
 }
 
-void AItem::Use()
+void AItem::Use(APlayerCharacter*)
 {
     //UE_LOG(LogTemp, Warning, TEXT("%s was used!"), *ItemName);
 }

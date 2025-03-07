@@ -12,6 +12,7 @@ class AGun;
 class AItem;
 class UGunManager;
 class AHealingItem;
+class AShield;
 
 UCLASS()
 class LOSTINEDEN_API APlayerCharacter : public AEntity
@@ -54,6 +55,8 @@ protected:
 	// 쉴드 게이지
 	int32 ShieldGauge;
 	int32 MaxShieldGauge;
+
+	AShield* Shield;
 
 	// 이동 속도 관련
 	float NormalSpeed;
