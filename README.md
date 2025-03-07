@@ -188,30 +188,21 @@
 ---
 
 🔫AGun 클래스
-```cpp
-class AGun : public AItem, public IIFireable
-{
-protected:
-    UPROPERTY(EditAnywhere, Category = "Weapon")
-    int32 Damage;
-    UPROPERTY(EditAnywhere, Category = "Weapon")
-    float FireRate;
-    UPROPERTY(EditAnywhere, Category = "Weapon")
-    int32 MaxAmmo;
-    UPROPERTY(EditAnywhere, Category = "Weapon")
-    int32 CurrentAmmo;
-    UPROPERTY(EditAnywhere, Category = "Weapon")
-    float Range;
-    UPROPERTY(EditDefaultsOnly, Category = "Weapon")
-    TSubclassOf<class ABullet> BulletFactory;
 
-public:
-    AGun();
-    virtual void Fire() override;
-    virtual void Reload() override;
-    int32 GetAmmoFromInventory(int32 Amount);
-};
-```
+>총 발사 (Fire)
+플레이어가 발사 버튼을 누르면 Fire() 기능이 실행됩니다.
+탄약이 남아 있으면 총알이 발사되고, 남은 탄약 수가 감소합니다.
+탄약이 0이면 발사되지 않습니다.
+
+>재장전 (Reload)
+탄약이 부족할 경우 Reload() 기능을 사용하여 탄약을 장전할 수 있습니다.
+인벤토리에 남아 있는 탄약을 가져와 최대한 장전합니다.
+탄약이 부족하면 가능한 만큼만 채워집니다.
+
+>인벤토리에서 탄약 가져오기 (GetAmmoFromInventory)
+GetAmmoFromInventory() 기능을 통해 인벤토리에서 특정 개수만큼의 탄약을 가져올 수 있습니다.
+요청한 탄약보다 적은 양만 남아 있다면, 가능한 만큼만 반환됩니다.
+
 총기별 기능
 >APistol (권총): 단발 사격, 탄약 절약 모드.\
 >ARifle (라이플): 연사 기능, 버스트 모드, 조준 기능.\
@@ -227,15 +218,19 @@ public:
 >AHealingItem - 힐링 아이템. 사용 시 플레이어의 체력을 회복.\
 >AMagazine - 탄약 아이템. 무기의 탄창을 보충.
 
-```
+---
+
 AShield (쉴드 아이템)
 Use()를 호출하면 플레이어의 쉴드량량이 증가합니다.
-```
+
+---
+
 AHealingItem (힐링 아이템)
 Use()를 호출하면 플레이어의 체력이 회복됩니다.
 IncrementCount()를 통해 아이템 개수를 추가할 수 있습니다.
 
-```
+---
+
 AMagazine (탄약 아이템)
 Use()를 호출하면 특정 타입의 탄약을 보충할 수 있습니다.
 GetAmmoType() 메서드를 통해 해당 탄약의 종류를 확인할 수 있습니다.
