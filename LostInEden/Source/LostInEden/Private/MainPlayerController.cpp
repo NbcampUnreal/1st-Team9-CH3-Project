@@ -82,10 +82,36 @@ void AMainPlayerController::UpdateHUD()
 
 		// 현재 장착한 무기 가져오기
 		AGun* CurrentWeapon = MyPlayerCharacter->GetCurrentWeapon();
+		TMap<EItemType, int32>& AmmoInventory = MyPlayerCharacter->GetAmmoInventory();
 		if (CurrentWeapon)
 		{
+			EGunType CurrGunType = CurrentWeapon->GetGunType();
 			int32 CurrentAmmo = CurrentWeapon->GetCurrentAmmo();
-			int32 MaxAmmo = CurrentWeapon->GetMaxAmmo();
+			int32 MaxAmmo = 0;
+
+			switch (CurrGunType)
+			{
+			case PISTOL:
+				if (AmmoInventory.Find(EItemType::PISTOL_BULLET))
+				{
+					MaxAmmo = *AmmoInventory.Find(EItemType::PISTOL_BULLET);
+				}
+				break;
+			case RIFLE:
+				if (AmmoInventory.Find(EItemType::RIFLE_BULLET))
+				{
+					MaxAmmo = *AmmoInventory.Find(EItemType::RIFLE_BULLET);
+				}
+				break;
+			case SHOTGUN:
+				if (AmmoInventory.Find(EItemType::SHOTGUN_BULLET))
+				{
+					MaxAmmo = *AmmoInventory.Find(EItemType::SHOTGUN_BULLET);
+				}
+				break;
+			default:
+				break;
+			}
 
 			// 탄약 정보를 UI에 업데이트 
 			Widget->UpdateAmmo(CurrentAmmo, MaxAmmo);
