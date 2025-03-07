@@ -3,6 +3,7 @@
 #pragma once
 
 #include "CoreMinimal.h"
+#include "Blueprint/UserWidget.h"
 #include "ParentGameState.h"
 #include "GlobalEnum.h"
 #include "EdenGameState.generated.h"
@@ -43,6 +44,11 @@ protected:
 	FTimerHandle BossTimerHandle;
 
 	// HUD
-	UFUNCTION(BlueprintCallable, Category = "HUD")
+	UFUNCTION(BlueprintCallable, Category = "UI")
 	void UpdateHUD();
+
+	UPROPERTY(EditDefaultsOnly, Category = "UI")
+	TSubclassOf<UUserWidget> GameOverWidgetClass;
+	UPROPERTY(EditDefaultsOnly, Category = "UI")
+	TSubclassOf<UUserWidget> GameClearWidgetClass;
 };

@@ -26,7 +26,7 @@ void AEdenGameState::StartLevel()
 
 void AEdenGameState::EndLevel()
 {
-	// 게임 클리어 => n초 뒤 TitleLevel로 이동
+	// 게임클리어 => n초 뒤 TitleLevel로 이동
 	
 	
 
@@ -34,7 +34,7 @@ void AEdenGameState::EndLevel()
 
 void AEdenGameState::RestartLevel()
 {
-	// 게임오버 => Title 레벨로 이동
+	// 게임오버 => 버튼 누르면 Main레벨 다시 시작
 
 
 
@@ -42,18 +42,36 @@ void AEdenGameState::RestartLevel()
 
 void AEdenGameState::OnGameClear()
 {
-	// 게임 클리어 = > 클리어 UI 띄우기
+	// 게임클리어 => 클리어 UI 띄우기
 
-
-
+	APlayerController* PC = GetWorld()->GetFirstPlayerController();
+	if (PC && GameClearWidgetClass)
+	{
+		UUserWidget* GameClearWidget = CreateWidget<UUserWidget>(PC, GameClearWidgetClass);
+		if (GameClearWidget)
+		{
+			GameClearWidget->AddToViewport();
+			//PC->SetShowMouseCursor(true);
+			//PC->SetInputMode(FInputModeUIOnly());
+		}
+	}
 }
 
 void AEdenGameState::OnGameOver()
 {
-	// 게임오버 => 게임오버스크린 띄우기
+	// 게임오버 => 게임오버 UI 띄우기
 	
-
-
+	APlayerController* PC = GetWorld()->GetFirstPlayerController();
+	if (PC && GameOverWidgetClass)
+	{
+		UUserWidget* GameOverWidget = CreateWidget<UUserWidget>(PC, GameOverWidgetClass);
+		if (GameOverWidget)
+		{
+			GameOverWidget->AddToViewport();
+			//PC->SetShowMouseCursor(true);
+			//PC->SetInputMode(FInputModeUIOnly());
+		}
+	}
 }
 
 void AEdenGameState::UpdateHUD()
