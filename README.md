@@ -227,59 +227,19 @@ public:
 >AHealingItem - 힐링 아이템. 사용 시 플레이어의 체력을 회복.\
 >AMagazine - 탄약 아이템. 무기의 탄창을 보충.
 
-AItem 클래스
-```cpp
-class AItem : public AActor, public IIUsable
-{
-public:
-    virtual void Use(class APlayerCharacter*) override;
-};
 ```
 AShield (쉴드 아이템)
-```cpp
-class AShield : public AItem
-{
-protected:
-    UPROPERTY(EditAnywhere, Category = "Shield")
-    float ShieldAmount; // 쉴드 증가량
-
-public:
-    virtual void Use(APlayerCharacter* Player) override;
-};
+Use()를 호출하면 플레이어의 쉴드량량이 증가합니다.
 ```
 AHealingItem (힐링 아이템)
-```cpp
-class AHealingItem : public AItem
-{
-protected:
-    UPROPERTY(EditAnywhere, Category = "Healing")
-    float HealAmount;
-    UPROPERTY(EditAnywhere, Category = "Healing")
-    int32 Count;
+Use()를 호출하면 플레이어의 체력이 회복됩니다.
+IncrementCount()를 통해 아이템 개수를 추가할 수 있습니다.
 
-public:
-    virtual void Use(APlayerCharacter* Player) override;
-    void IncrementCount(int32 Amount = 1);
-};
 ```
 AMagazine (탄약 아이템)
-```cpp
-class AMagazine : public AItem
-{
-protected:
-    UPROPERTY(EditAnywhere, Category = "Ammo")
-    int32 AmmoAmount;
-    UPROPERTY(EditAnywhere, Category = "Ammo")
-    EItemType AmmoType;
-
-public:
-    virtual void Use(APlayerCharacter* Player) override;
-    EItemType GetAmmoType() const;
-    int32 GetAmmoAmount() const;
-};
-```
->아이템 사용 (Use()): 아이템 타입에 따라 쉴드 증가, 체력 회복, 탄약 보충.\
->탄약 획득 (AMagazine): 특정 탄약 타입을 보충하여 무기에 장전.
+Use()를 호출하면 특정 타입의 탄약을 보충할 수 있습니다.
+GetAmmoType() 메서드를 통해 해당 탄약의 종류를 확인할 수 있습니다.
+GetAmmoAmount() 메서드를 통해 탄약의 개수를 확인할 수 있습니다.
 
 4. GameMode
 기능: 게임의 규칙과 상태를 관리합니다.
