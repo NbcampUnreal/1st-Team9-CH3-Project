@@ -32,7 +32,7 @@ public:
 
 protected:
 	// Game Data
-	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Level")
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "GameData")
 	FName CurLevelName;
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "GameData")
 	int32 TotalScore;

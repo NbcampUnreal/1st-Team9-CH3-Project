@@ -24,6 +24,17 @@ enum class EEdenStageIndex : uint8
 	Boss		UMETA(DisplayName = "보스"),
 };
 
+/// <summary>
+/// Player의 게임 진행 정보
+/// </summary>
+UENUM(BlueprintType)
+enum class EPlayerState : uint8
+{
+	Playing		UMETA(DisplayName = "진행중"),
+	GameClear	UMETA(DisplayName = "클리어"),
+	GameOver	UMETA(DisplayName = "게임오버"),
+};
+
 /*
 UENUM(BlueprintType)
 enum class ETitleStageIndex : uint8

@@ -22,6 +22,7 @@ public:
 
 	// Getter, Setter
 	void SetStageIndex(EEdenStageIndex _Index);
+	void SetPlayerState(EPlayerState _State);
 
 	// Level
 	void OnGameClear() override;
@@ -52,4 +53,7 @@ protected:
 
 	UFUNCTION(BlueprintCallable, Category = "UI")
 	void UpdateHUD();
+
+	// PlayerState
+	EPlayerState PlayerState;
 };

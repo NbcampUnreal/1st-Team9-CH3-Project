@@ -24,6 +24,7 @@ void AEdenGameState::StartLevel()
 
 	UpdateStateData();
 	SetStageIndex(EEdenStageIndex::Aisle1);
+	SetPlayerState(EPlayerState::Playing);
 }
 
 void AEdenGameState::EndLevel()
@@ -56,6 +57,15 @@ void AEdenGameState::OnGameClear()
 {
 	// 게임클리어 => 보스 사망 시 호출, 클리어 UI 띄우기
 
+	if (PlayerState == EPlayerState::GameOver)
+	{
+		return;
+	}
+
+	// PlayerState
+	SetPlayerState(EPlayerState::GameClear);
+
+	// UI
 	APlayerController* PC = GetWorld()->GetFirstPlayerController();
 	if (PC && GameClearWidgetClass)
 	{
@@ -65,16 +75,27 @@ void AEdenGameState::OnGameClear()
 			GameClearWidget->AddToViewport();
 			PC->SetShowMouseCursor(true);
 			//PC->SetInputMode(FInputModeUIOnly());
+			UGameplayStatics::SetGamePaused(GetWorld(), true);
 		}
 	}
 
+	// Open Level
 	GetWorldTimerManager().SetTimer(EndLevelTimerHandle, this, &AEdenGameState::EndLevel, 10.0f, false);
 }
 
 void AEdenGameState::OnGameOver()
 {
 	// 게임오버 => 플레이어 사망 시 호출, 게임오버 UI 띄우기
-	
+
+	if (PlayerState == EPlayerState::GameClear)
+	{
+		return;
+	}
+
+	// PlayerState
+	SetPlayerState(EPlayerState::GameOver);
+
+	// UI
 	APlayerController* PC = GetWorld()->GetFirstPlayerController();
 	if (PC && GameOverWidgetClass)
 	{
@@ -84,6 +105,7 @@ void AEdenGameState::OnGameOver()
 			GameOverWidget->AddToViewport();
 			PC->SetShowMouseCursor(true);
 			//PC->SetInputMode(FInputModeUIOnly());
+			UGameplayStatics::SetGamePaused(GetWorld(), true);
 		}
 	}
 }
@@ -97,6 +119,11 @@ void AEdenGameState::UpdateHUD()
 void AEdenGameState::SetStageIndex(EEdenStageIndex _Index)
 {
 	CurStageIndex = _Index;
+}
+
+void AEdenGameState::SetPlayerState(EPlayerState _State)
+{
+	PlayerState = _State;
 }
 
 void AEdenGameState::SettingStage(EEdenStageIndex _Index)
