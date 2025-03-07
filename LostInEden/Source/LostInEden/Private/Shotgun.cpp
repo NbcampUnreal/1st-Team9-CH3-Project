@@ -224,6 +224,6 @@ void AShotgun::Reload()
 void AShotgun::BeginPlay()
 {
     Super::BeginPlay();
-    Reload();
+
     
 }
