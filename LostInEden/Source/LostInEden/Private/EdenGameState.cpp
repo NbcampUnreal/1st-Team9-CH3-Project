@@ -63,7 +63,7 @@ void AEdenGameState::OnGameClear()
 		if (GameClearWidget)
 		{
 			GameClearWidget->AddToViewport();
-			//PC->SetShowMouseCursor(true);
+			PC->SetShowMouseCursor(true);
 			//PC->SetInputMode(FInputModeUIOnly());
 		}
 	}
@@ -82,7 +82,7 @@ void AEdenGameState::OnGameOver()
 		if (GameOverWidget)
 		{
 			GameOverWidget->AddToViewport();
-			//PC->SetShowMouseCursor(true);
+			PC->SetShowMouseCursor(true);
 			//PC->SetInputMode(FInputModeUIOnly());
 		}
 	}
