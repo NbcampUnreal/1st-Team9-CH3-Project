@@ -29,7 +29,7 @@
 >
 >+ Visual Studio에서 솔루션을 빌드합니다.
 >
->+ 언리얼 에디터에서 young 파일의 LostInEden 파일미디어 소스를 엽니다. .git 파일이 있는 처음폴더의 LostInEden.mp4 파일을 받아준 후 파일미디어소스창의 디테일창에서 해당 경로를 지정해줍니다
+>+ 언리얼 에디터에서 young 파일의 LostInEden 파일미디어 소스를 엽니다 https://drive.google.com/file/d/1wxAThykG6qoLZm30iZjvNDlHthpPhIc0/view?usp=sharing 다음 파일을 받아준 후 파일미디어소스창의 디테일창에서 해당 경로를 지정해줍니다
 >+ 언리얼 에디터에서 프로젝트를 열고 Start 버튼을 눌러 실행합니다.
 ### 🖼️ 프로젝트 미리보기
 #### 컨셉
