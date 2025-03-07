@@ -52,16 +52,22 @@
 
 공격: 마우스 왼쪽 클릭으로 적을 공격합니다.
 
-2. Enemy Character
-기능: 적 AI의 행동 패턴을 제어합니다.
+**2. Enemy Character**
+> 캐릭터 클래스
+>+ BP_BaseEnemyCharacter : 기본 캐릭터 클래스, `OnDead`, `OnStunned`, `Heal`, `EventAnyDamage` 등 적 캐릭터의 기본 기능 설정
+>+ BP_BaseEnemyCharacter_Melee,Ranged : 종류별 세부 클래스. 저마다 다른 `Attack`, `EquipWeapon`, `UnequipWeapon` 등을 세부 구현
+>+ BPI_EnemyAI : 블루프린트 인터페이스, 적 캐릭터들의 공통 기능 설정. C++ 인터페이스와 다르게 원하는 것만 구현 가능
 
-클래스: 
+> 컨트롤러 클래스
+>+ AIC_BaseEnemy : AIController 클래스, `SetStateAs(Passive/Attacking/Stunned/Investigation/Dead)` 등 상태를 변경
 
-핵심 로직:
+> 기타 클래스
+>+ LootDrop : 캐릭터의 `OnDead`시 호출, 적의 아이템 드랍 여부와 종류를 결정하는 클래스
+>+ BP_PatrolRoute : 순찰 경로를 표시하는 클래스. `Spline`으로 순찰 경로 시각화
 
-플레이어 추적: 플레이어가 일정 범위 내에 들어오면 추적을 시작합니다.
-
-공격: 플레이어가 근접하면 공격합니다.
+> 핵심 로직
+>+ 상태 기반 행동 결정 : Behavior Tree에서 캐릭터의 상태`(Passive/Attacking/Stunned/Investigation/Dead)`에 따라 행동을 결정
+>+ EQS 활용 최적 위치 선정 : 플레이와의 거리, 라인 트레이스 여부를 이용하여 최정의 자리로 이동하여 공격 수행
 
 3. Item(Firable/Usable) 
 기능: 플레이어가 획득할 수 있는 아이템을 관리합니다.
