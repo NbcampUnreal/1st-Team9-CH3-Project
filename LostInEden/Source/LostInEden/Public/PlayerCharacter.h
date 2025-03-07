@@ -138,7 +138,10 @@ public:
 	// 무기 장착
 	void EquipWeapon(EGunType);
 
+	// 무기 스왑시 타이머 세팅값 바꾸기
 	void ResetInput();
+
+	void Die();
 
 	void UpdateUI();
 };
