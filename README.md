@@ -11,7 +11,7 @@
 ### 👨‍👩‍👧‍👦 멤버 구성
 >+ 조영환 : `프로젝트 매니저` 레벨 디자인, UI&HUD
 >+ 김재석 : Enemy Character
->+ 양성은 : Item(Firable/Consumable) 
+>+ 양성은 : Item(Firable/Usable) 
 >+ 장세희 : Player Character
 >+ 박지윤 : GameMode
 
@@ -63,7 +63,7 @@
 
 공격: 플레이어가 근접하면 공격합니다.
 
-3. Item(Firable/Consumable)
+3. Item(Firable/Usable) 
 기능: 플레이어가 획득할 수 있는 아이템을 관리합니다.
 
 클래스:  
