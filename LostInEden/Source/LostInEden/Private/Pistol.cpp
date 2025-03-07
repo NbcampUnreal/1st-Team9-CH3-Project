@@ -77,16 +77,7 @@ APistol::APistol()
 
 void APistol::Reload()
 {
-    if (bInfiniteAmmo)
-    {
-        CurrentAmmo = INT32_MAX; 
-    }
-    else
-    {
-        CurrentAmmo = MaxAmmo;  
-    }
 
-    UE_LOG(LogTemp, Warning, TEXT("탄약 리로드 완료! 현재 탄약: %d"), CurrentAmmo);
 }
 
 
