@@ -44,7 +44,6 @@ APlayerCharacter::APlayerCharacter()
 	SprintSpeed = NormalSpeed * SprintSpeedMultiplier;
 
 	GetCharacterMovement()->MaxWalkSpeed = NormalSpeed;
-	// 앉기 동작을 수행할 수 있게 해주는 bool값
 	GetCharacterMovement()->GetNavAgentPropertiesRef().bCanCrouch = true;
 
 	MaxHealth = 200;
@@ -52,7 +51,7 @@ APlayerCharacter::APlayerCharacter()
 
 	MaxShieldGauge = 50;
 	ShieldGauge = 0;
-	
+
 	// 건 매니저 생성
 	GunManager = CreateDefaultSubobject<UGunManager>(TEXT("GunManager"));
 	CurrWeapon = nullptr;
@@ -65,12 +64,13 @@ void APlayerCharacter::BeginPlay()
 {
 	Super::BeginPlay();
 
-	//기본 무기인 권총 세팅
 	EquipWeapon(EGunType::PISTOL);
 
 	HealPotion = GetWorld()->SpawnActor<AHealingItem>(AHealingItem::StaticClass());
 	Shield = GetWorld()->SpawnActor<AShield>(AShield::StaticClass());
 }
+
+
 
 void APlayerCharacter::SetHealth(int32 HealthAmount)
 {
@@ -182,7 +182,8 @@ float APlayerCharacter::TakeDamage(float DamageAmount, FDamageEvent const& Damag
 void APlayerCharacter::StartAttack()
 {
 	UE_LOG(LogTemp, Warning, TEXT("Gun Fire!!"));
-	if(CurrWeapon)
+
+	if (CurrWeapon)
 	{
 		switch (CurrWeapon->GetGunType())
 		{
@@ -194,13 +195,17 @@ void APlayerCharacter::StartAttack()
 			break;
 		}
 	}
-	
+
 	UpdateUI();
+
+	// 공격 도중에도 무기 변경 가능하게 유지
+	bCanChangeGun = true;
 }
 
 void APlayerCharacter::StopAttack()
 {
 	UE_LOG(LogTemp, Warning, TEXT("Stop Fire!!"));
+
 	if (CurrWeapon)
 	{
 		if (ARifle* Rifle = Cast<ARifle>(CurrWeapon))
@@ -208,9 +213,13 @@ void APlayerCharacter::StopAttack()
 			Rifle->StopAutoFire();
 		}
 	}
-	
+
 	UpdateUI();
+
+	// 공격 종료 후 무기 변경 가능하게 설정
+	bCanChangeGun = true;
 }
+
 
 void APlayerCharacter::ReloadAmmo()
 {
@@ -224,9 +233,23 @@ void APlayerCharacter::ReloadAmmo()
 
 void APlayerCharacter::UseItem()
 {
+	if (!HealPotion)
+	{
+		UE_LOG(LogTemp, Warning, TEXT("UseItem(): HealPotion이 없습니다. 다시 생성 시도!"));
+		HealPotion = GetWorld()->SpawnActor<AHealingItem>(AHealingItem::StaticClass());
+
+		if (!HealPotion)
+		{
+			UE_LOG(LogTemp, Error, TEXT("UseItem(): HealPotion 재생성 실패!"));
+			return;
+		}
+	}
+
+	UE_LOG(LogTemp, Warning, TEXT("UseItem(): HealPotion 사용!"));
 	HealPotion->Use(this);
 	UpdateUI();
 }
+
 
 void APlayerCharacter::AddItem(AItem* Item)
 {
@@ -234,12 +257,23 @@ void APlayerCharacter::AddItem(AItem* Item)
 	if (Gun)
 	{
 		TArray<EGunType> GunList = GunManager->GetOwnedGunList();
+
 		if (GunList.Find(Gun->GetGunType()) != INDEX_NONE)
 		{
 			UE_LOG(LogTemp, Warning, TEXT("이미 소지한 총입니다!"));
 			return;
 		}
-		GunManager->UpdateGunData(Gun);
+
+		UE_LOG(LogTemp, Warning, TEXT("새로운 총 획득: %d"), Gun->GetGunType());
+		GunManager->UpdateGunData(Gun); // 무기 데이터 업데이트
+
+		// 보유한 총 리스트 다시 확인
+		GunList = GunManager->GetOwnedGunList();
+		UE_LOG(LogTemp, Warning, TEXT("업데이트 후 보유한 총 리스트:"));
+		for (auto GunType : GunList)
+		{
+			UE_LOG(LogTemp, Warning, TEXT("GunType: %d"), GunType);
+		}
 	}
 	else
 	{
@@ -261,6 +295,18 @@ void APlayerCharacter::AddItem(AItem* Item)
 			switch (ItemType)
 			{
 			case SHIELD:
+				if (!Shield)
+				{
+					UE_LOG(LogTemp, Warning, TEXT("Shield가 nullptr입니다. 다시 생성 시도!"));
+					Shield = GetWorld()->SpawnActor<AShield>(AShield::StaticClass());
+
+					if (!Shield)
+					{
+						UE_LOG(LogTemp, Error, TEXT("Shield 생성 실패!"));
+						break;
+					}
+				}
+
 				Shield->Use(this);
 				break;
 			case HEALINGITEM:
@@ -299,7 +345,7 @@ void APlayerCharacter::EquipWeapon(EGunType GunType)
 		break;
 	}
 
-	if(GetWorld()&&GunClass)
+	if (GetWorld() && GunClass)
 	{
 		CurrWeapon = GetWorld()->SpawnActor<AGun>(GunClass);
 		CurrWeapon->SetActorEnableCollision(false);
@@ -586,13 +632,9 @@ void APlayerCharacter::SelectWeapon(const FInputActionValue& Value)
 	int32 SelectInput = Value.Get<float>();
 	TArray<EGunType> GunList = GunManager->GetOwnedGunList();
 
-	if (GunList.Num()<=1)
+	if (GunList.Num() <= 1)
 	{
 		UE_LOG(LogTemp, Warning, TEXT("장착할 수 있는 다른 총이 없습니다."));
-		for (auto a : GunList)
-		{
-			UE_LOG(LogTemp, Warning, TEXT("%d"), a);
-		}
 		return;
 	}
 
@@ -612,6 +654,10 @@ void APlayerCharacter::SelectWeapon(const FInputActionValue& Value)
 	bCanChangeGun = false;
 	GetWorldTimerManager().SetTimer(InputDelayTimerHandle, this, &APlayerCharacter::ResetInput, 2.0f, false);
 }
+
+
+
+
 
 void APlayerCharacter::PickupItem(const FInputActionValue& Value)
 {

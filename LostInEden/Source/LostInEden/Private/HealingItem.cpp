@@ -67,8 +67,15 @@ void AHealingItem::Use(APlayerCharacter* Player)
 
 void AHealingItem::IncrementCount(int32 Amount)
 {
+    if (!this)
+    {
+        UE_LOG(LogTemp, Error, TEXT("IncrementCount(): AHealingItem 객체가 nullptr입니다!"));
+        return;
+    }
+
     Count += Amount;
 }
+
 
 
 EItemType AHealingItem::GetItemType() const
