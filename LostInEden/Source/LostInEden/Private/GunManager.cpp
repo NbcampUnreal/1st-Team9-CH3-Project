@@ -8,11 +8,8 @@
 
 UGunManager::UGunManager()
 {
-    APistol* Pistol = CreateDefaultSubobject<APistol>(TEXT("Pistol"));
-    ARifle* Rifle = CreateDefaultSubobject<ARifle>(TEXT("Rifle"));
-    AShotgun* Shotgun = CreateDefaultSubobject<AShotgun>(TEXT("Shotgun"));
 
-    OwnedGuns.Add({ EGunType::PISTOL, Pistol->GetCurrentAmmo() });
+	OwnedGuns.Add(EGunType::PISTOL, 500);
     OwnedGuns.Add({ EGunType::RIFLE, 0 });
     OwnedGuns.Add({ EGunType::SHOTGUN, 0 });
 }

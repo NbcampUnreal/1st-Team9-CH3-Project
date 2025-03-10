@@ -69,6 +69,7 @@ protected:
 	AHealingItem* HealPotion;
 
 	// Gun 매니저
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Weapon")
 	UGunManager* GunManager;
 
 	// 현재 장착된 무기 타입과 객체

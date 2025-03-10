@@ -629,31 +629,36 @@ void APlayerCharacter::SelectWeapon(const FInputActionValue& Value)
 		return;
 	}
 
-	int32 SelectInput = Value.Get<float>();
 	TArray<EGunType> GunList = GunManager->GetOwnedGunList();
 
+	// 총이 2개 이상 있어야 교체 가능
 	if (GunList.Num() <= 1)
 	{
 		UE_LOG(LogTemp, Warning, TEXT("장착할 수 있는 다른 총이 없습니다."));
 		return;
 	}
 
-	int32 GunListIdx = GunList.Find(CurrWeapon->GetGunType()) + SelectInput;
-	int32 LastIdx = GunList.Num() - 1;
-
-	if (GunListIdx < 0)
+	// 현재 무기의 인덱스 찾기
+	int32 CurrentIndex = GunList.Find(CurrWeapon->GetGunType());
+	if (CurrentIndex == INDEX_NONE)
 	{
-		GunListIdx = LastIdx;
-	}
-	else if (GunListIdx > LastIdx)
-	{
-		GunListIdx = 0;
+		// 현재 무기가 GunList에 없다면, 일단 0으로 설정
+		CurrentIndex = 0;
 	}
 
-	EquipWeapon(GunList[GunListIdx]);
+	// 입력값 (일반적으로 1이나 -1을 기대)
+	int32 Direction = FMath::RoundToInt(Value.Get<float>());
+
+	// 새 인덱스 계산: (현재 인덱스 + 방향 + 전체개수) % 전체개수
+	int32 NextIndex = (CurrentIndex + Direction + GunList.Num()) % GunList.Num();
+
+	// 새 인덱스 무기 장착
+	EquipWeapon(GunList[NextIndex]);
+
 	bCanChangeGun = false;
 	GetWorldTimerManager().SetTimer(InputDelayTimerHandle, this, &APlayerCharacter::ResetInput, 2.0f, false);
 }
+
 
 
 
