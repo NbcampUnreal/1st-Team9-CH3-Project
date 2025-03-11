@@ -173,17 +173,17 @@
     <ClCompile Include="..\..\Source\LostInEden\Private\TestCharacter.cpp">
       <Filter>Source\LostInEden\Private</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\Source\LostInEden\Private\EdenGameState.cpp">
-      <Filter>Source\LostInEden\Private\GameMode</Filter>
-    </ClCompile>
     <ClCompile Include="..\..\Source\LostInEden\Private\EdenGameMode.cpp">
-      <Filter>Source\LostInEden\Private\GameMode</Filter>
+      <Filter>Source\LostInEden\Private</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Source\LostInEden\Private\EdenGameState.cpp">
+      <Filter>Source\LostInEden\Private</Filter>
     </ClCompile>
     <ClCompile Include="..\..\Source\LostInEden\Private\TitleGameMode.cpp">
-      <Filter>Source\LostInEden\Private\GameMode</Filter>
+      <Filter>Source\LostInEden\Private</Filter>
     </ClCompile>
     <ClCompile Include="..\..\Source\LostInEden\Private\TitleGameState.cpp">
-      <Filter>Source\LostInEden\Private\GameMode</Filter>
+      <Filter>Source\LostInEden\Private</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -302,24 +302,16 @@
       <Filter>Source\LostInEden\Public</Filter>
     </ClInclude>
     <ClInclude Include="..\..\Source\LostInEden\Public\EdenGameMode.h">
-      <Filter>Source\LostInEden\Public\GameMode</Filter>
+      <Filter>Source\LostInEden\Public</Filter>
     </ClInclude>
     <ClInclude Include="..\..\Source\LostInEden\Public\EdenGameState.h">
-      <Filter>Source\LostInEden\Public\GameMode</Filter>
+      <Filter>Source\LostInEden\Public</Filter>
     </ClInclude>
     <ClInclude Include="..\..\Source\LostInEden\Public\TitleGameMode.h">
-      <Filter>Source\LostInEden\Public\GameMode</Filter>
+      <Filter>Source\LostInEden\Public</Filter>
     </ClInclude>
     <ClInclude Include="..\..\Source\LostInEden\Public\TitleGameState.h">
-      <Filter>Source\LostInEden\Public\GameMode</Filter>
+      <Filter>Source\LostInEden\Public</Filter>
     </ClInclude>
-  </ItemGroup>
-  <ItemGroup>
-    <Filter Include="Source\LostInEden\Private\GameMode">
-      <UniqueIdentifier>{f0bca56d-2dfb-4f42-a368-14b2b62e642f}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Source\LostInEden\Public\GameMode">
-      <UniqueIdentifier>{5a74d78c-0819-42da-a1b3-57835a9fe6e5}</UniqueIdentifier>
-    </Filter>
   </ItemGroup>
 </Project>
