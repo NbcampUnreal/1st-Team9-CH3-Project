@@ -1,0 +1,322 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="17.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <None Include="..\..\LostInEden.uproject" />
+    <Filter Include="Source">
+      <UniqueIdentifier>{F31BBDD1-B3E8-3BCC-9652-680E16935819}</UniqueIdentifier>
+    </Filter>
+    <None Include="..\..\Source\LostInEden.Target.cs">
+      <Filter>Source</Filter>
+    </None>
+    <None Include="..\..\Source\LostInEdenEditor.Target.cs">
+      <Filter>Source</Filter>
+    </None>
+    <None Include="..\..\.vsconfig" />
+    <Filter Include="Config">
+      <UniqueIdentifier>{FA535FFB-25E1-3D20-B416-52F9BE21E06E}</UniqueIdentifier>
+    </Filter>
+    <None Include="..\..\Config\DefaultEditor.ini">
+      <Filter>Config</Filter>
+    </None>
+    <None Include="..\..\Config\DefaultEngine.ini">
+      <Filter>Config</Filter>
+    </None>
+    <None Include="..\..\Config\DefaultGame.ini">
+      <Filter>Config</Filter>
+    </None>
+    <None Include="..\..\Config\DefaultInput.ini">
+      <Filter>Config</Filter>
+    </None>
+    <Filter Include="Source\LostInEden">
+      <UniqueIdentifier>{44135321-E16E-3029-83FC-AC0F7CDCD540}</UniqueIdentifier>
+    </Filter>
+    <None Include="..\..\Source\LostInEden\LostInEden.Build.cs">
+      <Filter>Source\LostInEden</Filter>
+    </None>
+    <ClCompile Include="..\..\Source\LostInEden\LostInEden.cpp">
+      <Filter>Source\LostInEden</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Source\LostInEden\LostInEden.h">
+      <Filter>Source\LostInEden</Filter>
+    </ClCompile>
+    <Filter Include="Source\LostInEden\Private">
+      <UniqueIdentifier>{3387D252-4266-30E5-BF5E-C92DB7D67450}</UniqueIdentifier>
+    </Filter>
+    <ClCompile Include="..\..\Source\LostInEden\Private\Item.cpp">
+      <Filter>Source\LostInEden\Private</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Source\LostInEden\Private\TestEnemyAIController.cpp">
+      <Filter>Source\LostInEden\Private</Filter>
+    </ClCompile>
+    <Filter Include="Source\LostInEden\Public">
+      <UniqueIdentifier>{B12052D3-7FB8-36EE-BA30-F6927B64161C}</UniqueIdentifier>
+    </Filter>
+    <ClCompile Include="..\..\Source\LostInEden\Public\Item.h">
+      <Filter>Source\LostInEden\Public</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Source\LostInEden\Public\TestEnemyAIController.h">
+      <Filter>Source\LostInEden\Public</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="..\..\Source\LostInEden\Private\BaseAIController.cpp">
+      <Filter>Source\LostInEden\Private</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Source\LostInEden\Private\BaseEnemyCharacter.cpp">
+      <Filter>Source\LostInEden\Private</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Source\LostInEden\Private\BossPulledObject.cpp">
+      <Filter>Source\LostInEden\Private</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Source\LostInEden\Private\Bullet.cpp">
+      <Filter>Source\LostInEden\Private</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Source\LostInEden\Private\BulletData.cpp">
+      <Filter>Source\LostInEden\Private</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Source\LostInEden\Private\Chest.cpp">
+      <Filter>Source\LostInEden\Private</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Source\LostInEden\Private\EdenGameInstance.cpp">
+      <Filter>Source\LostInEden\Private</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Source\LostInEden\Private\EdenObjectPool.cpp">
+      <Filter>Source\LostInEden\Private</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Source\LostInEden\Private\EnemyAIController.cpp">
+      <Filter>Source\LostInEden\Private</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Source\LostInEden\Private\EnemyCharacter.cpp">
+      <Filter>Source\LostInEden\Private</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Source\LostInEden\Private\Entity.cpp">
+      <Filter>Source\LostInEden\Private</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Source\LostInEden\Private\GlobalEnum.cpp">
+      <Filter>Source\LostInEden\Private</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Source\LostInEden\Private\Gun.cpp">
+      <Filter>Source\LostInEden\Private</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Source\LostInEden\Private\GunManager.cpp">
+      <Filter>Source\LostInEden\Private</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Source\LostInEden\Private\HealingItem.cpp">
+      <Filter>Source\LostInEden\Private</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Source\LostInEden\Private\IEnemyAI.cpp">
+      <Filter>Source\LostInEden\Private</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Source\LostInEden\Private\IFireable.cpp">
+      <Filter>Source\LostInEden\Private</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Source\LostInEden\Private\ItemSpawnRow.cpp">
+      <Filter>Source\LostInEden\Private</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Source\LostInEden\Private\IUsable.cpp">
+      <Filter>Source\LostInEden\Private</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Source\LostInEden\Private\LootDrop.cpp">
+      <Filter>Source\LostInEden\Private</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Source\LostInEden\Private\LostInEden.cpp">
+      <Filter>Source\LostInEden\Private</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Source\LostInEden\Private\Magazine.cpp">
+      <Filter>Source\LostInEden\Private</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Source\LostInEden\Private\MainPlayerController.cpp">
+      <Filter>Source\LostInEden\Private</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Source\LostInEden\Private\MyGameModeBase.cpp">
+      <Filter>Source\LostInEden\Private</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Source\LostInEden\Private\ParentGameState.cpp">
+      <Filter>Source\LostInEden\Private</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Source\LostInEden\Private\PatrolPath.cpp">
+      <Filter>Source\LostInEden\Private</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Source\LostInEden\Private\Pistol.cpp">
+      <Filter>Source\LostInEden\Private</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Source\LostInEden\Private\PistolMagazine.cpp">
+      <Filter>Source\LostInEden\Private</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Source\LostInEden\Private\PlayerCharacter.cpp">
+      <Filter>Source\LostInEden\Private</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Source\LostInEden\Private\PlayerHUD.cpp">
+      <Filter>Source\LostInEden\Private</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Source\LostInEden\Private\PlayerHUDWidget.cpp">
+      <Filter>Source\LostInEden\Private</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Source\LostInEden\Private\Rifle.cpp">
+      <Filter>Source\LostInEden\Private</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Source\LostInEden\Private\RifleMagazine.cpp">
+      <Filter>Source\LostInEden\Private</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Source\LostInEden\Private\Shield.cpp">
+      <Filter>Source\LostInEden\Private</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Source\LostInEden\Private\Shotgun.cpp">
+      <Filter>Source\LostInEden\Private</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Source\LostInEden\Private\ShotgunMagazine.cpp">
+      <Filter>Source\LostInEden\Private</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Source\LostInEden\Private\SpawnVolume.cpp">
+      <Filter>Source\LostInEden\Private</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Source\LostInEden\Private\TestCharacter.cpp">
+      <Filter>Source\LostInEden\Private</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Source\LostInEden\Private\EdenGameState.cpp">
+      <Filter>Source\LostInEden\Private\GameMode</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Source\LostInEden\Private\EdenGameMode.cpp">
+      <Filter>Source\LostInEden\Private\GameMode</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Source\LostInEden\Private\TitleGameMode.cpp">
+      <Filter>Source\LostInEden\Private\GameMode</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Source\LostInEden\Private\TitleGameState.cpp">
+      <Filter>Source\LostInEden\Private\GameMode</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="..\..\Source\LostInEden\Public\BaseAIController.h">
+      <Filter>Source\LostInEden\Public</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Source\LostInEden\Public\BaseEnemyCharacter.h">
+      <Filter>Source\LostInEden\Public</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Source\LostInEden\Public\BossPulledObject.h">
+      <Filter>Source\LostInEden\Public</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Source\LostInEden\Public\Bullet.h">
+      <Filter>Source\LostInEden\Public</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Source\LostInEden\Public\BulletData.h">
+      <Filter>Source\LostInEden\Public</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Source\LostInEden\Public\Chest.h">
+      <Filter>Source\LostInEden\Public</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Source\LostInEden\Public\EdenGameInstance.h">
+      <Filter>Source\LostInEden\Public</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Source\LostInEden\Public\EdenGameMode.h">
+      <Filter>Source\LostInEden\Public</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Source\LostInEden\Public\EdenGameState.h">
+      <Filter>Source\LostInEden\Public</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Source\LostInEden\Public\EdenObjectPool.h">
+      <Filter>Source\LostInEden\Public</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Source\LostInEden\Public\EnemyAIController.h">
+      <Filter>Source\LostInEden\Public</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Source\LostInEden\Public\EnemyCharacter.h">
+      <Filter>Source\LostInEden\Public</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Source\LostInEden\Public\Entity.h">
+      <Filter>Source\LostInEden\Public</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Source\LostInEden\Public\GlobalEnum.h">
+      <Filter>Source\LostInEden\Public</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Source\LostInEden\Public\Gun.h">
+      <Filter>Source\LostInEden\Public</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Source\LostInEden\Public\GunManager.h">
+      <Filter>Source\LostInEden\Public</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Source\LostInEden\Public\HealingItem.h">
+      <Filter>Source\LostInEden\Public</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Source\LostInEden\Public\IEnemyAI.h">
+      <Filter>Source\LostInEden\Public</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Source\LostInEden\Public\IFireable.h">
+      <Filter>Source\LostInEden\Public</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Source\LostInEden\Public\ItemSpawnRow.h">
+      <Filter>Source\LostInEden\Public</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Source\LostInEden\Public\IUsable.h">
+      <Filter>Source\LostInEden\Public</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Source\LostInEden\Public\LootDrop.h">
+      <Filter>Source\LostInEden\Public</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Source\LostInEden\Public\LostInEden.h">
+      <Filter>Source\LostInEden\Public</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Source\LostInEden\Public\Magazine.h">
+      <Filter>Source\LostInEden\Public</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Source\LostInEden\Public\MainPlayerController.h">
+      <Filter>Source\LostInEden\Public</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Source\LostInEden\Public\MyGameModeBase.h">
+      <Filter>Source\LostInEden\Public</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Source\LostInEden\Public\ParentGameState.h">
+      <Filter>Source\LostInEden\Public</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Source\LostInEden\Public\PatrolPath.h">
+      <Filter>Source\LostInEden\Public</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Source\LostInEden\Public\Pistol.h">
+      <Filter>Source\LostInEden\Public</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Source\LostInEden\Public\PistolMagazine.h">
+      <Filter>Source\LostInEden\Public</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Source\LostInEden\Public\PlayerCharacter.h">
+      <Filter>Source\LostInEden\Public</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Source\LostInEden\Public\PlayerHUD.h">
+      <Filter>Source\LostInEden\Public</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Source\LostInEden\Public\PlayerHUDWidget.h">
+      <Filter>Source\LostInEden\Public</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Source\LostInEden\Public\Rifle.h">
+      <Filter>Source\LostInEden\Public</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Source\LostInEden\Public\RifleMagazine.h">
+      <Filter>Source\LostInEden\Public</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Source\LostInEden\Public\Shield.h">
+      <Filter>Source\LostInEden\Public</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Source\LostInEden\Public\Shotgun.h">
+      <Filter>Source\LostInEden\Public</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Source\LostInEden\Public\ShotgunMagazine.h">
+      <Filter>Source\LostInEden\Public</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Source\LostInEden\Public\SpawnVolume.h">
+      <Filter>Source\LostInEden\Public</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Source\LostInEden\Public\TestCharacter.h">
+      <Filter>Source\LostInEden\Public</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Source\LostInEden\Public\TitleGameMode.h">
+      <Filter>Source\LostInEden\Public</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Source\LostInEden\Public\TitleGameState.h">
+      <Filter>Source\LostInEden\Public</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <Filter Include="Source\LostInEden\Private\GameMode">
+      <UniqueIdentifier>{f0bca56d-2dfb-4f42-a368-14b2b62e642f}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+</Project>
