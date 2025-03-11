@@ -77,9 +77,9 @@ void AEdenGameState::OnGameClear()
 		if (GameClearWidget)
 		{
 			GameClearWidget->AddToViewport();
-			PC->SetShowMouseCursor(true);
+			//PC->SetShowMouseCursor(true);
 			//PC->SetInputMode(FInputModeUIOnly());
-			UGameplayStatics::SetGamePaused(GetWorld(), true);
+			//UGameplayStatics::SetGamePaused(GetWorld(), true);
 		}
 	}
 

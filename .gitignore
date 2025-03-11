@@ -23,3 +23,6 @@ Saved/
 # Visual Studio cache
 .vs/
 *.ipch
+
+# 예외적으로 .vcxproj.filters 파일은 추적
+!Intermediate/**/*.vcxproj.filters
