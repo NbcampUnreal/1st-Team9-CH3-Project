@@ -34,4 +34,6 @@ public:
 
     UPROPERTY(EditDefaultsOnly, Category = "Healing|Material")
     UMaterialInterface* OutlineMaterial;
+    UPROPERTY(EditDefaultsOnly, Category = "Sound")
+    USoundBase* HealingSound;
 };

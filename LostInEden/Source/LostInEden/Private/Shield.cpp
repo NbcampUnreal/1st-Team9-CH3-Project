@@ -1,5 +1,6 @@
 #include "Shield.h"
 #include "PlayerCharacter.h"
+#include "Kismet/GameplayStatics.h"
 
 AShield::AShield()
 {
@@ -25,18 +26,31 @@ AShield::AShield()
     {
         OutlineMaterial = OutlineMat.Object;
     }
+
+    static ConstructorHelpers::FObjectFinder<USoundBase> SoundObj(TEXT("/Game/Interface_And_Item_Sounds/Cues/Item_Sell_Purchase_05_Cue.Item_Sell_Purchase_05_Cue"));
+    if (SoundObj.Succeeded())
+    {
+        ShieldSound = SoundObj.Object;
+    }
 }
 
 void AShield::Use(APlayerCharacter* Player)
 {
-    if (Player) 
+    if (Player)
     {
         int32 NewShieldValue = Player->GetShieldGauge() + ShieldAmount;
         NewShieldValue = FMath::Clamp(NewShieldValue, 0, Player->GetMaxShieldGauge());
         Player->SetShieldGauge(NewShieldValue);
+
         UE_LOG(LogTemp, Display, TEXT("쉴드 게이지 %d"), Player->GetMaxShieldGauge());
+
+        if (ShieldSound)
+        {
+            UGameplayStatics::PlaySoundAtLocation(this, ShieldSound, GetActorLocation());
+        }
     }
 }
+
 
 void AShield::Tick(float DeltaTime)
 {

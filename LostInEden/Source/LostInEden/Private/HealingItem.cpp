@@ -3,6 +3,7 @@
 #include "Components/StaticMeshComponent.h"
 #include "Materials/MaterialInstanceDynamic.h"
 #include "UObject/ConstructorHelpers.h"
+#include "Kismet/GameplayStatics.h"
 
 AHealingItem::AHealingItem()
 {
@@ -28,6 +29,12 @@ AHealingItem::AHealingItem()
     if (OutlineMat.Succeeded())
     {
         OutlineMaterial = OutlineMat.Object;
+    }
+
+    static ConstructorHelpers::FObjectFinder<USoundBase> SoundObj(TEXT("/Game/Interface_And_Item_Sounds/Cues/Item_Sell_Purchase_03_Cue.Item_Sell_Purchase_03_Cue"));
+    if (SoundObj.Succeeded())
+    {
+        HealingSound = SoundObj.Object;
     }
 }
 
@@ -59,12 +66,17 @@ void AHealingItem::Use(APlayerCharacter* Player)
         int32 NewHealth = Player->GetHealth() + HealAmount;
         NewHealth = FMath::Clamp(NewHealth, 0, Player->GetMaxHealth());
         Player->SetHealth(NewHealth);
+
         UE_LOG(LogTemp, Display, TEXT("체력 게이지 %d"), Player->GetMaxHealth());
 
         Count--;
+
+        if (HealingSound)
+        {
+            UGameplayStatics::PlaySoundAtLocation(this, HealingSound, GetActorLocation());
+        }
     }
 }
-
 void AHealingItem::IncrementCount(int32 Amount)
 {
     if (!this)

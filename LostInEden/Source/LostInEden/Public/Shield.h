@@ -30,4 +30,7 @@ private:
     UMaterialInterface* OutlineMaterial;
 
     void ApplyOutlineMaterial();
+
+    UPROPERTY(EditDefaultsOnly, Category = "Sound")
+    USoundBase* ShieldSound;
 };
