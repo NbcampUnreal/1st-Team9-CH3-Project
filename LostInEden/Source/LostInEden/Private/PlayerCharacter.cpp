@@ -53,8 +53,19 @@ APlayerCharacter::APlayerCharacter()
 	ShieldGauge = 0;
 
 	// 건 매니저 생성
-	GunManager = CreateDefaultSubobject<UGunManager>(TEXT("GunManager"));
 	CurrWeapon = nullptr;
+
+	ZoomInSound = LoadObject<USoundBase>(GetTransientPackage(), TEXT("/Game/Sounds/Lyra_ZoomIn_01.Lyra_ZoomIn_01"));
+	if (ZoomInSound)
+	{
+		UE_LOG(LogTemp, Warning, TEXT("줌인 사운드 로드 완료!"));
+	}
+	
+	ZoomOutSound = LoadObject<USoundBase>(GetTransientPackage(), TEXT("/Game/Sounds/Lyra_ZoomOut_01.Lyra_ZoomOut_01"));
+	if (ZoomOutSound)
+	{
+		UE_LOG(LogTemp, Warning, TEXT("줌아웃 사운드 로드 완료!"));
+	}
 
 	bIsDead = false;
 	bCanChangeGun = true;
@@ -64,13 +75,18 @@ void APlayerCharacter::BeginPlay()
 {
 	Super::BeginPlay();
 
+	//건매니저 생성
+	if (!GunManager)
+	{
+		GunManager = NewObject<UGunManager>(this);
+	}
+
+	//기본 권총 장착
 	EquipWeapon(EGunType::PISTOL);
 
 	HealPotion = GetWorld()->SpawnActor<AHealingItem>(AHealingItem::StaticClass());
 	Shield = GetWorld()->SpawnActor<AShield>(AShield::StaticClass());
 }
-
-
 
 void APlayerCharacter::SetHealth(int32 HealthAmount)
 {
@@ -173,7 +189,7 @@ float APlayerCharacter::TakeDamage(float DamageAmount, FDamageEvent const& Damag
 	{
 		bIsDead = true;
 		DisableInput(Cast<APlayerController>(GetController()));
-		Die();
+		GetWorldTimerManager().SetTimer(DelayDieState, this, &APlayerCharacter::Die, 2.5f, false);
 	}
 
 	return Damage;
@@ -231,6 +247,22 @@ void APlayerCharacter::ReloadAmmo()
 	}
 }
 
+void APlayerCharacter::PlayZoomInSound()
+{
+	if (ZoomInSound)
+	{
+		UGameplayStatics::PlaySound2D(this, ZoomInSound);
+	}
+}
+
+void APlayerCharacter::PlayZoomOutSound()
+{
+	if (ZoomOutSound)
+	{
+		UGameplayStatics::PlaySound2D(this, ZoomOutSound);
+	}
+}
+
 void APlayerCharacter::UseItem()
 {
 	if (!HealPotion)
@@ -254,6 +286,11 @@ void APlayerCharacter::UseItem()
 void APlayerCharacter::AddItem(AItem* Item)
 {
 	AGun* Gun = Cast<AGun>(Item);
+	if (!GunManager)
+	{
+		UE_LOG(LogTemp, Error, TEXT("건매니저 없음!! - AddItem"));
+		return;
+	}
 	if (Gun)
 	{
 		TArray<EGunType> GunList = GunManager->GetOwnedGunList();
@@ -306,7 +343,6 @@ void APlayerCharacter::AddItem(AItem* Item)
 						break;
 					}
 				}
-
 				Shield->Use(this);
 				break;
 			case HEALINGITEM:
@@ -322,6 +358,12 @@ void APlayerCharacter::AddItem(AItem* Item)
 void APlayerCharacter::EquipWeapon(EGunType GunType)
 {
 	UClass* GunClass = nullptr;
+
+	if (!GunManager)
+	{
+		UE_LOG(LogTemp, Error, TEXT("건매니저 없음!! - EquipWeapon"));
+		return;
+	}
 
 	if (CurrWeapon)
 	{
@@ -368,7 +410,7 @@ void APlayerCharacter::EquipWeapon(EGunType GunType)
 		default:
 			break;
 		}
-
+		
 		if (GetMesh()->DoesSocketExist(GunSocketName))
 		{
 			CurrWeapon->AttachToComponent(GetMesh(),
@@ -545,6 +587,23 @@ void APlayerCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputCom
 					&APlayerCharacter::UseItem
 				);
 			}
+
+			if (PlayerController->ZoomAction)
+			{
+				EnhancedInput->BindAction(
+					PlayerController->ZoomAction,
+					ETriggerEvent::Started,
+					this,
+					&APlayerCharacter::PlayZoomInSound
+				);
+
+				EnhancedInput->BindAction(
+					PlayerController->ZoomAction,
+					ETriggerEvent::Completed,
+					this,
+					&APlayerCharacter::PlayZoomOutSound
+				);
+			}
 		}
 	}
 }
@@ -628,6 +687,11 @@ void APlayerCharacter::SelectWeapon(const FInputActionValue& Value)
 		UE_LOG(LogTemp, Warning, TEXT("can't change gun!!"));
 		return;
 	}
+	if (!GunManager)
+	{
+		UE_LOG(LogTemp, Error, TEXT("건매니저 없음!! - SelectWeapon"));
+		return;
+	}
 
 	TArray<EGunType> GunList = GunManager->GetOwnedGunList();
 
@@ -658,11 +722,6 @@ void APlayerCharacter::SelectWeapon(const FInputActionValue& Value)
 	bCanChangeGun = false;
 	GetWorldTimerManager().SetTimer(InputDelayTimerHandle, this, &APlayerCharacter::ResetInput, 2.0f, false);
 }
-
-
-
-
-
 
 void APlayerCharacter::PickupItem(const FInputActionValue& Value)
 {

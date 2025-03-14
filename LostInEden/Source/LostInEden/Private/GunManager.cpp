@@ -39,3 +39,8 @@ void UGunManager::SetCurrentGun(AGun* NextGun)
 	}
 }
 
+UGunManager::~UGunManager()
+{
+	UE_LOG(LogTemp, Error, TEXT("건매니저 사라짐!!!!!"));
+}
+

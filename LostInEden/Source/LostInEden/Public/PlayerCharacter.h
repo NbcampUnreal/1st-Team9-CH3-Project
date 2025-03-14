@@ -13,6 +13,7 @@ class AItem;
 class UGunManager;
 class AHealingItem;
 class AShield;
+class USoundBase;
 
 UCLASS()
 class LOSTINEDEN_API APlayerCharacter : public AEntity
@@ -85,6 +86,10 @@ protected:
 	bool bCanChangeGun;
 
 	FTimerHandle InputDelayTimerHandle;
+	FTimerHandle DelayDieState;
+
+	USoundBase* ZoomInSound;
+	USoundBase* ZoomOutSound;
 
 	// 카메라 관련 컴포넌트
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Component|Camera")
@@ -134,6 +139,10 @@ public:
 	// 총 재장전
 	void ReloadAmmo();
 
+	// 줌 인/아웃 사운드 재생
+	void PlayZoomInSound();
+	void PlayZoomOutSound();
+
 	// 아이템 사용
 	void UseItem();
 	// 아이템 추가
@@ -145,7 +154,9 @@ public:
 	// 무기 스왑시 타이머 세팅값 바꾸기
 	void ResetInput();
 
+	// 플레이어가 죽었을 때
 	void Die();
 
+	// 플레이어의 상태가 변화했을 때 UI 업데이트
 	void UpdateUI();
 };

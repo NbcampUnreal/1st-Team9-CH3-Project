@@ -24,4 +24,6 @@ public:
 
 	void UpdateGunData(AGun*);
 	void SetCurrentGun(AGun*);
+
+	~UGunManager();
 };

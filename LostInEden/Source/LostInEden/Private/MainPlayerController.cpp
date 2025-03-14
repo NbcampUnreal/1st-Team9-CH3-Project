@@ -19,7 +19,8 @@ AMainPlayerController::AMainPlayerController():
 	ReloadAction(nullptr),
 	ChangeGunAction(nullptr),
 	PickupAction(nullptr),
-	UseItemAction(nullptr)
+	UseItemAction(nullptr),
+	ZoomAction(nullptr)
 {
 }
 
