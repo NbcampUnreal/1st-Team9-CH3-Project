@@ -197,6 +197,7 @@ float APlayerCharacter::TakeDamage(float DamageAmount, FDamageEvent const& Damag
 
 void APlayerCharacter::StartAttack()
 {
+	bCanChangeGun = false;
 	UE_LOG(LogTemp, Warning, TEXT("Gun Fire!!"));
 
 	if (CurrWeapon)
@@ -213,9 +214,6 @@ void APlayerCharacter::StartAttack()
 	}
 
 	UpdateUI();
-
-	// 공격 도중에도 무기 변경 가능하게 유지
-	bCanChangeGun = true;
 }
 
 void APlayerCharacter::StopAttack()
@@ -395,21 +393,9 @@ void APlayerCharacter::EquipWeapon(EGunType GunType)
 
 	if (CurrWeapon)
 	{
-		FName GunSocketName;
-		switch (GunType)
-		{
-		case PISTOL:
-			GunSocketName = "Pistol_Socket";
-			break;
-		case RIFLE:
-			GunSocketName = "Rifle_Socket";
-			break;
-		case SHOTGUN:
-			GunSocketName = "Shotgun_Socket";
-			break;
-		default:
-			break;
-		}
+		FName GunSocketName = (GunType == PISTOL) ? FName("Pistol_Socket") :
+							  (GunType == RIFLE) ? FName("Rifle_Socket") :
+							  (GunType == SHOTGUN) ? FName("Shotgun_Socket") : NAME_None;
 		
 		if (GetMesh()->DoesSocketExist(GunSocketName))
 		{
