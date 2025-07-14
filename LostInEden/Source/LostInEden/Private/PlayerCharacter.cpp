@@ -168,7 +168,7 @@ void APlayerCharacter::ChangeState(EPlayerStatus State)
 
 float APlayerCharacter::TakeDamage(float DamageAmount, FDamageEvent const& DamageEvent, AController* EventInstigator, AActor* DamageCauser)
 {
-	float Damage = DamageAmount;
+	float Damage = 0;
 
 	if (ShieldGauge > 0)
 	{
@@ -179,6 +179,10 @@ float APlayerCharacter::TakeDamage(float DamageAmount, FDamageEvent const& Damag
 			Damage = ShieldGauge * -1;
 			ShieldGauge = 0;
 		}
+	}
+	else
+	{
+		Damage = DamageAmount;
 	}
 
 	Super::TakeDamage(Damage, DamageEvent, EventInstigator, DamageCauser);
