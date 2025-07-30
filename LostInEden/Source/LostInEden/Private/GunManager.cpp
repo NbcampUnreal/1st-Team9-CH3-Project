@@ -15,11 +15,13 @@ UGunManager::UGunManager()
     OwnedGuns.Add({ EGunType::SHOTGUN, 0 });
 }
 
-const TArray<EGunType>& UGunManager::GetOwnedGunList() const
+const TArray<EGunType>& UGunManager::GetOwnedGunList()
 {
 	if (bGunListCacheDirty)
 	{
-		UpdateGunListCache();
+		CachedGunList.Empty();
+		OwnedGuns.GenerateKeyArray(CachedGunList);
+		bGunListCacheDirty = false;
 	}
 	return CachedGunList;
 }
@@ -51,13 +53,6 @@ bool UGunManager::HasGun(EGunType GunType) const
 int32 UGunManager::GetGunCnt() const
 {
 	return OwnedGuns.Num();
-}
-
-void UGunManager::UpdateGunListCache() const
-{
-	CachedGunList.Empty();
-	OwnedGuns.GenerateKeyArray(CachedGunList);
-	bGunListCacheDirty = false;
 }
 
 UGunManager::~UGunManager()

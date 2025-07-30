@@ -17,13 +17,13 @@ class LOSTINEDEN_API UGunManager : public UActorComponent
 protected:
 	TMap<EGunType, int32> OwnedGuns;
 
-	mutable TArray<EGunType> CachedGunList;
-	mutable bool bGunListCacheDirty = true;
+	TArray<EGunType> CachedGunList;
+	bool bGunListCacheDirty = true;
 
 public:
 	UGunManager();
 
-	const TArray<EGunType>& GetOwnedGunList() const;
+	const TArray<EGunType>& GetOwnedGunList();
 
 	void UpdateGunData(const AGun&);
 	void SetCurrentGun(AGun&);
@@ -32,7 +32,5 @@ public:
 	int32 GetGunCnt() const;
 
 private:
-	void UpdateGunListCache() const;
-
 	~UGunManager();
 };
