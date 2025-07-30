@@ -15,29 +15,49 @@ UGunManager::UGunManager()
     OwnedGuns.Add({ EGunType::SHOTGUN, 0 });
 }
 
-TArray<EGunType> UGunManager::GetOwnedGunList() const
+const TArray<EGunType>& UGunManager::GetOwnedGunList() const
 {
-    TArray<EGunType> KeyArray;
-    OwnedGuns.GenerateKeyArray(KeyArray);
-    return KeyArray;
-}
-
-
-void UGunManager::UpdateGunData(AGun* CurrGun)
-{
-	OwnedGuns.Add({ CurrGun->GetGunType(), CurrGun->GetCurrentAmmo() });
-}
-
-void UGunManager::SetCurrentGun(AGun* NextGun)
-{
-	if (int32* Ammo = OwnedGuns.Find(NextGun->GetGunType()))
+	if (bGunListCacheDirty)
 	{
-		NextGun->SetCurrentAmmo(*Ammo);
+		UpdateGunListCache();
+	}
+	return CachedGunList;
+}
+
+
+void UGunManager::UpdateGunData(const AGun& CurrGun)
+{
+	OwnedGuns.Add(CurrGun.GetGunType(), CurrGun.GetCurrentAmmo());
+	bGunListCacheDirty = true;
+}
+
+void UGunManager::SetCurrentGun(AGun& NextGun)
+{
+	if (int32* Ammo = OwnedGuns.Find(NextGun.GetGunType()))
+	{
+		NextGun.SetCurrentAmmo(*Ammo);
 	}
 	else
 	{
 		UE_LOG(LogTemp, Warning, TEXT("해당 무기 인벤토리에 존재하지 않음!"));
 	}
+}
+
+bool UGunManager::HasGun(EGunType GunType) const
+{
+	return OwnedGuns.Contains(GunType);
+}
+
+int32 UGunManager::GetGunCnt() const
+{
+	return OwnedGuns.Num();
+}
+
+void UGunManager::UpdateGunListCache() const
+{
+	CachedGunList.Empty();
+	OwnedGuns.GenerateKeyArray(CachedGunList);
+	bGunListCacheDirty = false;
 }
 
 UGunManager::~UGunManager()

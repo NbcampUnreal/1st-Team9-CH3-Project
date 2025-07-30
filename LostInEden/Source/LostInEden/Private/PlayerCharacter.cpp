@@ -290,7 +290,7 @@ void APlayerCharacter::AddItem(AItem* Item)
 	}
 	if (Gun)
 	{
-		TArray<EGunType> GunList = GunManager->GetOwnedGunList();
+		const TArray<EGunType>& GunList = GunManager->GetOwnedGunList();
 
 		if (GunList.Find(Gun->GetGunType()) != INDEX_NONE)
 		{
@@ -299,15 +299,7 @@ void APlayerCharacter::AddItem(AItem* Item)
 		}
 
 		UE_LOG(LogTemp, Warning, TEXT("새로운 총 획득: %d"), Gun->GetGunType());
-		GunManager->UpdateGunData(Gun); // 무기 데이터 업데이트
-
-		// 보유한 총 리스트 다시 확인
-		GunList = GunManager->GetOwnedGunList();
-		UE_LOG(LogTemp, Warning, TEXT("업데이트 후 보유한 총 리스트:"));
-		for (auto GunType : GunList)
-		{
-			UE_LOG(LogTemp, Warning, TEXT("GunType: %d"), GunType);
-		}
+		GunManager->UpdateGunData(*Gun); // 무기 데이터 업데이트
 	}
 	else
 	{
@@ -364,7 +356,7 @@ void APlayerCharacter::EquipWeapon(EGunType GunType)
 
 	if (CurrWeapon)
 	{
-		GunManager->UpdateGunData(CurrWeapon);
+		GunManager->UpdateGunData(*CurrWeapon);
 		CurrWeapon->Destroy();
 		CurrWeapon = nullptr;
 	}
@@ -403,7 +395,7 @@ void APlayerCharacter::EquipWeapon(EGunType GunType)
 				GunSocketName);
 		}
 		CurrWeapon->SetOwner(this);
-		GunManager->SetCurrentGun(CurrWeapon);
+		GunManager->SetCurrentGun(*CurrWeapon);
 		UpdateUI();
 	}
 }
@@ -678,7 +670,7 @@ void APlayerCharacter::SelectWeapon(const FInputActionValue& Value)
 		return;
 	}
 
-	TArray<EGunType> GunList = GunManager->GetOwnedGunList();
+	const TArray<EGunType>& GunList = GunManager->GetOwnedGunList();
 
 	// 총이 2개 이상 있어야 교체 가능
 	if (GunList.Num() <= 1)
