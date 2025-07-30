@@ -31,6 +31,8 @@ APlayerCharacter::APlayerCharacter()
 	Camera->SetupAttachment(SpringArm);
 	Camera->bUsePawnControlRotation = false;
 
+	GunManager = CreateDefaultSubobject<UGunManager>(TEXT("GunManager"));
+
 	// 드롭된 아이템을 인식하기 위한 충돌 박스
 	BoxCollisionComp = CreateDefaultSubobject<UBoxComponent>(TEXT("BoxCollision"));
 	BoxCollisionComp->SetupAttachment(RootComponent);
@@ -52,7 +54,6 @@ APlayerCharacter::APlayerCharacter()
 	MaxShieldGauge = 50;
 	ShieldGauge = 0;
 
-	// 건 매니저 생성
 	CurrWeapon = nullptr;
 
 	ZoomInSound = LoadObject<USoundBase>(GetTransientPackage(), TEXT("/Game/Sounds/Lyra_ZoomIn_01.Lyra_ZoomIn_01"));
@@ -74,12 +75,6 @@ APlayerCharacter::APlayerCharacter()
 void APlayerCharacter::BeginPlay()
 {
 	Super::BeginPlay();
-
-	//건매니저 생성
-	if (!GunManager)
-	{
-		GunManager = NewObject<UGunManager>(this);
-	}
 
 	//기본 권총 장착
 	EquipWeapon(EGunType::PISTOL);

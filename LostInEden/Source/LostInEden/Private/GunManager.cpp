@@ -8,6 +8,7 @@
 
 UGunManager::UGunManager()
 {
+	PrimaryComponentTick.bCanEverTick = false;
 
 	OwnedGuns.Add(EGunType::PISTOL, 500);
     OwnedGuns.Add({ EGunType::RIFLE, 0 });

@@ -3,14 +3,14 @@
 #pragma once
 
 #include "CoreMinimal.h"
+#include "Components/ActorComponent.h"
 #include "GlobalEnum.h"
-#include "UObject/NoExportTypes.h"
 #include "GunManager.generated.h"
 
 class AGun;
 
-UCLASS()
-class LOSTINEDEN_API UGunManager : public UObject
+UCLASS(ClassGroup = (Custom), meta = (BlueprintSpawnableComponent))
+class LOSTINEDEN_API UGunManager : public UActorComponent
 {
 	GENERATED_BODY()
 
