@@ -10,53 +10,84 @@ UGunManager::UGunManager()
 {
 	PrimaryComponentTick.bCanEverTick = false;
 
-	OwnedGuns.Add(EGunType::PISTOL, 500);
-    OwnedGuns.Add({ EGunType::RIFLE, 0 });
-    OwnedGuns.Add({ EGunType::SHOTGUN, 0 });
+	OwnedWeapons.Add(EGunType::PISTOL);
+
+	//테스트용
+	OwnedWeapons.Add(EGunType::RIFLE);
+	OwnedWeapons.Add(EGunType::SHOTGUN);
 }
 
-const TArray<EGunType>& UGunManager::GetOwnedGunList()
+void UGunManager::BeginPlay()
 {
-	if (bGunListCacheDirty)
+	Super::BeginPlay();
+
+	UWorld* World = GetWorld();
+	if (!World)
 	{
-		CachedGunList.Empty();
-		OwnedGuns.GenerateKeyArray(CachedGunList);
-		bGunListCacheDirty = false;
+		UE_LOG(LogTemp, Error, TEXT("World가 nullptr입니다!"));
+		return;
 	}
-	return CachedGunList;
-}
 
+	TMap<EGunType, UClass*> WeaponClasses = {
+		{EGunType::PISTOL, LoadClass<AGun>(nullptr, TEXT("/Game/Items/Blueprints/BP_Pistol.BP_Pistol_C"))},
+		{EGunType::RIFLE, LoadClass<AGun>(nullptr, TEXT("/Game/Items/Blueprints/BP_Rifle.BP_Rifle_C"))},
+		{EGunType::SHOTGUN, LoadClass<AGun>(nullptr, TEXT("/Game/Items/Blueprints/BP_Shotgun.BP_Shotgun_C"))}
+	};
 
-void UGunManager::UpdateGunData(const AGun& CurrGun)
-{
-	OwnedGuns.Add(CurrGun.GetGunType(), CurrGun.GetCurrentAmmo());
-	bGunListCacheDirty = true;
-}
-
-void UGunManager::SetCurrentGun(AGun& NextGun)
-{
-	if (int32* Ammo = OwnedGuns.Find(NextGun.GetGunType()))
+	for (auto& WeaponPair : WeaponClasses)
 	{
-		NextGun.SetCurrentAmmo(*Ammo);
+		EGunType GunType = WeaponPair.Key;
+		UClass* GunClass = WeaponPair.Value;
+
+		if (GunClass)
+		{
+			AGun* WeaponInstance = World->SpawnActor<AGun>(GunClass);
+			if (WeaponInstance)
+			{
+				WeaponInstance->SetActorHiddenInGame(true);
+				WeaponInstance->SetActorEnableCollision(false);
+
+				WeaponPool.Add(GunType, WeaponInstance);
+				UE_LOG(LogTemp, Warning, TEXT("무기 풀에 추가됨: %d"), GunType);
+			}
+		}
+		else
+		{
+			UE_LOG(LogTemp, Error, TEXT("무기 클래스 로드 실패: %d"), GunType);
+		}
+	}
+}
+
+TArray<EGunType> UGunManager::GetOwnedGunList() const
+{
+	return OwnedWeapons.Array();
+}
+
+AGun* UGunManager::GetWeapon(EGunType GunType) const
+{
+	if (AGun* const* FoundWeapon = WeaponPool.Find(GunType))
+	{
+		return *FoundWeapon;
+	}
+
+	UE_LOG(LogTemp, Warning, TEXT("무기 풀에서 해당 무기를 찾을 수 없음: %d"), GunType);
+	return nullptr;
+}
+
+void UGunManager::AcquireWeapon(EGunType GunType)
+{
+	if (!HasWeapon(GunType))
+	{
+		OwnedWeapons.Add(GunType);
+		UE_LOG(LogTemp, Warning, TEXT("새로운 무기 획득: %d"), GunType);
 	}
 	else
 	{
-		UE_LOG(LogTemp, Warning, TEXT("해당 무기 인벤토리에 존재하지 않음!"));
+		UE_LOG(LogTemp, Warning, TEXT("이미 소지한 무기입니다: %d"), GunType);
 	}
 }
 
-bool UGunManager::HasGun(EGunType GunType) const
+bool UGunManager::HasWeapon(EGunType GunType) const
 {
-	return OwnedGuns.Contains(GunType);
+	return OwnedWeapons.Contains(GunType);
 }
-
-int32 UGunManager::GetGunCnt() const
-{
-	return OwnedGuns.Num();
-}
-
-UGunManager::~UGunManager()
-{
-	UE_LOG(LogTemp, Error, TEXT("건매니저 사라짐!!!!!"));
-}
-

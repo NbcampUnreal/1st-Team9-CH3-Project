@@ -288,18 +288,26 @@ void APlayerCharacter::AddItem(AItem* Item)
 		UE_LOG(LogTemp, Error, TEXT("건매니저 없음!! - AddItem"));
 		return;
 	}
+
 	if (Gun)
 	{
-		const TArray<EGunType>& GunList = GunManager->GetOwnedGunList();
+		EGunType GunType = Gun->GetGunType();
 
-		if (GunList.Find(Gun->GetGunType()) != INDEX_NONE)
+		if (GunManager->HasWeapon(GunType))
 		{
-			UE_LOG(LogTemp, Warning, TEXT("이미 소지한 총입니다!"));
+			UE_LOG(LogTemp, Warning, TEXT("이미 소지한 총입니다: %d"), GunType);
 			return;
 		}
 
-		UE_LOG(LogTemp, Warning, TEXT("새로운 총 획득: %d"), Gun->GetGunType());
-		GunManager->UpdateGunData(*Gun); // 무기 데이터 업데이트
+		GunManager->AcquireWeapon(GunType);
+
+		// 소유한 무기 목록 로그 출력
+		TArray<EGunType> GunList = GunManager->GetOwnedGunList();
+		UE_LOG(LogTemp, Warning, TEXT("업데이트 후 보유한 총 리스트:"));
+		for (auto OwnedGunType : GunList)
+		{
+			UE_LOG(LogTemp, Warning, TEXT("GunType: %d"), OwnedGunType);
+		}
 	}
 	else
 	{
@@ -354,49 +362,44 @@ void APlayerCharacter::EquipWeapon(EGunType GunType)
 		return;
 	}
 
+	if (!GunManager->HasWeapon(GunType))
+	{
+		UE_LOG(LogTemp, Warning, TEXT("소유하지 않은 무기입니다: %d"), GunType);
+		return;
+	}
+
 	if (CurrWeapon)
 	{
-		GunManager->UpdateGunData(*CurrWeapon);
-		CurrWeapon->Destroy();
-		CurrWeapon = nullptr;
-	}
-
-	switch (GunType)
-	{
-	case EGunType::PISTOL:
-		GunClass = LoadClass<AGun>(nullptr, TEXT("/Game/Items/Blueprints/BP_Pistol.BP_Pistol_C"));
-		break;
-	case EGunType::RIFLE:
-		GunClass = LoadClass<AGun>(nullptr, TEXT("/Game/Items/Blueprints/BP_Rifle.BP_Rifle_C"));
-		break;
-	case EGunType::SHOTGUN:
-		GunClass = LoadClass<AGun>(nullptr, TEXT("/Game/Items/Blueprints/BP_Shotgun.BP_Shotgun_C"));
-		break;
-	default:
-		break;
-	}
-
-	if (GetWorld() && GunClass)
-	{
-		CurrWeapon = GetWorld()->SpawnActor<AGun>(GunClass);
+		CurrWeapon->SetActorHiddenInGame(true);
 		CurrWeapon->SetActorEnableCollision(false);
+		CurrWeapon->DetachFromActor(FDetachmentTransformRules::KeepWorldTransform);
 	}
+
+	CurrWeapon = GunManager->GetWeapon(GunType);
 
 	if (CurrWeapon)
 	{
+		CurrWeapon->SetActorHiddenInGame(false);
+		CurrWeapon->SetActorEnableCollision(false);
+
 		FName GunSocketName = (GunType == PISTOL) ? FName("Pistol_Socket") :
-							  (GunType == RIFLE) ? FName("Rifle_Socket") :
-							  (GunType == SHOTGUN) ? FName("Shotgun_Socket") : NAME_None;
-		
+			(GunType == RIFLE) ? FName("Rifle_Socket") :
+			(GunType == SHOTGUN) ? FName("Shotgun_Socket") : NAME_None;
+
 		if (GetMesh()->DoesSocketExist(GunSocketName))
 		{
 			CurrWeapon->AttachToComponent(GetMesh(),
 				FAttachmentTransformRules::SnapToTargetNotIncludingScale,
 				GunSocketName);
 		}
+
 		CurrWeapon->SetOwner(this);
-		GunManager->SetCurrentGun(*CurrWeapon);
+		UE_LOG(LogTemp, Warning, TEXT("무기 장착 완료: %d"), GunType);
 		UpdateUI();
+	}
+	else
+	{
+		UE_LOG(LogTemp, Error, TEXT("무기 풀에서 무기를 찾을 수 없음: %d"), GunType);
 	}
 }
 
@@ -672,28 +675,22 @@ void APlayerCharacter::SelectWeapon(const FInputActionValue& Value)
 
 	const TArray<EGunType>& GunList = GunManager->GetOwnedGunList();
 
-	// 총이 2개 이상 있어야 교체 가능
 	if (GunList.Num() <= 1)
 	{
 		UE_LOG(LogTemp, Warning, TEXT("장착할 수 있는 다른 총이 없습니다."));
 		return;
 	}
 
-	// 현재 무기의 인덱스 찾기
-	int32 CurrentIndex = GunList.Find(CurrWeapon->GetGunType());
+	EGunType CurrentGunType = CurrWeapon ? CurrWeapon->GetGunType() : EGunType::PISTOL;
+	int32 CurrentIndex = GunList.Find(CurrentGunType);
 	if (CurrentIndex == INDEX_NONE)
 	{
-		// 현재 무기가 GunList에 없다면, 일단 0으로 설정
 		CurrentIndex = 0;
 	}
 
-	// 입력값 (일반적으로 1이나 -1을 기대)
 	int32 Direction = FMath::RoundToInt(Value.Get<float>());
-
-	// 새 인덱스 계산: (현재 인덱스 + 방향 + 전체개수) % 전체개수
 	int32 NextIndex = (CurrentIndex + Direction + GunList.Num()) % GunList.Num();
 
-	// 새 인덱스 무기 장착
 	EquipWeapon(GunList[NextIndex]);
 
 	bCanChangeGun = false;
